@@ -38,5 +38,6 @@ public class GameTag
 }
 public class GameEvent
 {
-    public const string Game_StateChanged = "Game_StateChanged";
+    public const string Game_StateChanged = "Game_StateChanged";// 游戏状态改变
+    public const string Player_Lantern_Update = "Player_Lantern_Update";// 玩家灯笼更新
 }

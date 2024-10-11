@@ -3,13 +3,13 @@ using System;
 /// <summary>
 /// 游戏关卡
 /// </summary>
-public class GameStage
+public class GameStage : ModelBase
 {
-    public GameTime GameTime { get; private set; }
+    public StageTime Time { get; private set; }
     public PlayableUnit Player { get; private set; }
     public GameStage(PlayableUnit player, int gameTime)
     {
-        GameTime = new GameTime(gameTime);
+        Time = new StageTime(gameTime);
         Player = player;
     }
 }
@@ -17,10 +17,10 @@ public class GameStage
 /// <summary>
 /// 游戏时间
 /// </summary>
-public class GameTime
+public class StageTime : ModelBase
 {
     public int TotalSecs { get; private set; }
-    public GameTime(int totalSecs)
+    public StageTime(int totalSecs)
     {
         TotalSecs = totalSecs;
     }

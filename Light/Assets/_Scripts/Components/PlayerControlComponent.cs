@@ -12,6 +12,10 @@ public class PlayerControlComponent : MonoBehaviour
     [SerializeField] Collider2DHandler _unitCollider;
     public float MoveSpeed => moveSpeed;
     public readonly UnityEvent OnFireflyCollected = new();
+    /// <summary>
+    /// 摇杆移动方位
+    /// </summary>
+    public Vector2 AxisMovement { get; private set; }
     public bool IsPanic { get; private set; }
 
     void Start() => Init();
@@ -43,9 +47,12 @@ public class PlayerControlComponent : MonoBehaviour
     }
     public void SetSpeed(float speed) => moveSpeed = speed;
     /// <summary>
-    /// 恐慌
+    /// 恐慌, 会一直跳动，直到秒数小或等于0, 会覆盖之前的恐慌状态
     /// </summary>
-    public void RestartPanic(Action onPanicOver,float delaySecs = 5f)
+    /// <param name="onAfterAStep">当每次跳动，并且返回剩余秒数</param>
+    /// <param name="totalSecs">总共秒数</param>
+    /// <param name="stepSecs">跳动秒数</param>
+    public void StartPanic(Action<float> onAfterAStep,float totalSecs = 5f,float stepSecs = 1f)
     {
         StopCoroutine(PanicCoroutine());
         StartCoroutine(PanicCoroutine());
@@ -54,8 +61,13 @@ public class PlayerControlComponent : MonoBehaviour
         IEnumerator PanicCoroutine()
         {
             IsPanic = true;
-            yield return new WaitForSeconds(delaySecs);
-            onPanicOver?.Invoke();
+            var sec = totalSecs;
+            while (sec > 0)
+            {
+                yield return new WaitForSeconds(stepSecs);
+                sec--;
+                onAfterAStep?.Invoke(sec);
+            }
         }
     }
     public void StopPanic() => StopAllCoroutines();//暂时这样停止，实际上会停止所有协程。
@@ -63,7 +75,11 @@ public class PlayerControlComponent : MonoBehaviour
     public void SetLightRadius(float radius) => _lightVision.SetOuterRadius(radius);
     void Update()
     {
-        var movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        transform.position = rb.position + movement * moveSpeed * Time.fixedDeltaTime;
+        AxisMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+    }
+    void FixedUpdate()
+    {
+        // 使用 MovePosition 进行物理移动，这样可以确保碰撞检测正常
+        rb.MovePosition(rb.position + AxisMovement * moveSpeed * Time.fixedDeltaTime);
     }
 }
