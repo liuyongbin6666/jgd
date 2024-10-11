@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,71 +6,73 @@ public class PlayerControlComponent : MonoBehaviour
 {
     [SerializeField, LabelText("移动速度")] float moveSpeed = 5f;
     [SerializeField] Rigidbody2D rb;
-    [SerializeField] LightVisionComponent _lightVision;
+    //[SerializeField] LightVisionComponent _lightVision;
     [SerializeField] Collider2DHandler _unitCollider;
-    public float MoveSpeed => moveSpeed;
+    [SerializeField] LanternComponent _lantern;
+    [SerializeField] PanicComponent _panicCom;
     public readonly UnityEvent OnFireflyCollected = new();
+    public readonly UnityEvent OnLanternTimeout = new();
+    public readonly UnityEvent OnPanicFinalize = new();
+    public readonly UnityEvent<int> OnPanicPulse = new();
     /// <summary>
     /// 摇杆移动方位
     /// </summary>
     public Vector2 AxisMovement { get; private set; }
-    public bool IsPanic { get; private set; }
 
     void Start() => Init();
     public void Init()
     {
-        _unitCollider.OnTriggerEnter.AddListener(OnColliderEnter);
-        _unitCollider.OnCollisionEnter.AddListener(c => OnColliderEnter(c.collider));
+        _lantern.Init();
+        _lantern.OnCountdownComplete.AddListener(()=>OnLanternTimeout?.Invoke());
+        _panicCom.Init();
+        _panicCom.OnPulseTrigger.AddListener(ScaryPulse);
+        _unitCollider.OnTriggerEnter.AddListener(ColliderEnter);
+        _unitCollider.OnCollisionEnter.AddListener(c => ColliderEnter(c.collider));
     }
-    public void Log() => gameObject.Log();
-    void OnColliderEnter(Collider2D collider)
+
+    void ColliderEnter(Collider2D collider)
     {
         if (collider.CompareTag(GameTag.FireFly))
         {
             var handler = collider.GetComponent<Collider2DHandler>();
-            OnFireFlyInvoke(handler);
+            FireFlyCollect(handler);
         }
     }
-    void OnFireFlyInvoke(Collider2DHandler handler)
+    void FireFlyCollect(Collider2DHandler handler)
     {
         OnFireflyCollected?.Invoke();
         //this.Log($"{handler.root.name} collided!");
         Destroy(handler.root); // 收集后销毁萤火虫
     }
+    //当恐慌时
+    void ScaryPulse(int times)
+    {
+        if(times == 0)// 0 == 恐慌时间到
+        {
+            OnPanicFinalize?.Invoke();
+            return;
+        }
+        OnPanicPulse?.Invoke(times);
+    }
     void OnColliderOnView(Collider2D[] colliders)
     {
         //foreach (var collider in colliders)
         //    if (collider.CompareTag(GameTag.FireFly)) 
-        //        OnFireFlyInvoke(collider);
+        //        FireFlyCollect(collider);
     }
     public void SetSpeed(float speed) => moveSpeed = speed;
-    /// <summary>
-    /// 恐慌, 会一直跳动，直到秒数小或等于0, 会覆盖之前的恐慌状态
-    /// </summary>
-    /// <param name="onAfterAStep">当每次跳动，并且返回剩余秒数</param>
-    /// <param name="totalSecs">总共秒数</param>
-    /// <param name="stepSecs">跳动秒数</param>
-    public void StartPanic(Action<float> onAfterAStep,float totalSecs = 5f,float stepSecs = 1f)
+    public void StopPanic() => StopAllCoroutines();//暂时这样停止，实际上会停止所有协程。
+    public void SetVision(float radius, bool noVision)
     {
-        StopCoroutine(PanicCoroutine());
-        StartCoroutine(PanicCoroutine());
-        return;
-
-        IEnumerator PanicCoroutine()
+        _lantern.SetVision(radius);
+        if(!noVision)//如果存在视野
         {
-            IsPanic = true;
-            var sec = totalSecs;
-            while (sec > 0)
-            {
-                yield return new WaitForSeconds(stepSecs);
-                sec--;
-                onAfterAStep?.Invoke(sec);
-            }
+            _lantern.StartCountdown();
+            _panicCom.StopPanic();
         }
     }
-    public void StopPanic() => StopAllCoroutines();//暂时这样停止，实际上会停止所有协程。
-    public void AddLightRadius(float radius) => _lightVision.AddOuterRadius(radius);
-    public void SetLightRadius(float radius) => _lightVision.SetOuterRadius(radius);
+
+    public void StartPanic() => _panicCom.StartPanic();
     void Update()
     {
         AxisMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));

@@ -1,10 +1,9 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
 
 /// <summary>
-/// 视野管理组件
+/// 视野管理控件
 /// </summary>
 public class LightVisionComponent : MonoBehaviour
 {
@@ -16,12 +15,10 @@ public class LightVisionComponent : MonoBehaviour
     [SerializeField,LabelText("最大范围")] float maxLightOuterRadius = 2.5f; // 光的最大范围
     [SerializeField,LabelText("最小范围")] float minLightOuterRadius = 0.5f;  // 光的最小范围
     [SerializeField,LabelText("检测层")] LayerMask detectLayer;
-
-    [Button]public void UpdateLight()
+    public void Init()
     {
-        playerLight.intensity = Mathf.Max(0, playerLight.intensity - lightDecreaseRate * 2 * Time.deltaTime);
-        playerLight.pointLightOuterRadius = Mathf.Max(0, playerLight.pointLightOuterRadius - lightDecreaseRate * 2 * Time.deltaTime);
     }
+    [Button("设置最大光圈")] public void SetMaxLight() => SetOuterRadius(maxLightOuterRadius);
     public void AddOuterRadius(float radius)
     {
         //playerLight.intensity = Mathf.Min(maxLightIntensity, intensity); // 每个萤火虫增加光的亮度
