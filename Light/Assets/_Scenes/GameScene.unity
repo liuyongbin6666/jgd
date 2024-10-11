@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 2630703}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: 94775412}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -650,9 +650,6 @@ MonoBehaviour:
   lightDecreaseRate: 0.2
   maxLightOuterRadius: 2.5
   minLightOuterRadius: 0.5
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &121175690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -741,7 +738,7 @@ GameObject:
   - component: {fileID: 159633444}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -873,7 +870,7 @@ GameObject:
   - component: {fileID: 223254920}
   m_Layer: 0
   m_Name: FireFly (5)
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -911,9 +908,6 @@ MonoBehaviour:
   lightDecreaseRate: 0.1
   maxLightOuterRadius: 10
   minLightOuterRadius: 2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &260438785
 GameObject:
   m_ObjectHideFlags: 0
@@ -926,7 +920,7 @@ GameObject:
   - component: {fileID: 260438787}
   m_Layer: 0
   m_Name: FireFly (4)
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -964,9 +958,6 @@ MonoBehaviour:
   lightDecreaseRate: 0.1
   maxLightOuterRadius: 10
   minLightOuterRadius: 2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &281843160
 GameObject:
   m_ObjectHideFlags: 0
@@ -1063,7 +1054,7 @@ GameObject:
   - component: {fileID: 414504504}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1197,7 +1188,7 @@ GameObject:
   - component: {fileID: 475411771}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1510,6 +1501,9 @@ MonoBehaviour:
   _unitCollider: {fileID: 527740092}
   _lantern: {fileID: 121175690}
   _panicCom: {fileID: 108335742}
+  _detectLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!58 &527740090
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1599,7 +1593,7 @@ GameObject:
   - component: {fileID: 547135315}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1813,7 +1807,7 @@ GameObject:
   - component: {fileID: 631985010}
   m_Layer: 0
   m_Name: FireFly (3)
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1851,9 +1845,6 @@ MonoBehaviour:
   lightDecreaseRate: 0.1
   maxLightOuterRadius: 10
   minLightOuterRadius: 2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &709699796
 GameObject:
   m_ObjectHideFlags: 0
@@ -2141,7 +2132,7 @@ GameObject:
   - component: {fileID: 1005407627}
   - component: {fileID: 1005407629}
   - component: {fileID: 1005407630}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2291,7 +2282,7 @@ GameObject:
   - component: {fileID: 1037212890}
   m_Layer: 0
   m_Name: FireFly (1)
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2329,9 +2320,6 @@ MonoBehaviour:
   lightDecreaseRate: 0.1
   maxLightOuterRadius: 10
   minLightOuterRadius: 2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &1147232798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2344,7 +2332,7 @@ GameObject:
   - component: {fileID: 1147232800}
   m_Layer: 0
   m_Name: FireFly (2)
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2382,9 +2370,6 @@ MonoBehaviour:
   lightDecreaseRate: 0.1
   maxLightOuterRadius: 10
   minLightOuterRadius: 2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &1153019404
 GameObject:
   m_ObjectHideFlags: 0
@@ -2465,7 +2450,7 @@ GameObject:
   - component: {fileID: 1154051584}
   m_Layer: 0
   m_Name: FireFly (7)
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2503,9 +2488,6 @@ MonoBehaviour:
   lightDecreaseRate: 0.1
   maxLightOuterRadius: 10
   minLightOuterRadius: 2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &1191668473
 GameObject:
   m_ObjectHideFlags: 0
@@ -2654,7 +2636,7 @@ GameObject:
   - component: {fileID: 1260884773}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2784,7 +2766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1286467899}
   - component: {fileID: 1286467900}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Circle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2954,7 +2936,7 @@ GameObject:
   - component: {fileID: 1390574726}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3134,7 +3116,7 @@ GameObject:
   - component: {fileID: 1471543961}
   m_Layer: 0
   m_Name: FireFly
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3172,9 +3154,6 @@ MonoBehaviour:
   lightDecreaseRate: 0.1
   maxLightOuterRadius: 10
   minLightOuterRadius: 2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &1570661330
 GameObject:
   m_ObjectHideFlags: 0
@@ -3187,7 +3166,7 @@ GameObject:
   - component: {fileID: 1570661332}
   m_Layer: 0
   m_Name: FireFly (6)
-  m_TagString: FireFly
+  m_TagString: Firefly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3225,9 +3204,6 @@ MonoBehaviour:
   lightDecreaseRate: 0.1
   maxLightOuterRadius: 10
   minLightOuterRadius: 2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &1633480070
 GameObject:
   m_ObjectHideFlags: 0
@@ -3751,7 +3727,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2112916730}
   - component: {fileID: 2112916731}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

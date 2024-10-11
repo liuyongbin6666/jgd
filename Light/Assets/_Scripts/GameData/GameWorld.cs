@@ -34,7 +34,7 @@ public class GameWorld
 
 public class GameTag
 {
-    public const string FireFly = "FireFly";
+    public const string Firefly = "Firefly";
 }
 public class GameEvent
 {

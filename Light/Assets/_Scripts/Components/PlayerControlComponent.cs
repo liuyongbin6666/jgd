@@ -1,3 +1,4 @@
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,6 +11,7 @@ public class PlayerControlComponent : MonoBehaviour
     [SerializeField] Collider2DHandler _unitCollider;
     [SerializeField] LanternComponent _lantern;
     [SerializeField] PanicComponent _panicCom;
+    [SerializeField,LabelText("周围检测层")] LayerMask _detectLayer;
     public readonly UnityEvent OnFireflyCollected = new();
     public readonly UnityEvent OnLanternTimeout = new();
     public readonly UnityEvent OnPanicFinalize = new();
@@ -32,7 +34,7 @@ public class PlayerControlComponent : MonoBehaviour
 
     void ColliderEnter(Collider2D collider)
     {
-        if (collider.CompareTag(GameTag.FireFly))
+        if (collider.CompareTag(GameTag.Firefly))
         {
             var handler = collider.GetComponent<Collider2DHandler>();
             FireFlyCollect(handler);
@@ -56,9 +58,7 @@ public class PlayerControlComponent : MonoBehaviour
     }
     void OnColliderOnView(Collider2D[] colliders)
     {
-        //foreach (var collider in colliders)
-        //    if (collider.CompareTag(GameTag.FireFly)) 
-        //        FireFlyCollect(collider);
+        this.Log($"发现：{string.Join(',',colliders.Select(c=>c.name))}");
     }
     public void SetSpeed(float speed) => moveSpeed = speed;
     public void StopPanic() => StopAllCoroutines();//暂时这样停止，实际上会停止所有协程。
@@ -81,5 +81,19 @@ public class PlayerControlComponent : MonoBehaviour
     {
         // 使用 MovePosition 进行物理移动，这样可以确保碰撞检测正常
         rb.MovePosition(rb.position + AxisMovement * moveSpeed * Time.fixedDeltaTime);
+        detectionTimer += Time.fixedDeltaTime;
+        if (detectionTimer >= detectionInterval)
+        {
+            detectionTimer = 0f;
+            DetectEnemies();
+        }
+    }
+    //为了优化FixedUpdate调用大量的2d物理来检测周围物件，原本1秒调用50次(fixedUpdate)改成1秒10次以减少gc带来的性能开销。
+    float detectionInterval = 0.1f; // 检测间隔
+    float detectionTimer = 0f;
+    void DetectEnemies()
+    {
+        var colliders = _lantern.CheckForEnemiesInView(_detectLayer);
+        if(colliders.Any())OnColliderOnView(colliders);
     }
 }
