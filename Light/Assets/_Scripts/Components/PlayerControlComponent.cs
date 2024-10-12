@@ -11,6 +11,7 @@ public class PlayerControlComponent : MonoBehaviour
     [SerializeField] Collider2DHandler _unitCollider;
     [SerializeField] LanternComponent _lantern;
     [SerializeField] PanicComponent _panicCom;
+    [SerializeField,LabelText("灯光步进")] float _lightOuterStep = 0.5f;
     [SerializeField,LabelText("周围检测层")] LayerMask _detectLayer;
     public readonly UnityEvent OnFireflyCollected = new();
     public readonly UnityEvent OnLanternTimeout = new();
@@ -20,10 +21,9 @@ public class PlayerControlComponent : MonoBehaviour
     /// 摇杆移动方位
     /// </summary>
     public Vector2 AxisMovement { get; private set; }
-
-    void Start() => Init();
-    public void Init()
+    public void Init(float lightOuterStep)
     {
+        _lightOuterStep = lightOuterStep;
         _lantern.Init();
         _lantern.OnCountdownComplete.AddListener(()=>OnLanternTimeout?.Invoke());
         _panicCom.Init();
@@ -62,14 +62,16 @@ public class PlayerControlComponent : MonoBehaviour
     }
     public void SetSpeed(float speed) => moveSpeed = speed;
     public void StopPanic() => StopAllCoroutines();//暂时这样停止，实际上会停止所有协程。
-    public void SetVision(float radius, bool noVision)
+    public void Lantern(float lantern)
     {
+        var hasVision = lantern > 0;
+        // 视野/灯笼范围
+        var radius = (lantern + 1) * _lightOuterStep;
         _lantern.SetVision(radius);
-        if(!noVision)//如果存在视野
-        {
-            _lantern.StartCountdown();
-            _panicCom.StopPanic();
-        }
+        if (!hasVision) return; 
+        //如果存在视野
+        _lantern.StartCountdown();
+        _panicCom.StopPanic();
     }
 
     public void StartPanic() => _panicCom.StartPanic();

@@ -24,7 +24,7 @@ public class EnvironmentComponent : CountdownComponent
     {
         OnCountdownComplete.AddListener(Lightning);
         RandomDuration();
-        StartCountdown();
+        StartCountdown(true);
     }
 
     void RandomDuration() => _duration = Random.Range(_lightningRange.Min, _lightningRange.Max);

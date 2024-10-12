@@ -9,13 +9,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - DarknessMask
+  - 
   - Water
   - UI
   - 
   - GameUnit
   - Enemy
-  - 
+  - Obstacle
   - 
   - 
   - 

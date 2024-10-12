@@ -17,7 +17,7 @@ public class GameController : IController
     }
     public void Game_Start()
     {
-        World.Start(new PlayableUnit(Config.PlayerPrefab, 1));
+        World.Start(new PlayableUnit(Config.PlayerPrefab, 1, 1));
         Debug.Log("游戏执行中！");
     }
     public void Game_End()

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,25 +16,27 @@ public abstract class CountdownComponent : MonoBehaviour
 
     public readonly UnityEvent<int> OnPulseTrigger = new();
     public readonly UnityEvent OnCountdownComplete = new();
+    public bool IsRunning { get; private set; }
+    Coroutine countdownCoroutine;
 
-    private Coroutine countdownCoroutine;
-
-    public void StartCountdown()
+    public void StartCountdown() => StartCountdown(false);
+    public void StartCountdown(bool reset)
     {
         if (PulseTimes <= 0) throw new NotImplementedException("跳动次数至少要一次!");
         if (Duration <= 0) throw new NotImplementedException("持续市场不可以负数!");
-        if (countdownCoroutine!=null) return;
-        StopCountdown();
-        countdownCoroutine = StartCoroutine(CountdownCoroutine());
+        IsRunning = countdownCoroutine != null;
+        if (reset || !IsRunning)
+        {
+            StopCountdown();
+            countdownCoroutine = StartCoroutine(CountdownCoroutine());
+        }
     }
 
     public void StopCountdown()
     {
-        if (countdownCoroutine != null)
-        {
-            StopCoroutine(countdownCoroutine);
-            countdownCoroutine = null;
-        }
+        if (!IsRunning) return;
+        StopCoroutine(countdownCoroutine);
+        countdownCoroutine = null;
     }
 
     IEnumerator CountdownCoroutine()
