@@ -724,6 +724,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 527740089}
+  StoryOpenDataSo: {fileID: 11400000, guid: 548eba78302c1e74e885300beb93ebdb, type: 2}
+  StoryFinishDataSo: {fileID: 11400000, guid: 46e21e1968c1e2441af039168b53d1e3, type: 2}
+  StoryItemDataSo: {fileID: 11400000, guid: 39763b7f6984f724885f073ac40cb6a9, type: 2}
 --- !u!1 &159633442
 GameObject:
   m_ObjectHideFlags: 0
