@@ -6,19 +6,17 @@ using Sirenix.OdinInspector;
 public class PlayableUnit : ModelBase
 {
     /// <summary>
-    /// 视野/灯笼范围
+    /// 灯笼值
     /// </summary>
-    public float Vision => (lantern + 1) * lightOuter;
-
-    [LabelText("光圈步进")]float lightOuter = 0.5f;
-    [LabelText("灯笼")]public int lantern = 1;
+    public int Lantern { get; private set; }= 1;
     PlayerControlComponent PlayerControl { get; }
 
-    public PlayableUnit(PlayerControlComponent playerControl,int lantern)
+    public PlayableUnit(PlayerControlComponent playerControl,int lantern, float lightStep)
     {
-        this.lantern = lantern;
+        Lantern = lantern;
         PlayerControl = playerControl;
-        PlayerControl.SetVision(Vision,false);
+        PlayerControl.Init(lightStep);
+        PlayerControl.Lantern(Lantern);
         PlayerControl.OnFireflyCollected.AddListener(OnCollectFirefly);
         PlayerControl.OnLanternTimeout.AddListener(OnLanternTimeout);
         PlayerControl.OnPanicFinalize.AddListener(OnScaryFinalized);
@@ -40,28 +38,28 @@ public class PlayableUnit : ModelBase
     //当灯笼减弱时间触发
     void OnLanternTimeout()
     {
-        LanternUpdate(--lantern);
+        LanternUpdate(--Lantern);
         //Log(nameof(OnLanternTimeout)+$" : {lantern}");
     }
 
     //当获取到萤火虫
     void OnCollectFirefly()
     {
-        LanternUpdate(++lantern);
-        Log(nameof(OnCollectFirefly)+$" lantern: {lantern}");
+        LanternUpdate(++Lantern);
+        Log(nameof(OnCollectFirefly)+$" lantern: {Lantern}");
     }
 
     //灯笼更新
     void LanternUpdate(int value)
     {
-        lantern = value;// 灯笼++
-        if (lantern <= 0)
+        Lantern = value;// 灯笼++
+        if (Lantern <= 0)
         {
-            lantern = 0;
+            Lantern = 0;
             PlayerControl.StartPanic();// 开始恐慌
         }
         Log($"value = {value}");
-        PlayerControl.SetVision(Vision, lantern <= 0);
+        PlayerControl.Lantern(Lantern);
         SendEvent(GameEvent.Player_Lantern_Update);
     }
 }
