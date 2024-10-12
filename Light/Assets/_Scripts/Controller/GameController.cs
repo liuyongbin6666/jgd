@@ -15,7 +15,7 @@ public class GameController : IController
         World.Playing();
         Debug.Log("游戏开始！");
     }
-    public void Game_Start()
+    public void Game_StartStage()
     {
         World.Start(new PlayableUnit(Config.PlayerPrefab, 1, 1));
         Game_Playing();//暂时自动开始游戏

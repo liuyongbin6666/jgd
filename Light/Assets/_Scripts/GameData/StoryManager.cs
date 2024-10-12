@@ -1,11 +1,12 @@
-using GMVC.Core;
+﻿using GMVC.Core;
 
 public class StoryManager : ModelBase
 {
-    public int[] StoryId { get; private set; } = new[] { 1, 2, 3, 4, 5 };
+    //故事Id
+    public int[] StoryId { get; private set; } 
 
-    public int GetStoryId()
+    public void SetStory()
     {
-        return StoryId[Game.World.Stage.StageIndex.Index];
+        StoryId = new[] { 1, 2, 3, 4, 5 } ;
     }
 }

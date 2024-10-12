@@ -1,9 +1,9 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "StoryItem", menuName = "ÅäÖÃ/¹ÊÊÂµÀ¾ß")]
+[CreateAssetMenu(fileName = "StoryItem", menuName = "é…ç½®/æ•…äº‹é“å…·")]
 
 public class StoryItemDataSO : ScriptableObject
 {
@@ -28,4 +28,5 @@ public class StoryItemDataSO : ScriptableObject
     public int id;
     public string name;
     public string str;
+
 }

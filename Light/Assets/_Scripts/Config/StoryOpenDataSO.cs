@@ -1,8 +1,8 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "StoryOpen", menuName = "ÅäÖÃ/¹ÊÊÂ¿ªÊ¼")]
+[CreateAssetMenu(fileName = "StoryOpen", menuName = "é…ç½®/æ•…äº‹å¼€å§‹")]
 
 public class StoryOpenDataSO : ScriptableObject
 {
@@ -26,7 +26,7 @@ public class StoryOpenDataSO : ScriptableObject
 [Serializable]public class StoryOpenData
 {
     public int id;
-    public string[] open;
+    public string open;
     public string[] body;
     public int[] storyFinishId;
 }

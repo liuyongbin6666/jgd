@@ -1,5 +1,6 @@
-public class StageIndex : ModelBase
+﻿public class StageIndex : ModelBase
 {
+    //关卡Id
     public int Index { get; private set; }
 
     public void Add()

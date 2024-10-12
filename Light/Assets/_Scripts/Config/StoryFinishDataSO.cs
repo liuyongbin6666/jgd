@@ -1,8 +1,8 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "StoryFinish", menuName = "ÅäÖÃ/¹ÊÊÂ½áÊø")]
+[CreateAssetMenu(fileName = "StoryFinish", menuName = "é…ç½®/æ•…äº‹ç»“æŸ")]
 public class StoryFinishDataSO : ScriptableObject
 {
     [SerializeField] private StoryFinishData[] storyFinishDatas;
@@ -24,7 +24,7 @@ public class StoryFinishDataSO : ScriptableObject
 [Serializable] public class StoryFinishData
 {
     public int id;
-    public string[] transition;
-    public string[] finish;
+    public string transition;
+    public string finish;
     public int[] itemId;
 }
