@@ -16,6 +16,7 @@ namespace GMVC.Core
         public static MessagingManager MessagingManager { get; } = new MessagingManager();
         public static IMainThreadDispatcher MainThread { get; private set; }
         public static Res Res { get; private set; }
+        public static AudioComponent AudioComponent { get; private set; }
         public static GameConfig Config { get; private set; }
         public static MonoService MonoService
         {
@@ -28,10 +29,13 @@ namespace GMVC.Core
         }
         static Res _res;
 
-        public static void Run(Action onGameStartAction, GameConfig config ,float startAfter = 0.5f)
+        public static void Run(Action onGameStartAction, AudioComponent audioComponent, GameConfig config,
+            float startAfter = 0.5f)
         {
             if (IsRunning) throw new NotImplementedException("Game is running!");
             IsRunning = true;
+            AudioComponent = audioComponent;
+            AudioComponent.Init();
             Config = config;
             MainThread = MonoService.gameObject.AddComponent<MainThreadDispatcher>();
             Res = MonoService.gameObject.AddComponent<Res>();
@@ -54,14 +58,16 @@ namespace GMVC.Core
                 onGameStartAction?.Invoke();
             }
         }
+
         public static void SendEvent(string eventName, DataBag bag) => MessagingManager.Send(eventName, bag);
         public static void SendEvent(string eventName, params object[] args)
         {
             args ??= Array.Empty<object>();
             MessagingManager.Send(eventName, args);
         }
-
         public static void RegEvent(string eventName, Action<DataBag> callbackAction) =>
             MessagingManager.RegEvent(eventName, callbackAction);
+        public static void PlayBGM(AudioClip clip) => AudioComponent.Play(AudioManager.Types.BGM,clip);
+        public static void PlaySFX(AudioClip clip) => AudioComponent.Play(AudioManager.Types.SFX, clip);
     }
 }

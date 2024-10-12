@@ -8,10 +8,6 @@ using UnityEngine.Rendering.Universal;
 public class LightVisionComponent : MonoBehaviour
 {
     [SerializeField] Light2D playerLight;
-
-    [SerializeField,LabelText("减弱速率")] float lightDecreaseRate = 0.02f; // 光的减弱速率
-    //[SerializeField,LabelText("最大亮度")] float maxLightIntensity = 1f; // 光的最大亮度
-    //[SerializeField,LabelText("最小亮度")] float minLightIntensity = 0.12f; // 光的最小亮度
     [SerializeField,LabelText("最大范围")] float maxLightOuterRadius = 2.5f; // 光的最大范围
     [SerializeField,LabelText("最小范围")] float minLightOuterRadius = 0.5f;  // 光的最小范围
     public void Init()

@@ -4,10 +4,11 @@ using UnityEngine;
 public class GameLaunch : MonoBehaviour
 {
     public UiManager UiManager;
-    public GameConfig GameConfig;
+    public GameConfigure Configure;
+    public AudioComponent AudioComponent;
     void Start()
     {
-        Game.Run(GameStart, GameConfig);
+        Game.Run(GameStart, AudioComponent, Configure.GameConfig);
     }
 
     // 游戏开始

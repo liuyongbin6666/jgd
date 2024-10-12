@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using GMVC.Core;
 using MyBox;
 using Sirenix.OdinInspector;
 using UnityEngine.Events;
@@ -41,6 +42,7 @@ public class EnvironmentComponent : CountdownComponent
         // 保存原始光强度
         float originalIntensity = globalLight.intensity;
         var t = times;
+        Game.SendEvent(GameEvent.Env_Lightning);
         while (t > 0)
         {
             yield return Lightning();

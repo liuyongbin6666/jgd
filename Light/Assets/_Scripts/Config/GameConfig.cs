@@ -1,7 +1,6 @@
 using System;
-using UnityEngine;
 
-public class GameConfig : MonoBehaviour
+[Serializable]public class GameConfig
 {
     public PlayerControlComponent PlayerPrefab;
 }
