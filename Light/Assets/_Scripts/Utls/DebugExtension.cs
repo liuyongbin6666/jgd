@@ -7,7 +7,8 @@ public static class DebugExtension
     {
         Debug.Log($"{obj.name} {methodName} : {message}");
     }
-
+    public static void Log(this string message, Object obj, [CallerMemberName] string methodName = null) =>
+        obj.Log(message, methodName);
     public static void Log(this Object obj, [CallerMemberName] string methodName = null)
     {
         object messageObj = "Invoke()!";

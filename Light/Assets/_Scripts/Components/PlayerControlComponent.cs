@@ -14,10 +14,10 @@ public class PlayerControlComponent : MonoBehaviour
     [SerializeField,LabelText("灯光步进")] float _lightOuterStep = 0.5f;
     [SerializeField,LabelText("周围检测层")] LayerMask _detectLayer;
     [LabelText("移动摇杆")]public Vector2 axisMovement;
-    public readonly UnityEvent OnFireflyCollected = new();
     public readonly UnityEvent OnLanternTimeout = new();
     public readonly UnityEvent OnPanicFinalize = new();
     public readonly UnityEvent<int> OnPanicPulse = new();
+    public readonly UnityEvent<GameItemBase> OnGameItemTrigger= new();
     public void Init(float lightOuterStep)
     {
         _lightOuterStep = lightOuterStep;
@@ -29,20 +29,20 @@ public class PlayerControlComponent : MonoBehaviour
         _unitCollider.OnCollisionEnter.AddListener(c => ColliderEnter(c.collider));
     }
 
-    void ColliderEnter(Collider2D collider)
+    void ColliderEnter(Collider2D col2D)
     {
-        if (collider.CompareTag(GameTag.Firefly))
+        //if (CheckIf(GameTag.Firefly, FireFlyCollect)) return;
+        //if (CheckIf(GameTag.GameItem, GameItemTrigger)) return;
+        return;
+
+        bool CheckIf(string objTag, UnityAction<Collider2D> onTriggerAction)
         {
-            var handler = collider.GetComponent<Collider2DHandler>();
-            FireFlyCollect(handler);
+            if (!col2D.CompareTag(objTag)) return false;
+            onTriggerAction(col2D);
+            return true;
         }
     }
-    void FireFlyCollect(Collider2DHandler handler)
-    {
-        OnFireflyCollected?.Invoke();
-        //this.Log($"{handler.root.name} collided!");
-        Destroy(handler.root); // 收集后销毁萤火虫
-    }
+
     //当恐慌时
     void ScaryPulse(int times)
     {
@@ -95,5 +95,16 @@ public class PlayerControlComponent : MonoBehaviour
     {
         var colliders = _lantern.CheckForEnemiesInView(_detectLayer);
         if(colliders.Any())OnColliderOnView(colliders);
+    }
+
+    public void GameItemInteraction(GameItemBase gameItem) => OnGameItemTrigger.Invoke(gameItem);
+}
+
+internal static class PlayerControlComponentExtensions
+{
+    public static PlayerControlComponent GetControlFromColliderHandler(this Collider2D co)
+    {
+        var handler = co.GetComponent<Collider2DHandler>();
+        return handler ? handler.root.GetComponent<PlayerControlComponent>() : co.GetComponent<PlayerControlComponent>();
     }
 }

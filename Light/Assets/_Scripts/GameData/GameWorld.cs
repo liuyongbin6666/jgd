@@ -36,9 +36,12 @@ public class GameWorld
 public class GameTag
 {
     public const string Firefly = "Firefly";
+    public const string GameItem = "GameItem";
+    public const string Player = "Player";
 }
 public class GameEvent
 {
+    public const string GameItem_Interaction = "GameItem_Interaction";// 游戏物品交互
     public const string Game_StateChanged = "Game_StateChanged";// 游戏状态改变
     public const string Stage_StageTime_Update = "Stage_StageTime_Update";
     public const string Player_Lantern_Update = "Player_Lantern_Update";// 玩家灯笼更新

@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -18,10 +18,17 @@ public class PlayableUnit : ModelBase
         PlayerControl = playerControl;
         PlayerControl.Init(lightStep);
         PlayerControl.Lantern(Lantern);
-        PlayerControl.OnFireflyCollected.AddListener(OnCollectFirefly);
         PlayerControl.OnLanternTimeout.AddListener(OnLanternTimeout);
         PlayerControl.OnPanicFinalize.AddListener(OnScaryFinalized);
         PlayerControl.OnPanicPulse.AddListener(OnPanicPulse);
+        PlayerControl.OnGameItemTrigger.AddListener(OnGameItemInteractive);
+    }
+
+    // 当游戏物品交互
+    void OnGameItemInteractive(GameItemBase gameItem)
+    {
+        gameItem.Invoke(this);
+        SendEvent(GameEvent.GameItem_Interaction, gameItem.Type);// 游戏物品交互，发射了枚举入参为游戏物品类型
     }
 
     //当恐慌心跳, times = 剩余次数
@@ -43,13 +50,7 @@ public class PlayableUnit : ModelBase
         //Log(nameof(OnLanternTimeout)+$" : {lantern}");
     }
 
-    //当获取到萤火虫
-    void OnCollectFirefly()
-    {
-        LanternUpdate(++Lantern);
-        Log(nameof(OnCollectFirefly)+$" lantern: {Lantern}");
-    }
-
+    public void AddLantern(int value) => LanternUpdate(Lantern + value);
     //灯笼更新
     void LanternUpdate(int value)
     {

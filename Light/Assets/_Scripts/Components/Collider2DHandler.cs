@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
-/// 2D碰撞辅助器，处理碰撞并发射事件。可以自由支持触发和碰撞机制
+/// 2D碰撞辅助器，处理碰撞并发射事件。可以自由支持触发和碰撞机制。
 /// </summary>
-public class Collider2DHandler : MonoBehaviour
+[RequireComponent(typeof(Collider2D))]public class Collider2DHandler : MonoBehaviour
 {
     public GameObject root;
     public readonly UnityEvent<Collider2D> OnTriggerEnter=new();
