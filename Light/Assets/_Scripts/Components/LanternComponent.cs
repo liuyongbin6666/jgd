@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class LanternComponent : CountdownComponent
 {
-    [LabelText("减弱时长")] float _lastingPerFirefly = 3f;
+    [SerializeField,LabelText("减弱时长")] float _lastingPerFirefly = 3f;
     [SerializeField] LightVisionComponent _light;
     protected override int PulseTimes => 1;
     protected override float Duration => _lastingPerFirefly;

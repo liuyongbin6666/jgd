@@ -50,4 +50,5 @@ public class GameEvent
     public const string Env_Lightning = "Env_Lightning";// 闪电
 
     public const string Story_Npc_Update = "Story_Npc_Update";
+    public const string Story_Show = "Story_Show";
 }
