@@ -11,11 +11,12 @@ public class GameStage : ModelBase
     public StageTime Time { get; private set; }
     public PlayableUnit Player { get; private set; }
     public StoryManager StoryManager { get; private set; }
-    public GameStage(PlayableUnit player)
+    public GameStage(PlayableUnit player,StageTime stageTime)
     {
         Player = player;
         StageIndex = new StageIndex();
-        Time = new StageTime();
+        Time = stageTime;
+        Time.StartCountdown();
         StoryManager = new StoryManager();
         StoryManager.SetStory();
     }
@@ -29,7 +30,7 @@ public class GameStage : ModelBase
     //进入新关卡
     public void SetGameStage()
     {
-        Time.SetStageTime(Game.Config.StageSeconds[StageIndex.Index]);
+        //Time.SetStageTime(Game.Config.StageSeconds[StageIndex.Index]);
     }
 }
 
@@ -38,10 +39,24 @@ public class GameStage : ModelBase
 /// </summary>
 public class StageTime : ModelBase
 {
-    public int TotalSecs { get; private set; }
+    public StageTimeComponent StageTimeComponent;
+    public int RemainSeconds { get; private set; }
 
-    public void SetStageTime(int sec)
+    public void StartCountdown()
     {
-        TotalSecs = sec;
+        StageTimeComponent.StartCountdown();
+    }
+
+    public StageTime(StageTimeComponent stageTimeComponent,int totalSecs)
+    {
+        StageTimeComponent = stageTimeComponent;
+        stageTimeComponent.OnPulseTrigger.AddListener(OnPulse);
+        RemainSeconds = totalSecs;
+    }
+
+    private void OnPulse(int arg0)
+    {
+        RemainSeconds--;
+        SendEvent(GameEvent.Stage_StageTime_Update);
     }
 }
