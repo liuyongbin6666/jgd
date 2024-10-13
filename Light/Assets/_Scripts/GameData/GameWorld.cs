@@ -11,11 +11,12 @@ public class GameWorld
     public GameStates Status { get; private set; }
     public GameStage Stage { get; private set; }
 
-    public void Start(PlayableUnit player, int gameTimeSecs = 300)
+    public void SetStage(PlayableUnit player,StageTime stageTime)
     {
-        Stage = new GameStage(player, gameTimeSecs);
+        Stage = new GameStage(player,stageTime);
         SetState(GameStates.Start);
     }
+
     public void Playing()
     {
         SetState(GameStates.Playing);
@@ -39,8 +40,11 @@ public class GameTag
 public class GameEvent
 {
     public const string Game_StateChanged = "Game_StateChanged";// 游戏状态改变
+    public const string Stage_StageTime_Update = "Stage_StageTime_Update";
     public const string Player_Lantern_Update = "Player_Lantern_Update";// 玩家灯笼更新
     public const string Player_Panic_Pulse = "Player_Panic_Pulse";//恐慌心跳
     public const string Player_Panic_Finalize = "Player_Panic_Finalize";//恐慌心跳结束触发
     public const string Env_Lightning = "Env_Lightning";// 闪电
+
+    public const string Story_Npc_Update = "Story_Npc_Update";
 }

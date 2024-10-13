@@ -14,7 +14,6 @@ public class JoyStick : MonoBehaviour
     public bool IsDrag;
     public Vector3 pos;
     public bool IsInit { get; private set; }
-    void Start() => Init();
     public void Init()
     {
         if (IsInit) return;
@@ -22,8 +21,9 @@ public class JoyStick : MonoBehaviour
         if (!joyStick) joyStick = transform.GetChild(0).GetComponent<RectTransform>();
         if (!handle) handle = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
         mRadius = joyStick.rect.width * 0.45f;
-        joyStick.Display(false);
+        this.Display(false);
     }
+
     void Update()
     {
         if (!IsInit) return;

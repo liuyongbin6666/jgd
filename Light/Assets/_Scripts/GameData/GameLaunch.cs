@@ -15,7 +15,5 @@ public class GameLaunch : MonoBehaviour
     void GameStart()
     {
         UiManager.Init();
-        var gameController = Game.GetController<GameController>();
-        gameController.Game_Start();
     }
 }

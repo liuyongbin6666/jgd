@@ -1,16 +1,36 @@
 using System;
+using GMVC.Core;
+using UnityEngine;
 
 /// <summary>
 /// 游戏关卡
 /// </summary>
 public class GameStage : ModelBase
 {
+    public StageIndex StageIndex { get; private set; }
     public StageTime Time { get; private set; }
     public PlayableUnit Player { get; private set; }
-    public GameStage(PlayableUnit player, int gameTime)
+    public StoryManager StoryManager { get; private set; }
+    public GameStage(PlayableUnit player,StageTime stageTime)
     {
-        Time = new StageTime(gameTime);
         Player = player;
+        StageIndex = new StageIndex();
+        Time = stageTime;
+        Time.StartCountdown();
+        StoryManager = new StoryManager();
+        StoryManager.SetStory();
+    }
+
+    //通过关卡
+    public void AddStageIndex()
+    {
+        StageIndex.Add();
+    }
+
+    //进入新关卡
+    public void SetGameStage()
+    {
+        //Time.SetStageTime(Game.Config.StageSeconds[StageIndex.Index]);
     }
 }
 
@@ -19,9 +39,24 @@ public class GameStage : ModelBase
 /// </summary>
 public class StageTime : ModelBase
 {
-    public int TotalSecs { get; private set; }
-    public StageTime(int totalSecs)
+    public StageTimeComponent StageTimeComponent;
+    public int RemainSeconds { get; private set; }
+
+    public void StartCountdown()
     {
-        TotalSecs = totalSecs;
+        StageTimeComponent.StartCountdown();
+    }
+
+    public StageTime(StageTimeComponent stageTimeComponent,int totalSecs)
+    {
+        StageTimeComponent = stageTimeComponent;
+        stageTimeComponent.OnPulseTrigger.AddListener(OnPulse);
+        RemainSeconds = totalSecs;
+    }
+
+    private void OnPulse(int arg0)
+    {
+        RemainSeconds--;
+        SendEvent(GameEvent.Stage_StageTime_Update);
     }
 }
