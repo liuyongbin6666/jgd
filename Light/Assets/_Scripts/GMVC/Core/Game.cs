@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using GMVC.Utls;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace GMVC.Core
 {
@@ -48,6 +49,7 @@ namespace GMVC.Core
             {
                 ServiceContainer = new ControllerServiceContainer();
                 ServiceContainer.Reg(new GameController());
+                ServiceContainer.Reg(new PlayableController());
             }
 
             void RegEvents() { }

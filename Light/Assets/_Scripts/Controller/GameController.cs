@@ -1,7 +1,7 @@
 using GMVC.Core;
 using UnityEngine;
 
-public class GameController : IController
+public class GameController : ControllerBase
 {
     GameWorld World => Game.World;
     GameConfig Config => Game.Config;

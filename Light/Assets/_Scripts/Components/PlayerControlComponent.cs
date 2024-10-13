@@ -13,14 +13,11 @@ public class PlayerControlComponent : MonoBehaviour
     [SerializeField] PanicComponent _panicCom;
     [SerializeField,LabelText("灯光步进")] float _lightOuterStep = 0.5f;
     [SerializeField,LabelText("周围检测层")] LayerMask _detectLayer;
+    [LabelText("移动摇杆")]public Vector2 axisMovement;
     public readonly UnityEvent OnFireflyCollected = new();
     public readonly UnityEvent OnLanternTimeout = new();
     public readonly UnityEvent OnPanicFinalize = new();
     public readonly UnityEvent<int> OnPanicPulse = new();
-    /// <summary>
-    /// 摇杆移动方位
-    /// </summary>
-    public Vector2 AxisMovement { get; private set; }
     public void Init(float lightOuterStep)
     {
         _lightOuterStep = lightOuterStep;
@@ -75,14 +72,15 @@ public class PlayerControlComponent : MonoBehaviour
     }
 
     public void StartPanic() => _panicCom.StartPanic();
-    void Update()
-    {
-        AxisMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-    }
+    //void Update()
+    //{
+    //    axisMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+    //}
     void FixedUpdate()
     {
         // 使用 MovePosition 进行物理移动，这样可以确保碰撞检测正常
-        rb.MovePosition(rb.position + AxisMovement * moveSpeed * Time.fixedDeltaTime);
+        if(axisMovement!=Vector2.zero)
+            rb.MovePosition(rb.position + axisMovement * moveSpeed * Time.fixedDeltaTime);
         detectionTimer += Time.fixedDeltaTime;
         if (detectionTimer >= detectionInterval)
         {

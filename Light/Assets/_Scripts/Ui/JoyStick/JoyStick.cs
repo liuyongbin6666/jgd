@@ -1,66 +1,78 @@
-using System.Collections;
-using System.Collections.Generic;
+Ôªøusing GMVC.Utls;
 using UnityEngine;
-using UnityEngine.UI;
-
+using UnityEngine.Events;
 
 public class JoyStick : MonoBehaviour
 {
+    [SerializeField] RectTransform joyStick;
+    [SerializeField] RectTransform handle;
     public float mRadius = 0f;
-    public RectTransform joyStick;
-    public RectTransform handle;
-    public Vector3 mousePosition,dragPosition;
-    //playerÕ®π˝ªÒ»°dirµƒ÷µ¿¥“∆∂Ø
-    public Vector3 dir;
+    public Vector3 mousePosition, dragPosition;
+    //playerÈÄèËøáÊ≥®ÂÜå‰∫ã‰ª∂Êù•ÁßªÂä®
+    public readonly UnityEvent<Vector3> OnMoveEvent = new();
 
     public bool IsDrag;
     public Vector3 pos;
-    private void Awake()
+    public bool IsInit { get; private set; }
+    void Start() => Init();
+    public void Init()
     {
-        
+        if (IsInit) return;
+        IsInit = true;
+        if (!joyStick) joyStick = transform.GetChild(0).GetComponent<RectTransform>();
+        if (!handle) handle = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
+        mRadius = joyStick.rect.width * 0.45f;
+        joyStick.Display(false);
     }
-    protected void Start()
+    void Update()
     {
-        joyStick = transform.GetChild(0).GetComponent<RectTransform>();
-        handle = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
-        mRadius = (joyStick.transform as RectTransform).sizeDelta.x * 0.45f;
-    }
-    public void Update()
-    {
-        //µ„ª˜
+        if (!IsInit) return;
+        //ÁÇπÂáª
         if (Input.GetMouseButtonDown(0))
         {
-            
-            mousePosition = Input.mousePosition;
-            joyStick.transform.position = mousePosition;
-            joyStick.gameObject.SetActive(true);
-            IsDrag = true;
+            StartDrag(Input.mousePosition);
             return;
         }
-        //Ãß∆
+        //Êä¨Ëµ∑
         if (Input.GetMouseButtonUp(0))
         {
-            IsDrag = false;
-            handle.localPosition = Vector3.zero;
-            dir = Vector3.zero;
-            joyStick.gameObject.SetActive(false);
+            EndDrag();
+            return;
         }
-        //Õœ◊ß
-        if (Input.GetMouseButton(0))
+        //ÊãñÊãΩ
+        if (IsDrag && Input.GetMouseButton(0))
         {
-            if(IsDrag)
-            {
-                dragPosition = Input.mousePosition;
-                pos = dragPosition - mousePosition;
-                if(pos.magnitude>mRadius)
-                {
-                    pos = pos.normalized*mRadius;
-                    
-                }
-                handle.localPosition = pos;
-                dir = pos.normalized;
-            }
+            Dragging(Input.mousePosition);
+            return;
         }
     }
 
+    void Dragging(Vector3 mousePos)
+    {
+        dragPosition = mousePos;
+        pos = dragPosition - mousePosition;
+        if (pos.magnitude > mRadius)
+            pos = pos.normalized * mRadius;
+        handle.localPosition = pos;
+        OnMoveEvent.Invoke(pos.normalized);
+    }
+
+    void EndDrag()
+    {
+        var zero = Vector3.zero;
+        IsDrag = false;
+        mousePosition = zero;
+        handle.localPosition = zero;
+        joyStick.Display(false);
+        OnMoveEvent.Invoke(zero);
+    }
+
+    void StartDrag(Vector3 mousePos)
+    {
+        mousePosition = mousePos;
+        joyStick.transform.position = mousePos;
+        joyStick.Display(true);
+        OnMoveEvent.Invoke(Vector3.zero);
+        IsDrag = true;
+    }
 }

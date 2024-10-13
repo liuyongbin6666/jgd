@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 /// <summary>
 /// 游戏操作单位
@@ -62,4 +63,5 @@ public class PlayableUnit : ModelBase
         PlayerControl.Lantern(Lantern);
         SendEvent(GameEvent.Player_Lantern_Update);
     }
+    public void Move(Vector3 direction) => PlayerControl.axisMovement = direction.ToVector2();
 }
