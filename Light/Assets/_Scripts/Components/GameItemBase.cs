@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>
@@ -6,7 +7,9 @@ using UnityEngine;
 /// </summary>
 public abstract class GameItemBase : MonoBehaviour,IGameItem
 {
-    [SerializeField] Collider2DHandler _unitCollider;
+    [SerializeField] RederMode _mode;
+    [SerializeField, HideIf(nameof(_mode), RederMode.M_2D)] Collider3DHandler _unitCollider3D;
+    [SerializeField, HideIf(nameof(_mode), RederMode.M_3D)] Collider2DHandler _unitCollider;
     public abstract GameItemType Type { get; }
 
     /// <summary>
@@ -17,14 +20,21 @@ public abstract class GameItemBase : MonoBehaviour,IGameItem
 
     void Start()
     {
-        _unitCollider.OnTriggerEnter.AddListener(OnColliderEnter);
-        _unitCollider.OnCollisionEnter.AddListener(c => OnColliderEnter(c.collider));
+        _unitCollider?.OnTriggerEnter.AddListener(OnColliderEnter);
+        _unitCollider?.OnCollisionEnter.AddListener(c => OnColliderEnter(c.collider));
+        _unitCollider3D?.OnTriggerEnterEvent.AddListener(OnCollider3DEnter);
+        _unitCollider3D?.OnCollisionEnterEvent.AddListener(c => OnCollider3DEnter(c.collider));
+    }
+
+    void OnCollider3DEnter(Collider col)
+    {
+        if (!col.CompareTag(GameTag.Player)) return;
+        col.GetControlFromColliderHandler().GameItemInteraction(this);
     }
 
     void OnColliderEnter(Collider2D col)
     {
         if (!col.CompareTag(GameTag.Player)) return;
-        var component = col.GetControlFromColliderHandler();
-        component.GameItemInteraction(this);
+        col.GetControlFromColliderHandler().GameItemInteraction(this);
     }
 }

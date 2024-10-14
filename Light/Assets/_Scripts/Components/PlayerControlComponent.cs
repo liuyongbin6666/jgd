@@ -1,14 +1,23 @@
+using System;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
-
+public enum RederMode
+{
+    M_2D,
+    M_3D
+}
 public class PlayerControlComponent : MonoBehaviour
 {
+
     [SerializeField, LabelText("移动速度")] float moveSpeed = 5f;
-    [SerializeField] Rigidbody2D rb;
+    [SerializeField] RederMode _mode = RederMode.M_2D;
+    [SerializeField, HideIf(nameof(_mode),RederMode.M_3D)] Rigidbody2D rb;
+    [SerializeField, HideIf(nameof(_mode), RederMode.M_2D)] Rigidbody rb3D;
     //[SerializeField] LightVisionComponent _lightVision;
-    [SerializeField] Collider2DHandler _unitCollider;
+    [SerializeField, HideIf(nameof(_mode), RederMode.M_3D)] Collider2DHandler _unitCollider;
+    [SerializeField, HideIf(nameof(_mode), RederMode.M_2D)] Collider3DHandler _unitCollider3D;
     [SerializeField] LanternComponent _lantern;
     [SerializeField] PanicComponent _panicCom;
     [SerializeField,LabelText("灯光步进")] float _lightOuterStep = 0.5f;
@@ -25,8 +34,10 @@ public class PlayerControlComponent : MonoBehaviour
         _lantern.OnCountdownComplete.AddListener(()=>OnLanternTimeout?.Invoke());
         _panicCom.Init();
         _panicCom.OnPulseTrigger.AddListener(ScaryPulse);
-        _unitCollider.OnTriggerEnter.AddListener(ColliderEnter);
-        _unitCollider.OnCollisionEnter.AddListener(c => ColliderEnter(c.collider));
+        //_unitCollider?.OnTriggerEnter.AddListener(ColliderEnter);
+        //_unitCollider?.OnCollisionEnter.AddListener(c => ColliderEnter(c.collider));
+        //_unitCollider3D?.OnTriggerEnterEvent.AddListener(ColliderEnter);
+        //_unitCollider3D?.OnCollisionEnterEvent.AddListener(c => ColliderEnter(c.collider));
     }
 
     void ColliderEnter(Collider2D col2D)
@@ -68,7 +79,7 @@ public class PlayerControlComponent : MonoBehaviour
         if (!hasVision) return; 
         //如果存在视野
         _lantern.StartCountdown();
-        _panicCom.StopPanic();
+        _panicCom.StopIfPanic();
     }
 
     public void StartPanic() => _panicCom.StartPanic();
@@ -80,7 +91,19 @@ public class PlayerControlComponent : MonoBehaviour
     {
         // 使用 MovePosition 进行物理移动，这样可以确保碰撞检测正常
         if(axisMovement!=Vector2.zero)
-            rb.MovePosition(rb.position + axisMovement * moveSpeed * Time.fixedDeltaTime);
+        {
+            switch (_mode)
+            {
+                case RederMode.M_2D:
+                    rb.MovePosition(rb.position + axisMovement * moveSpeed * Time.fixedDeltaTime);
+                    break;
+                case RederMode.M_3D:
+                    rb3D.MovePosition(rb3D.position + new Vector3(
+                        axisMovement.x, 0, axisMovement.y) * moveSpeed * Time.fixedDeltaTime);
+                    break;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
         detectionTimer += Time.fixedDeltaTime;
         if (detectionTimer >= detectionInterval)
         {
@@ -103,6 +126,11 @@ public class PlayerControlComponent : MonoBehaviour
 internal static class PlayerControlComponentExtensions
 {
     public static PlayerControlComponent GetControlFromColliderHandler(this Collider2D co)
+    {
+        var handler = co.GetComponent<Collider2DHandler>();
+        return handler ? handler.root.GetComponent<PlayerControlComponent>() : co.GetComponent<PlayerControlComponent>();
+    }    
+    public static PlayerControlComponent GetControlFromColliderHandler(this Collider co)
     {
         var handler = co.GetComponent<Collider2DHandler>();
         return handler ? handler.root.GetComponent<PlayerControlComponent>() : co.GetComponent<PlayerControlComponent>();

@@ -13,5 +13,5 @@ public class PanicComponent : CountdownComponent
     {
     }
     public void StartPanic() => StartCountdown();
-    public void StopPanic() => StopCountdown();
+    public void StopIfPanic() => StopCountdown();
 }
