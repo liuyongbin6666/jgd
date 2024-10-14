@@ -13,7 +13,9 @@ public class GameController : ControllerBase
             Debug.LogWarning("游戏状态错误！");
             return;
         }
-        World.SetStage(new PlayableUnit(Config.PlayerPrefab, 1, 1),new StageTime(Config.StageTimeComponent,60));
+        World.InitStage(new PlayableUnit(Config.PlayerPrefab, 1, 1),
+            new StageIndex(), new StageTime(Config.StageTimeComponent));
+        World.SetStage();
         World.Playing();
         Debug.Log("游戏执行中！");
     }
