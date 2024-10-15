@@ -1,3 +1,4 @@
+using GMVC.Core;
 using GMVC.Utls;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ public class GraveComponent : GameItemBase
 
     public override void Invoke(PlayableUnit player)
     {
+        Game.SendEvent(GameEvent.Story_Show);
         _boss.Display(true);
         "Boss 出现!".Log(this);
     }

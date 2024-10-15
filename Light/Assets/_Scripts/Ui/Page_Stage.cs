@@ -33,7 +33,7 @@ public class Page_Stage : UiBase
         Game.RegEvent(GameEvent.Stage_StageTime_Update,_=>view_top.UpdateStageTime(Game.World.Stage.Time.RemainSeconds));
 
         view_npc = new View_Npc(v.Get<View>("view_npc"));
-        Game.RegEvent(GameEvent.Story_Npc_Update, bag => view_npc.SetNpcTalk(bag.Get<string>(0)));
+        Game.RegEvent(GameEvent.Story_Npc_Update, _ => view_npc.SetNpcTalk(_.Get<int>(0)));
 
         view_storyPlayer = new View_StoryPlayer(v.Get<View>("view_storyPlayer"));
         Game.RegEvent(GameEvent.Story_Show,_=>view_storyPlayer.ShowStory());
@@ -96,9 +96,19 @@ public class Page_Stage : UiBase
             text_npcTalk = v.Get<Text>("text_npcTalk");
         }
 
-        public void SetNpcTalk(string str)
+        public void SetNpcTalk(int i)
         {
-            text_npcTalk.text = str;
+            var open = Game.Config.StoryOpenDataSo.GetStoryOpenData(Game.World.Stage.StoryManager.GetStoryId());
+            var finish = Game.Config.StoryFinishDataSo.GetStoryFinishData(open.storyFinishId[0]);
+            switch (i)
+            {
+                case 0:
+                    text_npcTalk.text = open.open;break;
+                case 1:
+                    text_npcTalk.text = finish.transition;break;
+                case 2:
+                    text_npcTalk.text = finish.finish;break;
+            }
         }
     }
 
@@ -112,11 +122,12 @@ public class Page_Stage : UiBase
             obj_textList = v.Get("obj_textList");
             btn_skip = v.Get<Button>("btn_skip");
             btn_skip.onClick.AddListener(SkipStory);
-            ShowStory();
         }
 
         public void ShowStory()
         {
+            Show();
+
             var t = obj_textList.transform;
             for (int i = 0; i < t.childCount; i++)
             {
@@ -129,7 +140,7 @@ public class Page_Stage : UiBase
         void ShowText(int j)
         {
             float showSpeed = 1f;
-            string[] story = new string[] { "故事里的一段话", "故事里的一个人", "故事里的一只猫", "故事里的一杯酒" };
+            var story = Game.Config.StoryOpenDataSo.GetStoryOpenData(Game.World.Stage.StoryManager.GetStoryId()).body;
             var t = obj_textList.transform;
 
             if (j < story.Length)

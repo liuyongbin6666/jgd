@@ -11,10 +11,15 @@ public class GameWorld
     public GameStates Status { get; private set; }
     public GameStage Stage { get; private set; }
 
-    public void SetStage(PlayableUnit player,StageTime stageTime)
+    public void InitStage(PlayableUnit player, StageIndex stageIndex, StageTime stageTime)
     {
-        Stage = new GameStage(player,stageTime);
+        Stage = new GameStage(player,stageIndex,stageTime);
         SetState(GameStates.Start);
+    }
+
+    public void SetStage()
+    {
+        Stage.SetStage();
     }
 
     public void Playing()
@@ -31,6 +36,7 @@ public class GameWorld
         Status = state;
         Game.SendEvent(GameEvent.Game_StateChanged, state);
     }
+
 }
 
 public class GameTag

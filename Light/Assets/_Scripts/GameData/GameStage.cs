@@ -11,14 +11,21 @@ public class GameStage : ModelBase
     public StageTime Time { get; private set; }
     public PlayableUnit Player { get; private set; }
     public StoryManager StoryManager { get; private set; }
-    public GameStage(PlayableUnit player,StageTime stageTime)
+    public GameStage(PlayableUnit player, StageIndex stageIndex, StageTime stageTime)
     {
         Player = player;
-        StageIndex = new StageIndex();
+        StageIndex = stageIndex;
         Time = stageTime;
         Time.StartCountdown();
         StoryManager = new StoryManager();
+    }
+
+    //开始关卡时设置
+    public void SetStage()
+    {
+        Time.SetTime();
         StoryManager.SetStory();
+        Game.SendEvent(GameEvent.Story_Npc_Update, 0);
     }
 
     //通过关卡
@@ -27,11 +34,6 @@ public class GameStage : ModelBase
         StageIndex.Add();
     }
 
-    //进入新关卡
-    public void SetGameStage()
-    {
-        //Time.SetStageTime(Game.Config.StageSeconds[StageIndex.Index]);
-    }
 }
 
 /// <summary>
@@ -47,11 +49,15 @@ public class StageTime : ModelBase
         StageTimeComponent.StartCountdown();
     }
 
-    public StageTime(StageTimeComponent stageTimeComponent,int totalSecs)
+    public StageTime(StageTimeComponent stageTimeComponent)
     {
         StageTimeComponent = stageTimeComponent;
         stageTimeComponent.OnPulseTrigger.AddListener(OnPulse);
-        RemainSeconds = totalSecs;
+    }
+
+    public void SetTime()
+    {
+        RemainSeconds = Game.Config.StageSeconds[Game.World.Stage.StageIndex.Index];
     }
 
     private void OnPulse(int arg0)
