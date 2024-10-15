@@ -4,8 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Firefly
   - GameItem
+  - Vision
   layers:
   - Default
   - TransparentFX
@@ -13,10 +13,10 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - GameUnit
+  - Player
   - Enemy
-  - Obstacle
+  - 
+  - 
   - 
   - 
   - 

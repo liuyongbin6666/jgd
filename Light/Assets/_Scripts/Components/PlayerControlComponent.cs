@@ -3,22 +3,25 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
-public enum RederMode
+public enum GameRender
 {
-    M_2D,
-    M_3D
+    [InspectorName("2D")]Render_2D,
+    [InspectorName("3D")]Render_3D
 }
 public class PlayerControlComponent : MonoBehaviour
 {
 
+    [SerializeField] GameLaunch gameLaunch;
     [SerializeField, LabelText("移动速度")] float moveSpeed = 5f;
-    [SerializeField] RederMode _mode = RederMode.M_2D;
-    [SerializeField, HideIf(nameof(_mode),RederMode.M_3D)] Rigidbody2D rb;
-    [SerializeField, HideIf(nameof(_mode), RederMode.M_2D)] Rigidbody rb3D;
+    GameRender Mode => gameLaunch?.RenderMode?? GameRender.Render_2D;
+    [SerializeField, HideIf(nameof(Mode),GameRender.Render_3D)] Rigidbody2D rb;
+    [SerializeField, HideIf(nameof(Mode), GameRender.Render_2D)] Rigidbody rb3D;
     //[SerializeField] LightVisionComponent _lightVision;
-    [SerializeField, HideIf(nameof(_mode), RederMode.M_3D)] Collider2DHandler _unitCollider;
-    [SerializeField, HideIf(nameof(_mode), RederMode.M_2D)] Collider3DHandler _unitCollider3D;
+    [SerializeField, HideIf(nameof(Mode), GameRender.Render_3D)] Collider2DHandler _unitCollider;
+    [SerializeField, HideIf(nameof(Mode), GameRender.Render_2D)] Collider3DHandler _unitCollider3D;
     [SerializeField] LanternComponent _lantern;
+    [SerializeField] int _maxLantern = 5;
+    int currentLantern = 0;
     [SerializeField] PanicComponent _panicCom;
     [SerializeField,LabelText("灯光步进")] float _lightOuterStep = 0.5f;
     [SerializeField,LabelText("周围检测层")] LayerMask _detectLayer;
@@ -70,12 +73,14 @@ public class PlayerControlComponent : MonoBehaviour
     }
     public void SetSpeed(float speed) => moveSpeed = speed;
     public void StopPanic() => StopAllCoroutines();//暂时这样停止，实际上会停止所有协程。
-    public void Lantern(float lantern)
+    public void Lantern(int lantern)
     {
         var hasVision = lantern > 0;
         // 视野/灯笼范围
-        var radius = (lantern + 1) * _lightOuterStep;
-        _lantern.SetVision(radius);
+        //var radius = (lantern + 1) * _lightOuterStep;
+        //_lantern.SetVision(radius);
+        var lanternLevel = Mathf.Clamp(lantern, 0, _maxLantern);
+        _lantern.SetVisionLevel(lanternLevel);
         if (!hasVision) return; 
         //如果存在视野
         _lantern.StartCountdown();
@@ -92,12 +97,12 @@ public class PlayerControlComponent : MonoBehaviour
         // 使用 MovePosition 进行物理移动，这样可以确保碰撞检测正常
         if(axisMovement!=Vector2.zero)
         {
-            switch (_mode)
+            switch (Mode)
             {
-                case RederMode.M_2D:
+                case GameRender.Render_2D:
                     rb.MovePosition(rb.position + axisMovement * moveSpeed * Time.fixedDeltaTime);
                     break;
-                case RederMode.M_3D:
+                case GameRender.Render_3D:
                     rb3D.MovePosition(rb3D.position + new Vector3(
                         axisMovement.x, 0, axisMovement.y) * moveSpeed * Time.fixedDeltaTime);
                     break;
@@ -132,7 +137,7 @@ internal static class PlayerControlComponentExtensions
     }    
     public static PlayerControlComponent GetControlFromColliderHandler(this Collider co)
     {
-        var handler = co.GetComponent<Collider2DHandler>();
+        var handler = co.GetComponent<Collider3DHandler>();
         return handler ? handler.root.GetComponent<PlayerControlComponent>() : co.GetComponent<PlayerControlComponent>();
     }
 }

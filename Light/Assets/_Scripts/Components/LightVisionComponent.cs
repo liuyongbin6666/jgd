@@ -8,10 +8,10 @@ using UnityEngine.Rendering.Universal;
 /// </summary>
 public class LightVisionComponent : MonoBehaviour
 {
-    [SerializeField] RederMode _mode;
+    [SerializeField] GameRender _mode;
 
-    [SerializeField, HideIf(nameof(_mode), RederMode.M_2D)] Light light3D;
-    [SerializeField, HideIf(nameof(_mode), RederMode.M_3D)] Light2D playerLight;
+    [SerializeField, HideIf(nameof(_mode), GameRender.Render_2D)] Light light3D;
+    [SerializeField, HideIf(nameof(_mode), GameRender.Render_3D)] Light2D playerLight;
     [SerializeField,LabelText("最大范围")] float maxLightOuterRadius = 2.5f; // 光的最大范围
     [SerializeField,LabelText("最小范围")] float minLightOuterRadius = 0.5f;  // 光的最小范围
     public void Init()
@@ -23,11 +23,11 @@ public class LightVisionComponent : MonoBehaviour
     {
         switch (_mode)
         {
-            case RederMode.M_2D:
+            case GameRender.Render_2D:
                 playerLight.pointLightOuterRadius = Mathf.Clamp(
                     radius, minLightOuterRadius, maxLightOuterRadius); // 每个萤火虫增加视野范围
                 break;
-            case RederMode.M_3D:
+            case GameRender.Render_3D:
                 light3D.range = Mathf.Clamp(
                     radius, minLightOuterRadius, maxLightOuterRadius); // 每个萤火虫增加视野范围
                 break;
@@ -38,8 +38,8 @@ public class LightVisionComponent : MonoBehaviour
     float GetOuterRadius() =>
         _mode switch
         {
-            RederMode.M_2D => playerLight.pointLightOuterRadius,
-            RederMode.M_3D => light3D.range,
+            GameRender.Render_2D => playerLight.pointLightOuterRadius,
+            GameRender.Render_3D => light3D.range,
             _ => throw new ArgumentOutOfRangeException()
         };
     public Collider2D[] CheckForEnemiesInView(LayerMask detectLayer)

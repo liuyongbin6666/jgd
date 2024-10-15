@@ -159,7 +159,7 @@ public class Page_Stage : UiBase
     class View_Joystick : UiBase
     {
         JoyStick joyStick { get; }
-        public View_Joystick(IView v, UnityAction<Vector3> onMoveAction) : base(v, false)
+        public View_Joystick(IView v, UnityAction<Vector3> onMoveAction) : base(v)
         {
             joyStick = v.Get<JoyStick>("Joystick");
             joyStick.Init();

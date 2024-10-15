@@ -31,10 +31,12 @@ namespace GMVC.Core
         static Res _res;
 
         public static void Run(Action onGameStartAction, AudioComponent audioComponent, GameConfig config,
+            GameRender renderMode,
             float startAfter = 0.5f)
         {
             if (IsRunning) throw new NotImplementedException("Game is running!");
             IsRunning = true;
+            RenderMode = renderMode;
             AudioComponent = audioComponent;
             AudioComponent.Init();
             Config = config;
@@ -61,6 +63,7 @@ namespace GMVC.Core
             }
         }
 
+        public static GameRender RenderMode { get; private set; }
         public static void SendEvent(string eventName, DataBag bag) => MessagingManager.Send(eventName, bag);
         public static void SendEvent(string eventName, params object[] args)
         {

@@ -8,6 +8,7 @@ public class LanternComponent : CountdownComponent
 {
     [SerializeField,LabelText("减弱时长")] float _lastingPerFirefly = 3f;
     [SerializeField] LightVisionComponent _light;
+    [SerializeField] VisionLevelComponent _visionLevel;
     protected override int PulseTimes => 1;
     protected override float Duration => _lastingPerFirefly;
 
@@ -18,5 +19,6 @@ public class LanternComponent : CountdownComponent
     }
     public void SetVision(float radius) => _light.SetOuterRadius(radius);
     public void AddVision(float radius) => _light.AddOuterRadius(radius);
+    public void SetVisionLevel(int level)=> _visionLevel.LoadLightLevel(level);
     public Collider2D[] CheckForEnemiesInView(LayerMask layer) => _light.CheckForEnemiesInView(layer);
 }
