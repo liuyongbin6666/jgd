@@ -19,6 +19,7 @@ namespace GMVC.Core
         public static Res Res { get; private set; }
         public static AudioComponent AudioComponent { get; private set; }
         public static GameConfig Config { get; private set; }
+        static EnvironmentComponent Environment { get; set; }
         public static MonoService MonoService
         {
             get
@@ -32,6 +33,7 @@ namespace GMVC.Core
 
         public static void Run(Action onGameStartAction, AudioComponent audioComponent, GameConfig config,
             GameRender renderMode,
+            EnvironmentComponent environmentComponent,
             float startAfter = 0.5f)
         {
             if (IsRunning) throw new NotImplementedException("Game is running!");
@@ -40,6 +42,8 @@ namespace GMVC.Core
             AudioComponent = audioComponent;
             AudioComponent.Init();
             Config = config;
+            Environment = environmentComponent;
+            Environment.Init();
             MainThread = MonoService.gameObject.AddComponent<MainThreadDispatcher>();
             Res = MonoService.gameObject.AddComponent<Res>();
             ControllerReg();
@@ -74,5 +78,25 @@ namespace GMVC.Core
             MessagingManager.RegEvent(eventName, callbackAction);
         public static void PlayBGM(AudioClip clip) => AudioComponent.Play(AudioManager.Types.BGM,clip);
         public static void PlaySFX(AudioClip clip) => AudioComponent.Play(AudioManager.Types.SFX, clip);
+
+        /// <summary>
+        /// 开始协程服务
+        /// </summary>
+        /// <param name="coroutineFunc"></param>
+        /// <returns></returns>
+        public static Coroutine StartCoService(Func<GameWorld, IEnumerator> coroutineFunc)
+        {
+            return _monoService.StartCoroutine(coroutineFunc.Invoke(World));
+        }
+
+        /// <summary>
+        /// 停止协程服务
+        /// </summary>
+        /// <param name="coroutine"></param>
+        public static void StopCoService(Coroutine coroutine)
+        {
+            if (coroutine == null) return;
+            _monoService.StopCoroutine(coroutine);
+        }
     }
 }

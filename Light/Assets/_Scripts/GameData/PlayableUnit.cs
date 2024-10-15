@@ -11,6 +11,7 @@ public class PlayableUnit : ModelBase
     /// </summary>
     public int Lantern { get; private set; }= 1;
     PlayerControlComponent PlayerControl { get; }
+    public bool IsMoving => PlayerControl.IsMoving;
 
     public PlayableUnit(PlayerControlComponent playerControl,int lantern, float lightStep)
     {

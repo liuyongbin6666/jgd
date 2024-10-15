@@ -14,6 +14,7 @@ public class PlayerControlComponent : MonoBehaviour
     [SerializeField] GameLaunch gameLaunch;
     [SerializeField, LabelText("移动速度")] float moveSpeed = 5f;
     GameRender Mode => gameLaunch?.RenderMode?? GameRender.Render_2D;
+    public bool IsMoving => axisMovement != Vector2.zero;
     [SerializeField, HideIf(nameof(Mode),GameRender.Render_3D)] Rigidbody2D rb;
     [SerializeField, HideIf(nameof(Mode), GameRender.Render_2D)] Rigidbody rb3D;
     //[SerializeField] LightVisionComponent _lightVision;
@@ -103,6 +104,9 @@ public class PlayerControlComponent : MonoBehaviour
                     rb.MovePosition(rb.position + axisMovement * moveSpeed * Time.fixedDeltaTime);
                     break;
                 case GameRender.Render_3D:
+                    var local = rb3D.transform.localScale;
+                    var flipX = axisMovement.x < 0 ? 1 : -1;
+                    rb3D.transform.localScale = new Vector3(flipX , local.y, local.z);
                     rb3D.MovePosition(rb3D.position + new Vector3(
                         axisMovement.x, 0, axisMovement.y) * moveSpeed * Time.fixedDeltaTime);
                     break;

@@ -24,9 +24,7 @@ public class EnvironmentComponent : CountdownComponent
     [SerializeField, LabelText("闪电持续时间")] float lightningInterval = 0.15f;
     float _duration = 3;
 
-    void Start() => Init();
-
-    void Init()
+    public void Init()
     {
         OnCountdownComplete.AddListener(Lightning);
         RandomDuration();
@@ -37,6 +35,7 @@ public class EnvironmentComponent : CountdownComponent
 
     void Lightning()
     {
+        if (Game.World.Status != GameWorld.GameStates.Playing) return;
         RandomDuration();
         var times = Random.Range(2, 4);
         StartCoroutine(LightningEffect(times, lightningInterval, StartCountdown));
@@ -63,7 +62,7 @@ public class EnvironmentComponent : CountdownComponent
             // 闪电持续时间
             yield return new WaitForSeconds(interval);
             // 恢复原始光强度
-            globalLight.intensity = originalIntensity;
+            SetIntensity(originalIntensity);
             yield return new WaitForSeconds(interval/3f);
         }
     }

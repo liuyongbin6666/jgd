@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -11,13 +12,13 @@ public class AudioManager : MonoBehaviour
         SFX
     }
     [SerializeField] protected AudioSource bgm;
-    [SerializeField] protected AudioSource sfx;
+    [SerializeField] protected AudioSource[] sfx;
     AudioSource GetAudioSource(Types type)
     {
         return type switch
         {
             Types.BGM => bgm,
-            Types.SFX => sfx,
+            Types.SFX => sfx.FirstOrDefault(s=>!s.isPlaying),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
@@ -25,6 +26,7 @@ public class AudioManager : MonoBehaviour
     public void Play(Types type, AudioClip clip, Action onCompleteCallback = null)
     {
         var audioSource = GetAudioSource(type);
+        if (!audioSource || audioSource == null) return;
         audioSource.clip = clip;
         StopCoroutine(OnComplete());
         StartCoroutine(OnComplete());
@@ -40,22 +42,43 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    public void Stop(Types type)=> GetAudioSource(type).Stop();
-    public void SetVolume(Types type, float volume) => GetAudioSource(type).volume = volume;
-    public void AddVolume(Types type, float volume) => GetAudioSource(type).volume += volume;
+    public void Stop(Types type)=> GetAudioSource(type)?.Stop();
+
+    public void SetVolume(Types type, float volume)
+    {
+        var audioSource = GetAudioSource(type);
+        if (!audioSource) return;
+        audioSource.volume = volume;
+    }
+
+    public void AddVolume(Types type, float volume)
+    {
+        var audioSource = GetAudioSource(type);
+        if (!audioSource) return;
+        audioSource.volume += volume;
+    }
+
     public void MuteAll(bool mute)
     {
         bgm.mute = mute;
-        sfx.mute = mute;
+        foreach (var fx in sfx) 
+            fx.mute = mute;
     }
-    public void Mute(Types type, bool mute) => GetAudioSource(type).mute = mute;
+
+    public void Mute(Types type, bool mute)
+    {
+        var audioSource = GetAudioSource(type);
+        if (!audioSource) return;
+        audioSource.mute = mute;
+    }
+
     public void Pause(Types type, bool pause)
     {
         var audioSource = GetAudioSource(type);
         if (pause)
-            audioSource.Pause();
+            audioSource?.Pause();
         else
-            audioSource.UnPause();
+            audioSource?.UnPause();
     }
     public void Set(Types type, Action<AudioSource> setFunc) => setFunc(GetAudioSource(type));
 }
