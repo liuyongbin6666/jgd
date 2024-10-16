@@ -14,7 +14,7 @@ namespace GMVC.Views
 
         void Start()
         {
-            Debug.Log("SetStage");
+            Debug.Log("Stage_Start");
         }
 
         void OnDisable()

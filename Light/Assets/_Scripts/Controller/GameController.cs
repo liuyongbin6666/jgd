@@ -14,9 +14,10 @@ public class GameController : ControllerBase
             return;
         }
         World.InitStage(new PlayableUnit(Config.PlayerPrefab, 1, 1),
-            new StageIndex(), new StageTime(Config.StageTimeComponent));
-        World.SetStage();
-        World.Playing();
+                        new StageIndex(),
+                        new StageTime(Config.StageTimeComponent,
+                                      Config.StageSeconds[0]));
+        World.StartStage();
         Debug.Log("游戏执行中！");
     }
 

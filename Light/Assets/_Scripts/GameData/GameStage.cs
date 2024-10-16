@@ -7,27 +7,36 @@ using UnityEngine;
 /// </summary>
 public class GameStage : ModelBase
 {
+    public enum PlayMode
+    {
+        Story,Explore
+    }
     public StageIndex StageIndex { get; private set; }
     public StageTime Time { get; private set; }
     public PlayableUnit Player { get; private set; }
     public StoryManager StoryManager { get; private set; }
+    public PlayMode Mode { get; private set; }
     public GameStage(PlayableUnit player, StageIndex stageIndex, StageTime stageTime)
     {
         Player = player;
         StageIndex = stageIndex;
         Time = stageTime;
-        Time.StartCountdown();
         StoryManager = new StoryManager();
     }
 
     //开始关卡时设置
-    public void SetStage()
+    public void Stage_Start()
     {
-        Time.SetTime();
+        Time.StartTimer();
         StoryManager.SetStory();
+        SetMode(PlayMode.Explore);
         Game.SendEvent(GameEvent.Story_Npc_Update, 0);
     }
-
+    public void SetMode(PlayMode mode)
+    {
+        Mode = mode;
+        Game.SendEvent(GameEvent.Game_PlayMode_Update, mode);
+    }
     //通过关卡
     public void AddStageIndex()
     {
@@ -43,24 +52,21 @@ public class StageTime : ModelBase
 {
     public StageTimeComponent StageTimeComponent;
     public int RemainSeconds { get; private set; }
-
-    public void StartCountdown()
-    {
-        StageTimeComponent.StartCountdown();
-    }
-
-    public StageTime(StageTimeComponent stageTimeComponent)
+    int _totalSecs;
+    public StageTime(StageTimeComponent stageTimeComponent,int remainSeconds)
     {
         StageTimeComponent = stageTimeComponent;
         stageTimeComponent.OnPulseTrigger.AddListener(OnPulse);
+        _totalSecs = remainSeconds;
+        RemainSeconds = remainSeconds;
     }
-
-    public void SetTime()
+    public void StartTimer() => StageTimeComponent.StartCountdown();
+    public void Reset()
     {
-        RemainSeconds = Game.Config.StageSeconds[Game.World.Stage.StageIndex.Index];
+        StageTimeComponent.StopCountdown();
+        RemainSeconds = _totalSecs;
     }
-
-    private void OnPulse(int arg0)
+    void OnPulse(int arg0)
     {
         RemainSeconds--;
         SendEvent(GameEvent.Stage_StageTime_Update);

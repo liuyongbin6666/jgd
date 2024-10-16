@@ -20,12 +20,19 @@ public class Page_Stage : UiBase
         view_joystick = new View_Joystick(v.Get<View>("view_joystick"), PlayableController.Move);
         Game.RegEvent(GameEvent.Game_StateChanged, b =>
         {
-            var state = Game.World.Status;
-            var playingMode = state == GameWorld.GameStates.Playing;
-            view_joystick.SetActive(playingMode);
-            Display(playingMode);
-            if (!playingMode) return;
+            var world = Game.World;
+            var state = world.Status;
+            var isPlaying = state == GameWorld.GameStates.Playing;
+            var isExploring = world.Stage is { Mode: GameStage.PlayMode.Explore };
+            view_joystick.SetActive(isPlaying && isExploring);
+            Display(isPlaying);
+            if (!isPlaying) return;
             view_top.UpdateLantern(Game.World.Stage.Player.Lantern);
+        });
+        Game.RegEvent(GameEvent.Game_PlayMode_Update, _ =>
+        {
+            var isExplore = Game.World.Stage is { Mode: GameStage.PlayMode.Explore };
+            view_joystick.SetActive(isExplore);
         });
         Game.RegEvent(GameEvent.Player_Lantern_Update,
                       _ => view_top.UpdateLantern(Game.World.Stage.Player.Lantern));
