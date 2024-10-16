@@ -31,7 +31,6 @@ public abstract class CountdownComponent : MonoBehaviour
             countdownCoroutine = StartCoroutine(CountdownCoroutine());
         }
     }
-
     public void StopCountdown()
     {
         if (!IsRunning) return;
