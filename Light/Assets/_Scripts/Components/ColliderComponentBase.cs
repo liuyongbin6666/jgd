@@ -22,8 +22,9 @@ public abstract class ColliderComponentBase : MonoBehaviour
         _unitCollider3D?.OnTriggerEnterEvent.AddListener(Collider3DEnter);
         _unitCollider3D?.OnTriggerExitEvent.AddListener(Collider3DExit);
         _unitCollider3D?.OnCollisionEnterEvent.AddListener(c => Collider3DExit(c.collider));
+        OnStart();
     }
-
+    protected virtual void OnStart() { }
     void Collider3DExit(Collider col)
     {
         if (col.gameObject.CompareTag(_targetTag)) OnCollider3DExit(col);

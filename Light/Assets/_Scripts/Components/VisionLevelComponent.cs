@@ -54,9 +54,10 @@ public class VisionLevelComponent : MonoBehaviour
             });
         }
     }
-    [Button("设置灯光")]public void LoadLightLevel(int level)
+    [Button("设置灯光")]public void LoadLightLevel(int level, out bool isMaxLevel)
     {
         var maxLevel = settings.Count;
+        isMaxLevel = level == maxLevel;
         if (level < 0 || level > maxLevel)
         {
             Debug.LogError($"等级超出范围 1~{maxLevel}！",this);
