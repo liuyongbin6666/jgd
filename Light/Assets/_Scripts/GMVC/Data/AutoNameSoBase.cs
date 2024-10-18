@@ -72,7 +72,7 @@ namespace GMVC.Data
         protected virtual string Suffix { get; }
 
         public virtual string Name => _name;
-        [SerializeField] protected string _name;
+        [SerializeField,OnValueChanged(nameof(GetReference))] protected string _name;
 
         protected virtual string GetName() => (Prefix ?? "") + _name + (Suffix ?? "");
     }

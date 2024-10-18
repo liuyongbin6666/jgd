@@ -37,13 +37,13 @@ public class Page_Stage : UiBase
         Game.RegEvent(GameEvent.Player_Lantern_Update,
                       _ => view_top.UpdateLantern(Game.World.Stage.Player.Lantern));
 
-        Game.RegEvent(GameEvent.Stage_StageTime_Update,_=>view_top.UpdateStageTime(Game.World.Stage.Time.RemainSeconds));
+        Game.RegEvent(GameEvent.Stage_StageTime_Update,_=>view_top.UpdateStageTime(Game.World.Stage.Story.RemainSeconds));
 
         view_npc = new View_Npc(v.Get<View>("view_npc"));
-        Game.RegEvent(GameEvent.Story_Npc_Update, _ => view_npc.SetNpcTalk(_.Get<int>(0)));
+        Game.RegEvent(GameEvent.Story_Line_Send, b => view_npc.SetNpcTalk(b.Get<string>(0)));
 
         view_storyPlayer = new View_StoryPlayer(v.Get<View>("view_storyPlayer"));
-        Game.RegEvent(GameEvent.Story_Show,_=>view_storyPlayer.ShowStory());
+//        Game.RegEvent(GameEvent.Story_Show,_=>view_storyPlayer.ShowStory());
     }
 
     class View_Top : UiBase
@@ -103,19 +103,20 @@ public class Page_Stage : UiBase
             text_npcTalk = v.Get<Text>("text_npcTalk");
         }
 
-        public void SetNpcTalk(int i)
+        public void SetNpcTalk(string line)
         {
-            var open = Game.Config.StoryOpenDataSo.GetStoryOpenData(Game.World.Stage.StoryManager.GetStoryId());
-            var finish = Game.Config.StoryFinishDataSo.GetStoryFinishData(open.storyFinishId[0]);
-            switch (i)
-            {
-                case 0:
-                    text_npcTalk.text = open.open;break;
-                case 1:
-                    text_npcTalk.text = finish.transition;break;
-                case 2:
-                    text_npcTalk.text = finish.finish;break;
-            }
+            //var open = Game.Config.StoryOpenDataSo.GetStoryOpenData(Game.World.Stage.StoryManager.GetStoryId());
+            //var finish = Game.Config.StoryFinishDataSo.GetStoryFinishData(open.storyFinishId[0]);
+            //switch (i)
+            //{
+            //    case 0:
+            //        text_npcTalk.text = open.open;break;
+            //    case 1:
+            //        text_npcTalk.text = finish.transition;break;
+            //    case 2:
+            //        text_npcTalk.text = finish.finish;break;
+            //}
+            text_npcTalk.text = line;
         }
     }
 
@@ -147,7 +148,7 @@ public class Page_Stage : UiBase
         void ShowText(int j)
         {
             float showSpeed = 1f;
-            var story = Game.Config.StoryOpenDataSo.GetStoryOpenData(Game.World.Stage.StoryManager.GetStoryId()).body;
+            var story = Game.Config.StoryOpenDataSo.GetStoryOpenData(Game.World.Stage.Story.GetStoryId()).body;
             var t = obj_textList.transform;
 
             if (j < story.Length)

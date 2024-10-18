@@ -12,25 +12,23 @@ public class GameStage : ModelBase
         Story,Explore
     }
     public StageIndex StageIndex { get; private set; }
-    public StageTime Time { get; private set; }
+    public StageStory Story { get; private set; }
     public PlayableUnit Player { get; private set; }
-    public StoryManager StoryManager { get; private set; }
     public PlayMode Mode { get; private set; }
-    public GameStage(PlayableUnit player, StageIndex stageIndex, StageTime stageTime)
+    public GameStage(PlayableUnit player, StageIndex stageIndex, StageStory stageStory)
     {
         Player = player;
         StageIndex = stageIndex;
-        Time = stageTime;
-        StoryManager = new StoryManager();
+        Story = stageStory;
     }
 
     //开始关卡时设置
     public void Stage_Start()
     {
-        Time.StartTimer();
-        StoryManager.SetStory();
+        Story.StartTimer();
+        Story.SetStory(new[] { 1, 2, 3, 4, 5 });
         SetMode(PlayMode.Explore);
-        Game.SendEvent(GameEvent.Story_Npc_Update, 0);
+        //Game.SendEvent(GameEvent.Story_Npc_Update, 0);
     }
     public void SetMode(PlayMode mode)
     {
@@ -46,19 +44,32 @@ public class GameStage : ModelBase
 }
 
 /// <summary>
-/// 游戏时间
+/// 关卡故事
 /// </summary>
-public class StageTime : ModelBase
+public class StageStory : ModelBase
 {
     public StageTimeComponent StageTimeComponent;
+    public PlotManager PlotManager => Game.PlotManager;
     public int RemainSeconds { get; private set; }
+    //故事Id
+    int[] StoryId { get; set; }
     int _totalSecs;
-    public StageTime(StageTimeComponent stageTimeComponent,int remainSeconds)
+    public StageStory(StageTimeComponent stageTimeComponent, int remainSeconds)
     {
         StageTimeComponent = stageTimeComponent;
         stageTimeComponent.OnPulseTrigger.AddListener(OnPulse);
         _totalSecs = remainSeconds;
         RemainSeconds = remainSeconds;
+        PlotManager.OnLineEvent.AddListener(OnLine);
+    }
+    void OnLine(string line) => SendEvent(GameEvent.Story_Line_Send, line);
+    public void SetStory(int[] ids)
+    {
+        StoryId = ids;
+    }
+    public int GetStoryId()
+    {
+        return StoryId[Game.World.Stage.StageIndex.Index];
     }
     public void StartTimer() => StageTimeComponent.StartCountdown();
     public void Reset()

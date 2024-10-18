@@ -12,6 +12,9 @@ namespace GMVC.Core
         static bool IsRunning { get; set; }
         static ControllerServiceContainer ServiceContainer { get; set; }
         public static GameWorld World { get; } = new ();
+        public static PlotManager PlotManager { get; private set; }
+        public static SensorManager SensorManager { get; private set; }
+
         public static T GetController<T>() where T : class, IController => ServiceContainer.Get<T>();
         public static UiBuilder UiBuilder { get; private set; }
         public static MessagingManager MessagingManager { get; } = new MessagingManager();
@@ -31,16 +34,21 @@ namespace GMVC.Core
         }
         static Res _res;
 
-        public static void Run(Action onGameStartAction, AudioComponent audioComponent, GameConfig config,
+        public static void Run(Action onGameStartAction, AudioComponent audioComponent, 
+            GameConfig config,
             GameRender renderMode,
+            SensorManager sensorManager,
+            PlotManager plotManager,
             EnvironmentComponent environmentComponent,
             float startAfter = 0.5f)
         {
             if (IsRunning) throw new NotImplementedException("Game is running!");
             IsRunning = true;
             RenderMode = renderMode;
+            SensorManager = sensorManager;
             AudioComponent = audioComponent;
             AudioComponent.Init();
+            PlotManager = plotManager;
             Config = config;
             Environment = environmentComponent;
             Environment.Init();

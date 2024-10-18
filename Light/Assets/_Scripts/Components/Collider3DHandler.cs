@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,4 +16,15 @@ using UnityEngine.Events;
     void OnTriggerExit(Collider other) => OnTriggerExitEvent?.Invoke(other);
     void OnCollisionEnter(Collision other)=> OnCollisionEnterEvent?.Invoke(other);
     void OnCollisionExit(Collision other)=> OnCollisionExitEvent?.Invoke(other);
+
+    public void RegEnter(UnityAction<GameObject> callback)
+    {
+        OnTriggerEnterEvent.AddListener(c=>callback(c.gameObject));
+        OnCollisionEnterEvent.AddListener(c=>callback(c.gameObject));
+    }
+    public void RegExit(UnityAction<GameObject> callback)
+    {
+        OnTriggerExitEvent.AddListener(c => callback(c.gameObject));
+        OnCollisionExitEvent.AddListener(c => callback(c.gameObject));
+    }
 }
