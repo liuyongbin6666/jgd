@@ -58,15 +58,7 @@ public class JoyStick : MonoBehaviour
         OnMoveEvent.Invoke(pos.normalized);
     }
 
-    void EndDrag()
-    {
-        var zero = Vector3.zero;
-        IsDrag = false;
-        mousePosition = zero;
-        handle.localPosition = zero;
-        joyStick.Display(false);
-        OnMoveEvent.Invoke(zero);
-    }
+    void EndDrag() => ResetJoystick();
 
     void StartDrag(Vector3 mousePos)
     {
@@ -75,5 +67,15 @@ public class JoyStick : MonoBehaviour
         joyStick.Display(true);
         OnMoveEvent.Invoke(Vector3.zero);
         IsDrag = true;
+    }
+
+    public void ResetJoystick()
+    {
+        var zero = Vector3.zero;
+        IsDrag = false;
+        mousePosition = zero;
+        handle.localPosition = zero;
+        OnMoveEvent.Invoke(zero);
+        joyStick.Display(false);
     }
 }

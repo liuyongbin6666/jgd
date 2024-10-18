@@ -1,20 +1,22 @@
 using System;
+using System.Collections.Generic;
 using GMVC.Core;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// 游戏关卡
 /// </summary>
 public class GameStage : ModelBase
 {
-    public enum PlayMode
+    public enum PlayModes
     {
         Story,Explore
     }
     public StageIndex StageIndex { get; private set; }
     public StageStory Story { get; private set; }
     public PlayableUnit Player { get; private set; }
-    public PlayMode Mode { get; private set; }
+    public PlayModes Mode { get; private set; }
     public GameStage(PlayableUnit player, StageIndex stageIndex, StageStory stageStory)
     {
         Player = player;
@@ -27,10 +29,10 @@ public class GameStage : ModelBase
     {
         Story.StartTimer();
         Story.SetStory(new[] { 1, 2, 3, 4, 5 });
-        SetMode(PlayMode.Explore);
+        SetMode(PlayModes.Explore);
         //Game.SendEvent(GameEvent.Story_Npc_Update, 0);
     }
-    public void SetMode(PlayMode mode)
+    public void SetMode(PlayModes mode)
     {
         Mode = mode;
         Game.SendEvent(GameEvent.Game_PlayMode_Update, mode);
@@ -48,21 +50,47 @@ public class GameStage : ModelBase
 /// </summary>
 public class StageStory : ModelBase
 {
+    public enum Lines
+    {
+        [InspectorName("故事")]Story, 
+        [InspectorName("对话")]Dialog
+    }
     public StageTimeComponent StageTimeComponent;
     public PlotManager PlotManager => Game.PlotManager;
     public int RemainSeconds { get; private set; }
+    public string[] StoryLines { get; private set; }
+    public string[] DialogLines { get; private set; }
     //故事Id
     int[] StoryId { get; set; }
     int _totalSecs;
-    public StageStory(StageTimeComponent stageTimeComponent, int remainSeconds)
+    public StageStory(StageTimeComponent stageTimeComponent, UnityAction onSwitchToStoryMode, int remainSeconds)
     {
         StageTimeComponent = stageTimeComponent;
         stageTimeComponent.OnPulseTrigger.AddListener(OnPulse);
         _totalSecs = remainSeconds;
         RemainSeconds = remainSeconds;
-        PlotManager.OnLineEvent.AddListener(OnLine);
+        PlotManager.OnLinesEvent.AddListener((t, l) =>
+        {
+            if(t == Lines.Story)onSwitchToStoryMode?.Invoke();
+            OnLine(t, l);
+        });
     }
-    void OnLine(string line) => SendEvent(GameEvent.Story_Line_Send, line);
+
+    void OnLine(Lines lineType, string[] lines)
+    {
+        switch (lineType)
+        {
+            case Lines.Story:
+                StoryLines = lines;
+                SendEvent(GameEvent.Story_Lines_Send);
+                break;
+            case Lines.Dialog:
+                DialogLines = lines;
+                SendEvent(GameEvent.Story_Dialog_Send);
+                break;
+        }
+    }
+
     public void SetStory(int[] ids)
     {
         StoryId = ids;

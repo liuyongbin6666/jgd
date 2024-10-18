@@ -10,7 +10,7 @@ using UnityEngine.Events;
 public class PlotManager : MonoBehaviour
 {
     Dictionary<StorySo, List<PlotComponentBase>> data = new();
-    public readonly UnityEvent<string> OnLineEvent = new ();
+    public readonly UnityEvent<StageStory.Lines, string[]> OnLinesEvent = new();
     public void RegComponent(PlotComponentBase plot)
     {
         if(!data.ContainsKey(plot.story)) data.Add(plot.story, new List<PlotComponentBase>());
@@ -33,5 +33,5 @@ public class PlotManager : MonoBehaviour
             plot.Begin();
         }
     }
-    public void SendLine(string line) => OnLineEvent?.Invoke(line);
+    public void SendLines(StageStory.Lines type, string[] lines) => OnLinesEvent?.Invoke(type, lines);
 }

@@ -21,21 +21,10 @@ public class PlotComponent : PlotComponentBase
         {
             onTrigger?.Invoke();
             yield return null;
-            StartCoroutine(LineRoutine());
+            var (type,lines) = story.GetLines(plotName);
+            PlotManager.SendLines(type, lines.ToArray());
             yield return new WaitUntil(() => IsFinalize);
             Finalization();
-        }
-    }
-
-    IEnumerator LineRoutine()
-    {
-        var lines = story.GetLines(plotName).ToList();
-        while (lines.Count > 0)
-        {
-            var line = lines[0];
-            lines.RemoveAt(0);
-            PlotManager.SendLine(line);
-            yield return new WaitForSeconds(lineInterval);
         }
     }
 }

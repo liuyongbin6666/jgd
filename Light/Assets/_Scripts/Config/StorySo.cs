@@ -48,5 +48,10 @@ public class StorySo : AutoNameSoBase
         return plot;
     }
 
-    public string[] GetLines(string plotName) => GetPlot(plotName)?.lines ?? Array.Empty<string>();
+    public (StageStory.Lines,string[]) GetLines(string plotName)
+    {
+        var plot = GetPlot(plotName);
+        var lines =plot?.lines ?? Array.Empty<string>();
+        return (plot?.lineType ?? 0, lines);
+    }
 }

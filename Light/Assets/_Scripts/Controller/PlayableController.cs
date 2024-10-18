@@ -9,7 +9,8 @@ public class PlayableController : ControllerBase
 
     public void Move(Vector3 direction)
     {
-        if (World.Status != GameWorld.GameStates.Playing) throw XArg.Exception(("游戏状态错误！"), new { World.Status });
+        if (direction != Vector3.zero && World.Status != GameWorld.GameStates.Playing)
+            throw XArg.Exception(("游戏状态错误！"), new { World.Status });
         Player.Move(direction);
     }
 }
