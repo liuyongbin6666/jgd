@@ -1652,8 +1652,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 181114881}
-  - component: {fileID: 181114883}
   - component: {fileID: 181114882}
+  - component: {fileID: 181114883}
   m_Layer: 7
   m_Name: "\u60C5\u8282_3.Boss"
   m_TagString: Untagged
@@ -10116,8 +10116,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 824519815}
-  - component: {fileID: 824519816}
   - component: {fileID: 824519817}
+  - component: {fileID: 824519816}
   m_Layer: 0
   m_Name: "\u60C5\u8282_2.\u5893\u7891"
   m_TagString: Untagged
@@ -16869,8 +16869,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2129426268}
-  - component: {fileID: 2129426270}
   - component: {fileID: 2129426269}
+  - component: {fileID: 2129426270}
   m_Layer: 0
   m_Name: "\u60C5\u8282_1.\u4ECB\u7ECD"
   m_TagString: Untagged
