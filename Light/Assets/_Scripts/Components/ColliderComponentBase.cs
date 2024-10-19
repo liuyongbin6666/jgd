@@ -7,18 +7,12 @@ using UnityEngine;
 public abstract class ColliderComponentBase : MonoBehaviour
 {
 
-    [SerializeField] GameRender _mode;
-    [SerializeField, HideIf(nameof(_mode), GameRender.Render_2D)] Collider3DHandler _unitCollider3D;
-    [SerializeField, HideIf(nameof(_mode), GameRender.Render_3D)] Collider2DHandler _unitCollider;
+    [SerializeField] Collider3DHandler _unitCollider3D;
     [SerializeField, ValueDropdown(nameof(GetTags)), LabelText("碰撞目标标签")] string _targetTag;
     static string[] GetTags() => UnityEditorInternal.InternalEditorUtility.tags;
 
     void Start()
     {
-        _unitCollider?.OnTriggerEnter.AddListener(ColliderEnter);
-        _unitCollider?.OnTriggerExit.AddListener(ColliderExit);
-        _unitCollider?.OnCollisionEnter.AddListener(c => ColliderEnter(c.collider));
-        _unitCollider?.OnCollisionExit.AddListener(c => ColliderExit(c.collider));
         _unitCollider3D?.OnTriggerEnterEvent.AddListener(Collider3DEnter);
         _unitCollider3D?.OnTriggerExitEvent.AddListener(Collider3DExit);
         _unitCollider3D?.OnCollisionEnterEvent.AddListener(c => Collider3DEnter(c.collider));

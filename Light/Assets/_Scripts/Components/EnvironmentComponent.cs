@@ -1,11 +1,10 @@
-using System;
-using UnityEngine;
-using System.Collections;
 using GMVC.Core;
 using MyBox;
 using Sirenix.OdinInspector;
+using System;
+using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering.Universal;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -13,12 +12,10 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class EnvironmentComponent : CountdownComponent
 {
-    [SerializeField]GameLaunch _gameLaunch;
+    [SerializeField] GameLaunch _gameLaunch;
     protected override int PulseTimes { get; } = 1;
     protected override float Duration => _duration;
-    GameRender Mode => _gameLaunch?.RenderMode ?? GameRender.Render_2D;
-    [SerializeField, HideIf(nameof(Mode),GameRender.Render_3D)] Light2D globalLight; // 全局光照组件
-    [SerializeField, HideIf(nameof(Mode),GameRender.Render_2D)] Light directionalLight; // 3d全局方向光照组件
+    [SerializeField] Light directionalLight; // 3d全局方向光照组件
     [SerializeField, LabelText("闪电随机范围值")] MinMaxFloat _lightningRange;
     [SerializeField, LabelText("闪电时的光强度")] float lightningIntensity = 0.15f;
     [SerializeField, LabelText("闪电持续时间")] float lightningInterval = 0.15f;
@@ -41,7 +38,7 @@ public class EnvironmentComponent : CountdownComponent
         StartCoroutine(LightningEffect(times, lightningInterval, StartCountdown));
     }
 
-    IEnumerator LightningEffect(int times,float interval,UnityAction onLightningFinish)
+    IEnumerator LightningEffect(int times, float interval, UnityAction onLightningFinish)
     {
         // 保存原始光强度
         float originalIntensity = GetLightIntensity();
@@ -63,29 +60,10 @@ public class EnvironmentComponent : CountdownComponent
             yield return new WaitForSeconds(interval);
             // 恢复原始光强度
             SetIntensity(originalIntensity);
-            yield return new WaitForSeconds(interval/3f);
+            yield return new WaitForSeconds(interval / 3f);
         }
     }
 
-    void SetIntensity(float intensity)
-    {
-        switch(Mode)
-        {
-            case GameRender.Render_2D:
-                globalLight.intensity = intensity;
-                break;
-            case GameRender.Render_3D:
-                directionalLight.intensity = intensity;
-                break;
-            default: throw new ArgumentOutOfRangeException();
-        };
-    }
-
-    float GetLightIntensity() =>
-        Mode switch
-        {
-            GameRender.Render_2D => globalLight.intensity,
-            GameRender.Render_3D => directionalLight.intensity,
-            _ => throw new ArgumentOutOfRangeException()
-        };
+    void SetIntensity(float intensity) => directionalLight.intensity = intensity;
+    float GetLightIntensity() => directionalLight.intensity;
 }

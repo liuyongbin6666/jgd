@@ -5,13 +5,11 @@ public static class DebugExtension
 {
     public static void Log(this Object obj, object message, [CallerMemberName] string methodName = null)
     {
-        Debug.Log($"{obj.name} {methodName} : {message}");
+        var msg = message?.ToString();
+        if (string.IsNullOrWhiteSpace(msg)) msg = "Invoke()!";
+        Debug.Log($"{obj.name} {methodName} : {msg}");
     }
     public static void Log(this string message, Object obj, [CallerMemberName] string methodName = null) =>
         obj.Log(message, methodName);
-    public static void Log(this Object obj, [CallerMemberName] string methodName = null)
-    {
-        object messageObj = "Invoke()!";
-        obj.Log(messageObj, methodName);
-    }
+    public static void Log(this Object obj, [CallerMemberName] string methodName = null) => obj.Log(string.Empty, methodName);
 }

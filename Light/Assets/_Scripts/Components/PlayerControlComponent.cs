@@ -3,23 +3,18 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
-public enum GameRender
-{
-    [InspectorName("2D")]Render_2D,
-    [InspectorName("3D")]Render_3D
-}
 public class PlayerControlComponent : MonoBehaviour
 {
 
     [SerializeField] GameLaunch gameLaunch;
     [SerializeField, LabelText("移动速度")] float moveSpeed = 5f;
-    GameRender Mode => gameLaunch?.RenderMode?? GameRender.Render_2D;
+
     public bool IsMoving => axisMovement != Vector2.zero;
-    [SerializeField, HideIf(nameof(Mode),GameRender.Render_3D)] Rigidbody2D rb;
-    [SerializeField, HideIf(nameof(Mode), GameRender.Render_2D)] Rigidbody rb3D;
+
+    [SerializeField] Rigidbody rb3D;
     //[SerializeField] LightVisionComponent _lightVision;
-    [SerializeField, HideIf(nameof(Mode), GameRender.Render_3D)] Collider2DHandler _unitCollider;
-    [SerializeField, HideIf(nameof(Mode), GameRender.Render_2D)] Collider3DHandler _unitCollider3D;
+
+    [SerializeField] Collider3DHandler _unitCollider3D;
     [SerializeField] LanternComponent _lantern;
     [SerializeField] int _maxLantern = 5;
     int currentLantern = 0;
@@ -68,7 +63,7 @@ public class PlayerControlComponent : MonoBehaviour
         }
         OnPanicPulse?.Invoke(times);
     }
-    void OnColliderOnView(Collider2D[] colliders)
+    void OnColliderOnView(Collider[] colliders)
     {
         this.Log($"发现：{string.Join(',',colliders.Select(c=>c.name))}");
     }
@@ -96,23 +91,15 @@ public class PlayerControlComponent : MonoBehaviour
     void FixedUpdate()
     {
         // 使用 MovePosition 进行物理移动，这样可以确保碰撞检测正常
-        if(axisMovement!=Vector2.zero)
+        if (axisMovement != Vector2.zero)
         {
-            switch (Mode)
-            {
-                case GameRender.Render_2D:
-                    rb.MovePosition(rb.position + axisMovement * moveSpeed * Time.fixedDeltaTime);
-                    break;
-                case GameRender.Render_3D:
-                    var local = rb3D.transform.localScale;
-                    var flipX = axisMovement.x < 0 ? 1 : -1;
-                    rb3D.transform.localScale = new Vector3(flipX , local.y, local.z);
-                    rb3D.MovePosition(rb3D.position + new Vector3(
-                        axisMovement.x, 0, axisMovement.y) * moveSpeed * Time.fixedDeltaTime);
-                    break;
-                default: throw new ArgumentOutOfRangeException();
-            }
+            var local = rb3D.transform.localScale;
+            var flipX = axisMovement.x < 0 ? 1 : -1;
+            rb3D.transform.localScale = new Vector3(flipX, local.y, local.z);
+            rb3D.MovePosition(rb3D.position + new Vector3(
+                                  axisMovement.x, 0, axisMovement.y) * moveSpeed * Time.fixedDeltaTime);
         }
+
         detectionTimer += Time.fixedDeltaTime;
         if (detectionTimer >= detectionInterval)
         {

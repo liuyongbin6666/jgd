@@ -26,5 +26,5 @@ public class LanternComponent : CountdownComponent
         if (isMaxLevel) StartCountdown(true);
     }
 
-    public Collider2D[] CheckForEnemiesInView(LayerMask layer) => _light.CheckForEnemiesInView(layer);
+    public Collider[] CheckForEnemiesInView(LayerMask layer) => _light.CheckForEnemiesInView(layer);
 }

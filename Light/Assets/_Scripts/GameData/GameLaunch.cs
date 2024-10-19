@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class GameLaunch : MonoBehaviour
 {
-    public GameRender RenderMode;
     public UiManager UiManager;
     public GameConfigure Configure;
     public AudioComponent AudioComponent;
@@ -19,7 +18,6 @@ public class GameLaunch : MonoBehaviour
         Game.Run(GameStart, 
                  AudioComponent, 
                  Configure.GameConfig, 
-                 RenderMode, 
                  SensorManager, 
                  PlotManager,
                  EnvironmentComponent);
