@@ -12,7 +12,12 @@ public class PlayerController : MonoBehaviour
     public float startTime;//记录每次攻击的时间
     public float attackRate;//攻击频率
     public float speed;
-    void Init() { }
+    public HealthBarComponent hp;
+    void Init() 
+    {
+        hp = GetComponent<HealthBarComponent>();
+        hp.Init(20); 
+    }
     void Start()
     {
         Init();
@@ -20,6 +25,20 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Move();
+    }
+    public void AttackListAdd(Transform t)//加入攻击列表
+    {
+        if (t.tag == "Enemy" && !enemyList.Contains(t.transform))
+        {
+            enemyList.Add(t.transform);
+        }
+    }
+    public void AttackListRemove(Transform t)//脱离攻击列表
+    {
+        if (t.tag == "Enemy" && enemyList.Contains(t.transform))
+        {
+            enemyList.Remove(t.transform);
+        }
     }
     void Move()//简单的移动，只是用来模拟用的，与功能无关
     {
@@ -37,10 +56,7 @@ public class PlayerController : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)//记录进入的敌人
     {
-        if(other.tag=="Enemy" && !enemyList.Contains(other.transform))
-        {
-            enemyList.Add(other.transform);
-        }
+        AttackListAdd(other.transform);
     }
     private void OnTriggerStay(Collider other)//攻击敌人
     {
@@ -52,10 +68,7 @@ public class PlayerController : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)//删除离开范围的敌人
     {
-        if(other.tag=="Enemy" &&enemyList.Contains(other.transform))
-        {
-            enemyList.Remove(other.transform);
-        }
+        AttackListRemove(other.transform);
     }
     void SetAttackRate(float t)//设置攻击频率
     {

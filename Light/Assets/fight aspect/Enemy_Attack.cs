@@ -10,8 +10,10 @@ public class Enemy_Attack : MonoBehaviour
     public NavMeshAgent nav;
     public Transform player;
     public Transform target;
+    public bool isTrack;
     public void Init()
     {
+        isTrack = false;
         nav.updateRotation = false;
     }
     private void Start()
@@ -22,10 +24,17 @@ public class Enemy_Attack : MonoBehaviour
     {
 
         if (other.tag == "Player")
-        {           
+        {
             StartCoroutine(UpdateTarget(player.transform));
         }
     }
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (other.tag == "Player"&& !isTrack)
+    //    {
+    //        StartCoroutine(UpdateTarget(player.transform));
+    //    }
+    //}
     private void OnTriggerExit(Collider other)//玩家脱离攻击范围
     {
         if(other.tag=="Player")
@@ -36,6 +45,9 @@ public class Enemy_Attack : MonoBehaviour
     private void OnCollisionEnter(Collision collision)//攻击玩家
     {
         Debug.Log("攻击");
+        target = null;
+        collision.transform.GetComponent<HealthBarComponent>().GetHit(2f);
+        collision.transform.GetComponent<HealthBarComponent>().UpdateContent();
     }
 
     //设置速度
@@ -43,19 +55,22 @@ public class Enemy_Attack : MonoBehaviour
     IEnumerator UpdateTarget(Transform t)//获取当前目标位置
     {
         target = t;
-        while (target)
-        {
-            yield return new WaitForSeconds(0.2f);
-            target = t;
-            if (target)
+        while (true)
+        {           
+            if (target!=null)
             {
                 nav.enabled = true;
                 nav.SetDestination(target.position);
+                isTrack = true;
             }
-            else
+            else if(target==null)
             {
                 nav.enabled = false;
+                isTrack = false;
+                yield break;
             }
+            yield return new WaitForSeconds(0.2f);
+            //target = t;
         }
     }
 
