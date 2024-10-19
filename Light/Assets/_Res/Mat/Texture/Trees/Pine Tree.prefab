@@ -167,8 +167,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aafd75a5e94156048bdc1df3c211d72e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mode: 1
   _unitCollider3D: {fileID: 2705200416101427360}
-  _unitCollider: {fileID: 0}
   _targetTag: Vision
   renderer: {fileID: 3737929604110502579}
+  colliders:
+  - {fileID: 8275740420530995059}

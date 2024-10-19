@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class VisionLevelComponent : MonoBehaviour
 {
-    [SerializeField] Collider _collider;  // 关联的BoxCollider
+    [SerializeField] SphereCollider _collider;  // 关联的Collider
     [SerializeField] Light _pointLight;         // 关联的Point Light
     [SerializeField] LightSettings minSettings; // 最低值设置
     [SerializeField] LightSettings maxSettings; // 最高值设置
@@ -22,6 +22,7 @@ public class VisionLevelComponent : MonoBehaviour
             range = _pointLight.range,
             lightY = _pointLight.transform.localPosition.y
         };
+    public float VisionRadius => MathF.Abs(transform.lossyScale.x * _collider.radius);
 
     [Button("计算灯光等级")]
     void GenerateSettings(int totalLevel)

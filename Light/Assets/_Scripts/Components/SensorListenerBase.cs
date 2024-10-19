@@ -4,7 +4,7 @@ using UnityEngine;
 /// 传感器基类，基于<seealso cref="SensorManager"/>实现触发事件<br/>
 /// 主要实现触发条件监听并触发事件
 /// </summary>
-public abstract class SensorListenerBase : MonoInitializer
+public abstract class SensorListenerBase : GameStartInitializer
 {
     protected abstract SensorSoBase SensorSo { get; }
     protected abstract SensorManager SensorManager { get; }

@@ -10,7 +10,7 @@ public class PlayerControlComponent : MonoBehaviour
     [SerializeField, LabelText("移动速度")] float moveSpeed = 5f;
 
     public bool IsMoving => axisMovement != Vector2.zero;
-
+    public float VisionRadius => _lantern.VisionRadius;
     [SerializeField] Rigidbody rb3D;
     //[SerializeField] LightVisionComponent _lightVision;
 
@@ -38,7 +38,7 @@ public class PlayerControlComponent : MonoBehaviour
         //_unitCollider3D?.OnTriggerEnterEvent.AddListener(ColliderEnter);
         //_unitCollider3D?.OnCollisionEnterEvent.AddListener(c => ColliderEnter(c.collider));
     }
-
+    
     void ColliderEnter(Collider2D col2D)
     {
         //if (CheckIf(GameTag.Firefly, FireFlyCollect)) return;

@@ -27,15 +27,18 @@ public class GameLaunch : MonoBehaviour
     void GameStart()
     {
         UiManager.Init();
-        var initializers = Resources.FindObjectsOfTypeAll<MonoInitializer>();
+        var initializers = Resources.FindObjectsOfTypeAll<GameStartInitializer>();
         foreach (var initializer in initializers) initializer.Initialization();
     }
 }
 
 /// <summary>
-/// 实行自动初始化的MonoBehaviour基类
+/// 实行自动初始化的MonoBehaviour基类<br/>
+/// 注意一般上是使用在必须呀<see cref="Game"/>Game控制的组件上，<br/>
+/// 如果需要游戏中可控的组件请使用<see cref="Game.Run"/><br/>
+/// 注册在<see cref="Game"/>静态类中
 /// </summary>
-public abstract class MonoInitializer : MonoBehaviour
+public abstract class GameStartInitializer : MonoBehaviour
 {
 #if UNITY_EDITOR
     [SerializeField,LabelText("自动初始化-测试用")] protected bool autoInitInEditorOnly;

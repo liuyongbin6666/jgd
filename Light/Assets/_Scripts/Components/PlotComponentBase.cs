@@ -5,7 +5,7 @@ using GMVC.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public abstract class PlotComponentBase : MonoInitializer
+public abstract class PlotComponentBase : GameStartInitializer
 {
 
     public PlotManager PlotManager => Game.PlotManager;

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,47 +15,39 @@ public abstract class CountdownComponent : MonoBehaviour
 
     public readonly UnityEvent<int> OnPulseTrigger = new();
     public readonly UnityEvent OnCountdownComplete = new();
-    public bool IsRunning { get; private set; }
-    Coroutine countdownCoroutine;
+    bool IsRunning { get; set; }
+    int remainTimes;
 
     public void StartCountdown() => StartCountdown(false);
     public void StartCountdown(bool reset)
     {
         if (PulseTimes <= 0) throw new NotImplementedException("跳动次数至少要一次!");
         if (Duration <= 0) throw new NotImplementedException("持续市场不可以负数!");
-        IsRunning = countdownCoroutine != null;
-        if (reset || !IsRunning)
-        {
-            StopCountdown();
-            countdownCoroutine = StartCoroutine(CountdownCoroutine());
-        }
+        IsRunning = true;
+        var interval = Duration / PulseTimes;
+        if (reset) StopCountdown();
+        if (IsRunning) return;
+        InvokeRepeating(nameof(Execute), PulseTimes, interval);
     }
     public void StopCountdown()
     {
         if (!IsRunning) return;
-        if (countdownCoroutine != null) return;
-        StopCoroutine(countdownCoroutine);
-        countdownCoroutine = null;
+        CancelInvoke(nameof(Execute));
+        remainTimes = 0;
+        IsRunning = false;
     }
 
-    IEnumerator CountdownCoroutine()
+    void Execute()
     {
-        var times = PulseTimes;
-        var interval = Duration / PulseTimes;
-
-        while (times > 0)
-        {
-            yield return new WaitForSeconds(interval);
-            times--;
-
-            OnPulseTrigger?.Invoke(times);
-            OnPulse(times); // 调用可被子类重写的方法
-        }
-        countdownCoroutine = null;
-        OnCountdownComplete?.Invoke(); // 倒计时完成后的回调
+        remainTimes--;
+        OnPulseTrigger?.Invoke(remainTimes);
+        OnPulse(remainTimes); // 调用可被子类重写的方法
+        if (remainTimes > 0) return;
+        // 倒计时完成后的回调
+        OnCountdownComplete?.Invoke();
+        StopCountdown();
     }
 
     // 可被子类重写的回调方法
     protected virtual void OnPulse(int remainingTimes){}
-
 }

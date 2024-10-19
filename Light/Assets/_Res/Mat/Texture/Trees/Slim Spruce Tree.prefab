@@ -45,11 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aafd75a5e94156048bdc1df3c211d72e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mode: 1
   _unitCollider3D: {fileID: 4090337788025415273}
-  _unitCollider: {fileID: 0}
   _targetTag: Vision
   renderer: {fileID: 4675515440792993602}
+  colliders:
+  - {fileID: 1453029970962488806}
 --- !u!1 &6011026838334117477
 GameObject:
   m_ObjectHideFlags: 0

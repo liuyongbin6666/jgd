@@ -11,7 +11,7 @@ public class LanternComponent : CountdownComponent
     [SerializeField] VisionLevelComponent _visionLevel;
     protected override int PulseTimes => 1;
     protected override float Duration => _lastingPerFirefly;
-
+    public float VisionRadius => _visionLevel.VisionRadius;
     public void Init()
     {
         _light.Init();
