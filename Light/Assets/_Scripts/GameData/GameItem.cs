@@ -3,7 +3,6 @@ using UnityEngine;
 public enum GameItemType
 {
     [InspectorName("萤火虫")] Firefly,
-    [InspectorName("墓碑")] Grave,
     Boss,
 }
 

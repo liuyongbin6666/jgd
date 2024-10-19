@@ -134,14 +134,16 @@ public class PlayerControlComponent : MonoBehaviour
 
 internal static class PlayerControlComponentExtensions
 {
-    public static PlayerControlComponent GetControlFromColliderHandler(this Collider2D co)
-    {
-        var handler = co.GetComponent<Collider2DHandler>();
-        return handler ? handler.root.GetComponent<PlayerControlComponent>() : co.GetComponent<PlayerControlComponent>();
-    }    
-    public static PlayerControlComponent GetControlFromColliderHandler(this Collider co)
+    public static PlayerControlComponent GetPlayerControlFromColliderHandler(this GameObject co)
     {
         var handler = co.GetComponent<Collider3DHandler>();
         return handler ? handler.root.GetComponent<PlayerControlComponent>() : co.GetComponent<PlayerControlComponent>();
+    }    
+    public static PlayerControlComponent GetPlayerControlFromColliderHandler(this Collider2D co)
+    {
+        var handler = co.GetComponent<Collider2DHandler>();
+        return handler ? handler.root.GetComponent<PlayerControlComponent>() : co.GetComponent<PlayerControlComponent>();
     }
+    public static PlayerControlComponent GetPlayerControlFromColliderHandler(this Collider co) =>
+        co.gameObject.GetPlayerControlFromColliderHandler();
 }

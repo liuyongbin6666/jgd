@@ -27,25 +27,25 @@ public abstract class PlayerTrackingComponentBase : ColliderComponentBase
 
     protected override void OnCollider3DEnter(Collider col)
     {
-        var player = col.GetControlFromColliderHandler();
+        var player = col.GetPlayerControlFromColliderHandler();
         if (player != null) OnPlayerTrackingEnter(player);
     }
 
     protected override void OnColliderEnter(Collider2D col)
     {
-        var player = col.GetControlFromColliderHandler();
+        var player = col.GetPlayerControlFromColliderHandler();
         if (player != null) OnPlayerTrackingEnter(player);
     }
 
     protected override void OnCollider3DExit(Collider col)
     {
-        var player = col.GetControlFromColliderHandler();
+        var player = col.GetPlayerControlFromColliderHandler();
         if (player != null) OnPlayerTrackingExit(player);
     }
 
     protected override void OnColliderExit(Collider2D col)
     {
-        var player = col.GetControlFromColliderHandler();
+        var player = col.GetPlayerControlFromColliderHandler();
         if (player != null) OnPlayerTrackingExit(player);
     }
 }

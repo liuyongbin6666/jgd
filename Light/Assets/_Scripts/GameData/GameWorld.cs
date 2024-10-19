@@ -11,9 +11,9 @@ public class GameWorld
     public GameStates Status { get; private set; }
     public GameStage Stage { get; private set; }
 
-    public void InitStage(PlayableUnit player, StageIndex stageIndex, StageTime stageTime)
+    public void InitStage(PlayableUnit player, StageIndex stageIndex, StageStory stageStory)
     {
-        Stage = new GameStage(player,stageIndex,stageTime);
+        Stage = new GameStage(player,stageIndex,stageStory);
         SetState(GameStates.Start);
     }
     public void StartStage()
@@ -50,7 +50,8 @@ public class GameEvent
 
     public const string Game_StateChanged = "Game_StateChanged";// 游戏状态改变
     public const string Game_PlayMode_Update = "Game_PlayMode_Update";//游戏模式更新
+    public const string Story_Lines_Send = "Story_Lines_Send"; // 游戏故事行发送
+    public const string Story_Dialog_Send = "Story_Dialog_Send"; // 游戏故事对话发送
 
     public const string Story_Npc_Update = "Story_Npc_Update";
-    public const string Story_Show = "Story_Show";
 }

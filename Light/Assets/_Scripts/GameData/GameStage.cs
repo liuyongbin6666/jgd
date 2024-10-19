@@ -1,38 +1,38 @@
 using System;
+using System.Collections.Generic;
 using GMVC.Core;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// 游戏关卡
 /// </summary>
 public class GameStage : ModelBase
 {
-    public enum PlayMode
+    public enum PlayModes
     {
         Story,Explore
     }
     public StageIndex StageIndex { get; private set; }
-    public StageTime Time { get; private set; }
+    public StageStory Story { get; private set; }
     public PlayableUnit Player { get; private set; }
-    public StoryManager StoryManager { get; private set; }
-    public PlayMode Mode { get; private set; }
-    public GameStage(PlayableUnit player, StageIndex stageIndex, StageTime stageTime)
+    public PlayModes Mode { get; private set; }
+    public GameStage(PlayableUnit player, StageIndex stageIndex, StageStory stageStory)
     {
         Player = player;
         StageIndex = stageIndex;
-        Time = stageTime;
-        StoryManager = new StoryManager();
+        Story = stageStory;
     }
 
     //开始关卡时设置
     public void Stage_Start()
     {
-        Time.StartTimer();
-        StoryManager.SetStory();
-        SetMode(PlayMode.Explore);
-        Game.SendEvent(GameEvent.Story_Npc_Update, 0);
+        Story.StartTimer();
+        Story.SetStory(new[] { 1, 2, 3, 4, 5 });
+        SetMode(PlayModes.Explore);
+        //Game.SendEvent(GameEvent.Story_Npc_Update, 0);
     }
-    public void SetMode(PlayMode mode)
+    public void SetMode(PlayModes mode)
     {
         Mode = mode;
         Game.SendEvent(GameEvent.Game_PlayMode_Update, mode);
@@ -46,19 +46,58 @@ public class GameStage : ModelBase
 }
 
 /// <summary>
-/// 游戏时间
+/// 关卡故事
 /// </summary>
-public class StageTime : ModelBase
+public class StageStory : ModelBase
 {
+    public enum Lines
+    {
+        [InspectorName("故事")]Story, 
+        [InspectorName("对话")]Dialog
+    }
     public StageTimeComponent StageTimeComponent;
+    public PlotManager PlotManager => Game.PlotManager;
     public int RemainSeconds { get; private set; }
+    public string[] StoryLines { get; private set; }
+    public string[] DialogLines { get; private set; }
+    //故事Id
+    int[] StoryId { get; set; }
     int _totalSecs;
-    public StageTime(StageTimeComponent stageTimeComponent,int remainSeconds)
+    public StageStory(StageTimeComponent stageTimeComponent, UnityAction onSwitchToStoryMode, int remainSeconds)
     {
         StageTimeComponent = stageTimeComponent;
         stageTimeComponent.OnPulseTrigger.AddListener(OnPulse);
         _totalSecs = remainSeconds;
         RemainSeconds = remainSeconds;
+        PlotManager.OnLinesEvent.AddListener((t, l) =>
+        {
+            if(t == Lines.Story)onSwitchToStoryMode?.Invoke();
+            OnLine(t, l);
+        });
+    }
+
+    void OnLine(Lines lineType, string[] lines)
+    {
+        switch (lineType)
+        {
+            case Lines.Story:
+                StoryLines = lines;
+                SendEvent(GameEvent.Story_Lines_Send);
+                break;
+            case Lines.Dialog:
+                DialogLines = lines;
+                SendEvent(GameEvent.Story_Dialog_Send);
+                break;
+        }
+    }
+
+    public void SetStory(int[] ids)
+    {
+        StoryId = ids;
+    }
+    public int GetStoryId()
+    {
+        return StoryId[Game.World.Stage.StageIndex.Index];
     }
     public void StartTimer() => StageTimeComponent.StartCountdown();
     public void Reset()

@@ -71,9 +71,19 @@ namespace GMVC.Utls
         {
             var t = typeof(T);
             if (value == default) return default;
-
             try
             {
+                if (t.IsEnum)
+                {
+                    // 尝试将值转换为 int 再转成对应的枚举类型
+                    if (value is int intValue)
+                        return (T)Enum.ToObject(t, intValue);
+                    if(value is string stringValue)
+                        return (T)Enum.Parse(t, stringValue);
+                    // 如果 value 不是 int，尝试将其转换为 int 再处理
+                    var intParsedValue = Convert.ToInt32(value);
+                    return (T)Enum.ToObject(t, intParsedValue);
+                }
                 if (value is long longValue) return (T)Convert.ChangeType(longValue, t);
                 if (value is JToken token) return token.ToObject<T>();
                 return (T)value;
