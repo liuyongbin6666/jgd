@@ -23,7 +23,7 @@ public class FireflySpawner : GameStartInitializer
 
     public override void Initialization()
     {
-        fireflyPool = new ObjectPool<GameObject>(Firefly_Spawn, OnGet, Firefly_Recycle, Destroy);
+        fireflyPool = new ObjectPool<GameObject>(Firefly_Spawn, Firefly_Get, Firefly_Recycle, Destroy);
         StartCoroutine(UpdateFireflies());
     }
 
@@ -85,10 +85,10 @@ public class FireflySpawner : GameStartInitializer
     GameObject Firefly_Spawn()
     {
         var firefly = Instantiate(fireflyPrefab, pool);
-        OnGet(firefly);
+        Firefly_Get(firefly);
         return firefly;
     }
-    void OnGet(GameObject firefly)
+    void Firefly_Get(GameObject firefly)
     {
         var spawnPosition = GetRandomPosition();
         firefly.transform.position = spawnPosition;

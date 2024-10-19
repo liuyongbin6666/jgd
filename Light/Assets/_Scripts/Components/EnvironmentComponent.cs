@@ -3,6 +3,7 @@ using MyBox;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
+using GMVC.Utls;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -19,6 +20,7 @@ public class EnvironmentComponent : CountdownComponent
     [SerializeField, LabelText("闪电随机范围值")] MinMaxFloat _lightningRange;
     [SerializeField, LabelText("闪电时的光强度")] float lightningIntensity = 0.15f;
     [SerializeField, LabelText("闪电持续时间")] float lightningInterval = 0.15f;
+    [SerializeField] GameObject rain;
     float _duration = 3;
 
     public void Init()
@@ -26,6 +28,12 @@ public class EnvironmentComponent : CountdownComponent
         OnCountdownComplete.AddListener(Lightning);
         RandomDuration();
         StartCountdown(true);
+    }
+
+    public void Rain(bool enable)
+    {
+        rain.Display(enable);
+        Game.SendEvent(GameEvent.Env_Rain_Update, enable);
     }
 
     void RandomDuration() => _duration = Random.Range(_lightningRange.Min, _lightningRange.Max);

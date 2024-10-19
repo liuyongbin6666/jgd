@@ -43,13 +43,21 @@ public class GameEvent
 {
     public const string GameItem_Interaction = "GameItem_Interaction";// 游戏物品交互
     public const string Stage_StageTime_Update = "Stage_StageTime_Update";
+
+    //玩家
     public const string Player_Lantern_Update = "Player_Lantern_Update";// 玩家灯笼更新
     public const string Player_Panic_Pulse = "Player_Panic_Pulse";//恐慌心跳
     public const string Player_Panic_Finalize = "Player_Panic_Finalize";//恐慌心跳结束触发
-    public const string Env_Lightning = "Env_Lightning";// 闪电
 
+    //环境
+    public const string Env_Lightning = "Env_Lightning";// 闪电
+    public const string Env_Rain_Update= "Env_Rain_Update";// 下雨
+
+    //游戏
     public const string Game_StateChanged = "Game_StateChanged";// 游戏状态改变
     public const string Game_PlayMode_Update = "Game_PlayMode_Update";//游戏模式更新
+
+    //故事
     public const string Story_Lines_Send = "Story_Lines_Send"; // 游戏故事行发送
     public const string Story_Dialog_Send = "Story_Dialog_Send"; // 游戏故事对话发送
 
