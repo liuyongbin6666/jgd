@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31daef8934550cb42afc812f0c0a10a7, type: 3}
+  m_Name: "\u60C5\u8282-3.npc\u8BF4\u8BDD"
+  m_EditorClassIdentifier: 
+  referenceSo: {fileID: 11400000}
+  _name: "3.npc\u8BF4\u8BDD"
+  story: {fileID: 11400000, guid: 2c57f7a8107f2e74dbe5cbba89f58df4, type: 2}
+  isStoryFinalize: 0
+  autoBegin: 0
+  lines:
+  - "\u4E00\u5B9A\u8981\u627E\u5230\u51F6\u624B\uFF0C\u5426\u5219\u6211\u6B7B\u4E0D\u7791\u76EE\uFF01"
+  nextPlots:
+  - 4.boss

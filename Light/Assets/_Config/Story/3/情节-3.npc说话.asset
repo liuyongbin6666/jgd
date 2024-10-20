@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31daef8934550cb42afc812f0c0a10a7, type: 3}
-  m_Name: "\u60C5\u8282-1.\u4ECB\u7ECD"
+  m_Name: "\u60C5\u8282-3.npc\u8BF4\u8BDD"
   m_EditorClassIdentifier: 
   referenceSo: {fileID: 11400000}
-  _name: "1.\u4ECB\u7ECD"
-  story: {fileID: 11400000, guid: 820cdebbf523d2f448e1a14a2a77f067, type: 2}
+  _name: "3.npc\u8BF4\u8BDD"
+  story: {fileID: 11400000, guid: 468dcb41363f47b40a1f2dc3f789142b, type: 2}
   isStoryFinalize: 0
   autoBegin: 0
   lines:
-  - "\u5343\u4E07\u522B\u544A\u8BC9\u9A6C\u53EF\uFF0C\u6211\u628A\u73A9\u5177\u85CF\u5728\u4E86\u54EA\u91CC\u3002"
-  - "\u6211\u628A\u73A9\u5177\u85CF\u5728\u4E86\u9A6C\u53EF\u6C38\u8FDC\u4E5F\u627E\u4E0D\u5230\u7684\u5730\u65B9\u3002"
+  - "\u5F53\u65F6\u9ED1\u591C\u4E0B\u96E8\uFF0C\u6211\u6CA1\u770B\u6E05\u695A\uFF0C\u90A3\u4EAE\u95EA\u95EA\u7684\u4E1C\u897F\uFF0C\u662F\u4E0D\u662F\u4E00\u888B\u94B1\uFF1F"
   nextPlots:
-  - "2.\u5893\u7891"
+  - 4.boss
