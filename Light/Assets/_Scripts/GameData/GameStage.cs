@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using GMVC.Core;
 using UnityEngine;
 using UnityEngine.Events;

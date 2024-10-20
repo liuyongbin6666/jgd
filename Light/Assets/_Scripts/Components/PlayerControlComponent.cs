@@ -26,6 +26,7 @@ public class PlayerControlComponent : MonoBehaviour
     public readonly UnityEvent OnPanicFinalize = new();
     public readonly UnityEvent<int> OnPanicPulse = new();
     public readonly UnityEvent<GameItemBase> OnGameItemTrigger= new();
+    public readonly UnityEvent<int> OnDamage = new();
     public void Init(float lightOuterStep)
     {
         _lightOuterStep = lightOuterStep;

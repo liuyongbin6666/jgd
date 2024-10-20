@@ -48,6 +48,8 @@ public class GameEvent
     public const string Player_Lantern_Update = "Player_Lantern_Update";// 玩家灯笼更新
     public const string Player_Panic_Pulse = "Player_Panic_Pulse";//恐慌心跳
     public const string Player_Panic_Finalize = "Player_Panic_Finalize";//恐慌心跳结束触发
+    public const string Player_IsDeath = "Player_IsDeath";//玩家死亡
+    public const string Player_Hp_Update = "Player_Hp_Update";//玩家血量更新
 
     //环境
     public const string Env_Lightning = "Env_Lightning";// 闪电

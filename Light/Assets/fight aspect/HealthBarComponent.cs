@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -6,14 +6,14 @@ using UnityEngine.UI;
 
 public class HealthBarComponent : MonoBehaviour
 {
-    public float content;//¿ÉÒÔÊÇÀ¶Á¿Ò²¿ÉÒÔÊÇÑªÁ¿
+    public float content;//å¯ä»¥æ˜¯è“é‡ä¹Ÿå¯ä»¥æ˜¯è¡€é‡
     public float Maxcontent;
     public Image hp_Main;
     public float hurtSpeed = 0.005f;
     public float healSpeed = 0.006f;
     public float hurt_duration = 2f;
     public float heal_duration = 2f;
-    [SerializeField, LabelText("µ±Ç°¹ö¶¯ÌõÀà±ğ")] SliderType st;
+    [SerializeField, LabelText("å½“å‰æ»šåŠ¨æ¡ç±»åˆ«")] SliderType st;
     public void Init(float hp)
     {
         Maxcontent = hp;
@@ -43,7 +43,7 @@ public class HealthBarComponent : MonoBehaviour
             content = Maxcontent;
         }
     }
-    public void GetHealSlowly(float s=0.006f/*sÎªÃ¿¹ıÖµÎªhealSpeedµÄÊ±¼äÔö¼ÓµÄÑªÁ¿*/)//»ºÂı¼ÓÑª
+    public void GetHealSlowly(float s=0.006f/*sä¸ºæ¯è¿‡å€¼ä¸ºhealSpeedçš„æ—¶é—´å¢åŠ çš„è¡€é‡*/)//ç¼“æ…¢åŠ è¡€
     {
         StartCoroutine(Healing(s));
     }
@@ -57,7 +57,7 @@ public class HealthBarComponent : MonoBehaviour
             yield return new WaitForSeconds(healSpeed);
         }
     }
-    public void GetPoison(float s= 0.005f/*sÎªÃ¿¹ıÖµÎªhurtSpeedµÄÊ±¼ä¼õÉÙµÄÑªÁ¿*/)//»ºÂı¿ÛÑª»òÖĞ¶¾
+    public void GetPoison(float s= 0.005f/*sä¸ºæ¯è¿‡å€¼ä¸ºhurtSpeedçš„æ—¶é—´å‡å°‘çš„è¡€é‡*/)//ç¼“æ…¢æ‰£è¡€æˆ–ä¸­æ¯’
     {
         StartCoroutine(Poisoning(s));
     }
@@ -74,6 +74,6 @@ public class HealthBarComponent : MonoBehaviour
 }
 enum SliderType
 {
-    [SerializeField,LabelText("ÑªÁ¿")]hp,
-    [SerializeField, LabelText("À¶Á¿")] mana
+    [SerializeField,LabelText("è¡€é‡")]hp,
+    [SerializeField, LabelText("è“é‡")] mana
 }

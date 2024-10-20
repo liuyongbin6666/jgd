@@ -1,3 +1,4 @@
+using GMVC.Conditions;
 using GMVC.Core;
 using UnityEngine;
 
@@ -13,7 +14,8 @@ public class GameController : ControllerBase
             Debug.LogWarning("游戏状态错误！");
             return;
         }
-        World.InitStage(new PlayableUnit(Config.PlayerPrefab, 1, 1),
+        var player = new Player(new ConValue("血量", 100), new ConValue("魔法", 100));
+        World.InitStage(new PlayableUnit(player,Config.PlayerPrefab, 1, 1),
                         new StageIndex(),
                         new StageStory(Config.StageTimeComponent,
                                        () => SwitchPlayMode(GameStage.PlayModes.Story),
