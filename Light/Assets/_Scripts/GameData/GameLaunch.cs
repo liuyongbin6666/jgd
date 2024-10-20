@@ -28,7 +28,7 @@ public class GameLaunch : MonoBehaviour
     {
         UiManager.Init();
         var initializers = Resources.FindObjectsOfTypeAll<GameStartInitializer>();
-        foreach (var initializer in initializers) initializer.Initialization();
+        foreach (var initializer in initializers) initializer.GameStart();
     }
 }
 
@@ -42,10 +42,22 @@ public abstract class GameStartInitializer : MonoBehaviour
 {
 #if UNITY_EDITOR
     [SerializeField,LabelText("自动初始化-测试用")] protected bool autoInitInEditorOnly;
+    bool isGameStart;
+#endif
     void Start()
     {
-        if (autoInitInEditorOnly) Initialization();
-    }
+#if UNITY_EDITOR
+        if (autoInitInEditorOnly) GameStart();
 #endif
-    public abstract void Initialization();
+        OnStart();
+    }
+    protected virtual void OnStart(){}
+    public void GameStart()
+    {
+        if(isGameStart)return;
+        OnGameStart();
+        isGameStart = true;
+    }
+
+    protected abstract void OnGameStart();
 }

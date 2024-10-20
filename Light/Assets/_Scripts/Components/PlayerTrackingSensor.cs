@@ -11,8 +11,9 @@ public class PlayerTrackingSensor : PlotSensorBase
     [SerializeField, LabelText("传感器")] SensorSoBase sensorSo;
     protected override SensorSoBase SensorSo => sensorSo;
     protected override SensorManager SensorManager => Game.SensorManager;
-    bool IsPlayer { get; set; }
-    protected override void OnInit() => handler.RegEnter(CheckIfPlayer);
-    void CheckIfPlayer(GameObject obj) { IsPlayer = obj.CompareTag(GameTag.Player); }
-    protected override bool CheckCondition() => IsPlayer;
+    bool IsPlayerReaching { get; set; }
+    protected override void OnSensorInit() => handler.RegEnter(CheckIfPlayer);
+    void CheckIfPlayer(GameObject obj) =>
+        IsPlayerReaching = plotComponent.IsCurrentState() && obj.CompareTag(GameTag.Player);
+    protected override bool CheckCondition() => IsPlayerReaching;
 }

@@ -11,6 +11,6 @@ public class BossDeathTrackingSensor : PlotSensorBase
     [SerializeField, LabelText("Boss")] BossComponent boss;
     protected override SensorSoBase SensorSo => sensorSo;
     protected override SensorManager SensorManager => Game.SensorManager;
-    protected override void OnInit(){}
+    protected override void OnSensorInit(){}
     protected override bool CheckCondition() => boss.IsDeath;
 }

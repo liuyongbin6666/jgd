@@ -1,11 +1,12 @@
 ﻿using GMVC.Utls;
-using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine;
 
 public class JoyStick : MonoBehaviour
 {
     [SerializeField] RectTransform joyStick;
     [SerializeField] RectTransform handle;
+    [SerializeField] RectTransform allowRect;
     public float mRadius = 0f;
     public Vector3 mousePosition, dragPosition;
     //player透过注册事件来移动
@@ -62,6 +63,9 @@ public class JoyStick : MonoBehaviour
 
     void StartDrag(Vector3 mousePos)
     {
+        // 检查鼠标是否在允许的区域内
+        if (!IsPointerInAllowedArea(mousePos)) return;
+
         mousePosition = mousePos;
         joyStick.transform.position = mousePos;
         joyStick.Display(true);
@@ -77,5 +81,13 @@ public class JoyStick : MonoBehaviour
         handle.localPosition = zero;
         OnMoveEvent.Invoke(zero);
         joyStick.Display(false);
+    }
+
+    bool IsPointerInAllowedArea(Vector3 pointerPosition)
+    {
+        // 将屏幕坐标转换为RectTransform的本地坐标
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(allowRect, pointerPosition, null, out Vector2 localPoint);
+        // 检查该点是否在允许的矩形区域内
+        return allowRect.rect.Contains(localPoint);
     }
 }

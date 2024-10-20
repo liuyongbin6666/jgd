@@ -44,9 +44,10 @@ namespace GMVC.Core
             if (IsRunning) throw new NotImplementedException("Game is running!");
             IsRunning = true;
             SensorManager = sensorManager;
+            PlotManager = plotManager;
+            PlotManager.Init(config.Stories);
             AudioComponent = audioComponent;
             AudioComponent.Init();
-            PlotManager = plotManager;
             Config = config;
             Environment = environmentComponent;
             Environment.Init();

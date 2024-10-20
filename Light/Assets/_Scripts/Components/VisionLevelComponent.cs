@@ -74,7 +74,7 @@ public class VisionLevelComponent : MonoBehaviour
         _pointLight.intensity = intensity;
         _pointLight.range = range;
         _pointLight.transform.localPosition = new Vector3(_pointLight.transform.localPosition.x, setting.lightY, _pointLight.transform.localPosition.z);
-        Debug.Log($"当前等级: {index+1}, Intensity: {intensity}, Range: {range}");
+        //Debug.Log($"当前等级: {index+1}, Intensity: {intensity}, Range: {range}");
     }
 }
 

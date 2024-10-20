@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using GMVC.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,7 +9,11 @@ public class EnemyComponent : PlayerTrackingComponentBase
     public Transform target;
     // Start is called before the first frame update
     protected override void OnStart() => Init();
-    public void Init() => nav.updateRotation = false;
+
+    public void Init()
+    {
+        nav.updateRotation = false;
+    }
 
     protected override void OnPlayerTrackingEnter(PlayerControlComponent player)
     {

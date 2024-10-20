@@ -21,7 +21,7 @@ public class FireflySpawner : GameStartInitializer
     ObjectPool<GameObject> fireflyPool;
     Transform Player=> playerControlComponent.transform;
 
-    public override void Initialization()
+    protected override void OnGameStart()
     {
         fireflyPool = new ObjectPool<GameObject>(Firefly_Spawn, Firefly_Get, Firefly_Recycle, Destroy);
         StartCoroutine(UpdateFireflies());

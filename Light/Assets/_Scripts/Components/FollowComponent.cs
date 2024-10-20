@@ -9,7 +9,7 @@ public class FollowComponent : GameStartInitializer
     [SerializeField] Transform followTransform;
     [SerializeField] float delaySec = 0.1f;
 
-    public override void Initialization() => Init();
+    protected override void OnGameStart() => Init();
     void Init()
     {
         if (!followTransform) return;

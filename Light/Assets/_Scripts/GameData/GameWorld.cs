@@ -62,6 +62,8 @@ public class GameEvent
     //故事
     public const string Story_Lines_Send = "Story_Lines_Send"; // 游戏故事行发送
     public const string Story_Dialog_Send = "Story_Dialog_Send"; // 游戏故事对话发送
+    public const string Story_Plot_Begin = "Story_Plot_Begin"; // 游戏情节开始
+    public const string Story_End = "Story_End"; // 游戏故事结束
 
     public const string Story_Npc_Update = "Story_Npc_Update";
 }
