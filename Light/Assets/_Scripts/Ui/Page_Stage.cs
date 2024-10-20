@@ -105,17 +105,6 @@ public class Page_Stage : UiBase
 
         public void SetNpcTalk(string line)
         {
-            //var open = Game.Config.StoryOpenDataSo.GetStoryOpenData(Game.World.Stage.StoryManager.GetStoryId());
-            //var finish = Game.Config.StoryFinishDataSo.GetStoryFinishData(open.storyFinishId[0]);
-            //switch (i)
-            //{
-            //    case 0:
-            //        text_npcTalk.text = open.open;break;
-            //    case 1:
-            //        text_npcTalk.text = finish.transition;break;
-            //    case 2:
-            //        text_npcTalk.text = finish.finish;break;
-            //}
             text_npcTalk.text = line;
         }
     }
@@ -148,7 +137,7 @@ public class Page_Stage : UiBase
         void ShowText(int j)
         {
             float showSpeed = 1f;
-            var story = Game.Config.StoryOpenDataSo.GetStoryOpenData(Game.World.Stage.Story.GetStoryId()).body;
+            var story = new string[]{"hahahah","ooooo","qqqqqq"};
             var t = obj_textList.transform;
 
             if (j < story.Length)
