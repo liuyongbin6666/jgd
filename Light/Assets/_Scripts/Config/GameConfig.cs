@@ -5,9 +5,5 @@ using System;
     public PlayerControlComponent PlayerPrefab;
     public StageTimeComponent StageTimeComponent;
 
-    public int[] StageSeconds;
-
-    public StoryOpenDataSO StoryOpenDataSo;
-    public StoryFinishDataSO StoryFinishDataSo;
     public StoryItemDataSO StoryItemDataSo;
 }

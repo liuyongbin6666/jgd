@@ -16,8 +16,7 @@ public class GameController : ControllerBase
         World.InitStage(new PlayableUnit(Config.PlayerPrefab, 1, 1),
                         new StageIndex(),
                         new StageStory(Config.StageTimeComponent,
-                                       () => SwitchPlayMode(GameStage.PlayModes.Story),
-                                       Config.StageSeconds[0]));
+                                      180));
         World.StartStage();
         Debug.Log("游戏执行中！");
     }

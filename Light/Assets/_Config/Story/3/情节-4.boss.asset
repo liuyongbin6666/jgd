@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31daef8934550cb42afc812f0c0a10a7, type: 3}
-  m_Name: "\u60C5\u8282-3.npc"
+  m_Name: "\u60C5\u8282-4.boss"
   m_EditorClassIdentifier: 
   referenceSo: {fileID: 11400000}
-  _name: 3.npc
-  story: {fileID: 11400000, guid: 820cdebbf523d2f448e1a14a2a77f067, type: 2}
+  _name: 4.boss
+  story: {fileID: 11400000, guid: 468dcb41363f47b40a1f2dc3f789142b, type: 2}
   isStoryFinalize: 0
   autoBegin: 0
   lines:
-  - "\u4F60\u60F3\u77E5\u9053\u90A3\u662F\u4EC0\u4E48\u6837\u7684\u73A9\u5177\u5417\uFF1F"
+  - "\u8BE5\u63A5\u53D7\u5BA1\u5224\u7684\u662F\u6570\u5B66\u5BB6\u624D\u5BF9\uFF01"
   nextPlots:
-  - 4.Boss
+  - "5.\u7ED3\u675F"
