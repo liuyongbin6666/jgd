@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
                 {
                     GameObject bullet=Instantiate(bulletPrefab,transform.position,Quaternion.identity);
                     bullet.transform.SetParent(bulletGarbage);
-                    bullet.GetComponent<Bullet>().target = enemy;
+                    bullet.GetComponent<BulletComponent>().target = enemy;
                     count--;
                 }
                 if (count <= 0)
