@@ -38,6 +38,8 @@ public class GameTag
     public const string Firefly = "Firefly";
     public const string GameItem = "GameItem";
     public const string Player = "Player";
+    public const string AnimTrigger = "AnimTrigger";
+    public const string AnimInt = "AnimInt";
 }
 public class GameEvent
 {
