@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Sirenix.OdinInspector;
 using System;
 
 public class Enemy_Attack : MonoBehaviour
@@ -10,6 +11,10 @@ public class Enemy_Attack : MonoBehaviour
     public NavMeshAgent nav;
     public Transform player;
     public Transform target;
+    public float startTime;
+    public float attackRate=1f;
+    public GameObject bullet;
+    [SerializeField,LabelText("请选择射击方式")] public AttackStyle attackStyle;
     public bool isTrack;
     public void Init()
     {
@@ -18,16 +23,30 @@ public class Enemy_Attack : MonoBehaviour
     }
     private void Start()
     {
-        Init();
+        //Init();
     }
-    private void OnTriggerEnter(Collider other)//玩家进入攻击范围
+    private void Update()
     {
-
-        if (other.tag == "Player")
+        Shot();
+    }
+    public void Shot()
+    {
+        if (Time.time > startTime + attackRate)
         {
-            StartCoroutine(UpdateTarget(player.transform));
+            startTime = Time.time;
+                GameObject bullet = Instantiate(this.bullet, transform.position, Quaternion.identity);
+                bullet.GetComponent<BulletComponent>().Init(player, attackStyle);
+           
         }
     }
+    //private void OnTriggerEnter(Collider other)//玩家进入攻击范围
+    //{
+
+    //    if (other.tag == "Player")
+    //    {
+    //        StartCoroutine(UpdateTarget(player.transform));
+    //    }
+    //}
     //private void OnTriggerStay(Collider other)
     //{
     //    if (other.tag == "Player"&& !isTrack)
