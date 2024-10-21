@@ -3,6 +3,8 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using Utls;
+
 public class PlayerControlComponent : MonoBehaviour
 {
 
@@ -13,7 +15,7 @@ public class PlayerControlComponent : MonoBehaviour
     public float VisionRadius => _lantern.VisionRadius;
     [SerializeField] Rigidbody rb3D;
     //[SerializeField] LightVisionComponent _lightVision;
-
+    [SerializeField] Animator anim;
     [SerializeField] Collider3DHandler _unitCollider3D;
     [SerializeField] LanternComponent _lantern;
     [SerializeField] int _maxLantern = 5;
@@ -66,7 +68,7 @@ public class PlayerControlComponent : MonoBehaviour
     }
     void OnColliderOnView(Collider[] colliders)
     {
-        this.Log($"发现：{string.Join(',',colliders.Select(c=>c.name))}");
+        DebugExtension.Log(this, $"发现：{string.Join(',',colliders.Select(c=>c.name))}");
     }
     public void SetSpeed(float speed) => moveSpeed = speed;
     public void StopPanic() => StopAllCoroutines();//暂时这样停止，实际上会停止所有协程。
@@ -99,7 +101,10 @@ public class PlayerControlComponent : MonoBehaviour
             rb3D.transform.localScale = new Vector3(flipX, local.y, local.z);
             rb3D.MovePosition(rb3D.position + new Vector3(
                                   axisMovement.x, 0, axisMovement.y) * moveSpeed * Time.fixedDeltaTime);
+            AnimSet(0);
         }
+        else
+            AnimSet(-1);
 
         detectionTimer += Time.fixedDeltaTime;
         if (detectionTimer >= detectionInterval)
@@ -108,6 +113,14 @@ public class PlayerControlComponent : MonoBehaviour
             DetectEnemies();
         }
     }
+
+    void AnimSet(int animInt)
+    {
+        if (anim.GetInteger(GameTag.AnimInt) == animInt) return;
+        anim.SetInteger(GameTag.AnimInt, animInt);
+        anim.SetTrigger(GameTag.AnimTrigger);
+    }
+
     //为了优化FixedUpdate调用大量的2d物理来检测周围物件，原本1秒调用50次(fixedUpdate)改成1秒10次以减少gc带来的性能开销。
     float detectionInterval = 0.1f; // 检测间隔
     float detectionTimer = 0f;

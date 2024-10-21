@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks.Triggers;
 using GMVC.Core;
 using GMVC.Utls;
 using GMVC.Views;
@@ -32,7 +30,7 @@ public class Page_Stage : UiBase
         view_npc = new View_Npc(v.Get<View>("view_npc"));
         view_storyPlayer = new View_StoryPlayer(v.Get<View>("view_storyPlayer"), () =>
         {
-            GameController.SwitchPlayMode(GameStage.PlayModes.Explore);
+            //GameController.SwitchPlayMode(GameStage.PlayModes.Explore);
             view_storyPlayer.Hide();
         });
 

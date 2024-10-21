@@ -2,6 +2,8 @@ using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utls;
+
 /// <summary>
 /// 倒数传感器, 用于倒数计时后执行
 /// </summary>
@@ -25,7 +27,13 @@ public class TimeTrackingSensor : PlotSensorBase
     {
         if(!isInit)return;
         Invoke(nameof(OnTimeout), timeout);
+        this.Log();
     }
     void OnTimeout() => isDone = true;
-    protected override bool CheckCondition() => isDone;
+
+    protected override bool CheckCondition()
+    {
+        //XArg.Format(new{isDone}).Log(this);
+        return isDone;
+    }
 }

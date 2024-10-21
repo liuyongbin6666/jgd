@@ -15,7 +15,7 @@ public class GameStage : ModelBase
     public StageIndex StageIndex { get; private set; }
     public StageStory Story { get; private set; }
     public PlayableUnit Player { get; private set; }
-    public PlayModes Mode { get; private set; }
+    public PlayModes Mode { get; private set; } = PlayModes.Explore;//暂时默认探索模式
     public GameStage(PlayableUnit player, StageIndex stageIndex, StageStory stageStory)
     {
         Player = player;
@@ -28,14 +28,14 @@ public class GameStage : ModelBase
     {
         Story.StartTimer();
         Story.SetStory(new[] { 1, 2, 3, 4, 5 });
-        SetMode(PlayModes.Explore);
+        //SetMode(PlayModes.Explore);
         //Game.SendEvent(GameEvent.Story_Npc_Update, 0);
     }
-    public void SetMode(PlayModes mode)
-    {
-        Mode = mode;
-        Game.SendEvent(GameEvent.Game_PlayMode_Update, mode);
-    }
+    //public void SetMode(PlayModes mode)
+    //{
+    //    Mode = mode;
+    //    Game.SendEvent(GameEvent.Game_PlayMode_Update, mode);
+    //}
     //通过关卡
     public void AddStageIndex()
     {
