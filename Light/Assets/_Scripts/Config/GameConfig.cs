@@ -4,6 +4,6 @@ using System;
 {
     public PlayerControlComponent PlayerPrefab;
     public StageTimeComponent StageTimeComponent;
-
     public StoryItemDataSO StoryItemDataSo;
+    public StorySo[] Stories;
 }

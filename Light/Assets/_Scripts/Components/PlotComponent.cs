@@ -9,22 +9,33 @@ using UnityEngine.Events;
 /// </summary>
 public class PlotComponent : PlotComponentBase
 {
+    enum TextMode
+    {
+        [InspectorName("情节开启")]Begin,
+        [InspectorName("情节完成")]Finalize,
+        [InspectorName("不自动播放")] None
+    }
     [SerializeField,LabelText("开始触发")]readonly UnityEvent onTrigger;
     [SerializeField,LabelText("台词间隔秒")]float lineInterval = 1f;
     [LabelText("情节(自动)完成")]public bool IsFinalize;
-    public override void Begin()
+    [SerializeField,LabelText("文本播放在")] TextMode mode;
+
+    protected override void OnBegin()
     {
-        $"{name}: 情节执行".Log(this);
         StartCoroutine(BeginRoutine());
+        return;
 
         IEnumerator BeginRoutine()
         {
             onTrigger?.Invoke();
             yield return null;
-            var (type,lines) = story.GetLines(plotName);
-            PlotManager.SendLines(type, lines.ToArray());
+            if (mode == TextMode.Begin) SendLines();
             yield return new WaitUntil(() => IsFinalize);
             Finalization();
         }
+    }
+    protected override void OnFinalization()
+    {
+        if(mode == TextMode.Finalize)SendLines();
     }
 }

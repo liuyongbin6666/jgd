@@ -11,7 +11,7 @@ public class LanternComponent : CountdownComponent
     [SerializeField] VisionLevelComponent _visionLevel;
     protected override int PulseTimes => 1;
     protected override float Duration => _lastingPerFirefly;
-
+    public float VisionRadius => _visionLevel.VisionRadius;
     public void Init()
     {
         _light.Init();
@@ -26,5 +26,5 @@ public class LanternComponent : CountdownComponent
         if (isMaxLevel) StartCountdown(true);
     }
 
-    public Collider2D[] CheckForEnemiesInView(LayerMask layer) => _light.CheckForEnemiesInView(layer);
+    public Collider[] CheckForEnemiesInView(LayerMask layer) => _light.CheckForEnemiesInView(layer);
 }

@@ -21,13 +21,13 @@ namespace Utls
             var type = arg.GetType();
             var param = type
                .GetProperties()
-               .Select(p => $"{p.Name}= {FormatValue(p.GetValue(arg))}");
+               .Select(p => $"{p.Name}= {Format(p.GetValue(arg))}");
             param = param.Concat(type.GetFields()
-               .Select(f => $"{f.Name}= {FormatValue(f.GetValue(arg))}"));
+               .Select(f => $"{f.Name}= {Format(f.GetValue(arg))}"));
             return $"{method}: {message}. on arg: {string.Join(',', param)}";
         }
 
-        static string FormatValue(object? value)
+        public static string Format(object? value)
         {
             if (value == null) return "null";
 

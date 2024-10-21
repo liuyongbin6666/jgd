@@ -1,6 +1,7 @@
 using GMVC.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utls;
 
 /// <summary>
 /// 玩家情节传感器，主要用于检测玩家是否进入触发器范围
@@ -11,8 +12,14 @@ public class PlayerTrackingSensor : PlotSensorBase
     [SerializeField, LabelText("传感器")] SensorSoBase sensorSo;
     protected override SensorSoBase SensorSo => sensorSo;
     protected override SensorManager SensorManager => Game.SensorManager;
-    bool IsPlayer { get; set; }
-    protected override void OnInit() => handler.RegEnter(CheckIfPlayer);
-    void CheckIfPlayer(GameObject obj) { IsPlayer = obj.CompareTag(GameTag.Player); }
-    protected override bool CheckCondition() => IsPlayer;
+    bool IsPlayerReaching { get; set; }
+    protected override void OnSensorInit() => handler.RegEnter(CheckIfPlayer);
+    void CheckIfPlayer(GameObject obj) =>
+        IsPlayerReaching = plotComponent.IsCurrentState() && obj.CompareTag(GameTag.Player);
+
+    protected override bool CheckCondition()
+    {
+        //XArg.Format(new{IsPlayerReaching}).Log(this);
+        return IsPlayerReaching;
+    }
 }

@@ -1,10 +1,11 @@
 using UnityEngine;
+using Utls;
 
 /// <summary>
 /// 传感器基类，基于<seealso cref="SensorManager"/>实现触发事件<br/>
 /// 主要实现触发条件监听并触发事件
 /// </summary>
-public abstract class SensorListenerBase : MonoInitializer
+public abstract class SensorListenerBase : GameStartInitializer
 {
     protected abstract SensorSoBase SensorSo { get; }
     protected abstract SensorManager SensorManager { get; }
@@ -15,29 +16,34 @@ public abstract class SensorListenerBase : MonoInitializer
     }
     public UpdateStrategy UpdateStrategy => SensorSo.updateStrategy;
     RepeatMode Repeat => SensorSo.repeat;
-
+    bool IsInit { get; set; }
     /// <summary>
-    /// 是否可触发，用于<seealso cref="CheckCondition"/>的前置条件判断。主要是为了情节的节点顺序服务<br/>
-    /// 默认是根据gameObject的激活状态判断
+    /// 在<seealso cref="CheckCondition"/>之前的检查，用于检查是否可以触发
     /// </summary>
-    protected virtual bool IsTriggerable => gameObject.activeSelf;
-    public override void Initialization()
+    protected abstract bool IsTriggerable { get; }
+
+    protected override void OnGameStart()
     {
-        SensorManager.RegisterTrigger(this, OnCallback);
-        OnInit();
+        SensorManager.RegisterTrigger(this, OnCondition);
+        OnSensorInit();
+        IsInit = true;
     }
-    protected abstract void OnInit();
+    protected abstract void OnSensorInit();
 
     // 触发条件
     protected abstract bool CheckCondition();
 
-    bool OnCallback()
+    bool OnCondition()
     {
-        if (!IsTriggerable) return false; // 不可触发，跳过
+        if (!IsInit) return false;
+        if (!gameObject.activeSelf) return false; // 不可触发，跳过
+        if (!IsTriggerable) return false; // 不可触发，跳过       
         if (!CheckCondition()) return false; //条件不满足，跳过
+        //XArg.Format(new { IsInit, active = gameObject.activeSelf, IsTriggerable, condition = CheckCondition() }).Log(this);
         TriggerEvent();
         return Repeat == RepeatMode.Once; //返回是否finalize
     }
+
 
     // 如果需要其他检测策略，可以启动协程或定时器
     void OnDestroy()

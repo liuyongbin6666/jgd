@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_Sprite 1
-  m_Shader: {fileID: -6465566751694194690, guid: 821da636827fda3438f1b93d7565bc1f, type: 3}
+  m_Name: Bullet_tail
+  m_Shader: {fileID: -6465566751694194690, guid: ff8cde2e98b37e54fb4c7e9a7052b047, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -24,7 +24,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: f7c6bf48b5849c0498683a5fa07c5f16, type: 3}
+        m_Texture: {fileID: 2800000, guid: 81ea7d0514a7811459d51d68203cea38, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -41,11 +41,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _DissolveScale: 3.5
     - _QueueControl: 0
     - _QueueOffset: 0
-    m_Colors: []
+    m_Colors:
+    - _Color01: {r: 0.8666667, g: 0.59131896, b: 0.20784312, a: 1}
+    - _Color02: {r: 0.5283019, g: 0.5269426, b: 0.51584196, a: 1}
+    - _DissolveSpeed: {r: -1, g: 0, b: 0, a: 0}
+    - _MainTexSpeed: {r: -1.5, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &7609865622860662402
+--- !u!114 &3496430208843481097
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using GMVC.Core;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,7 +15,7 @@ public class GameStage : ModelBase
     public StageIndex StageIndex { get; private set; }
     public StageStory Story { get; private set; }
     public PlayableUnit Player { get; private set; }
-    public PlayModes Mode { get; private set; }
+    public PlayModes Mode { get; private set; } = PlayModes.Explore;//暂时默认探索模式
     public GameStage(PlayableUnit player, StageIndex stageIndex, StageStory stageStory)
     {
         Player = player;
@@ -29,14 +28,14 @@ public class GameStage : ModelBase
     {
         Story.StartTimer();
         Story.SetStory(new[] { 1, 2, 3, 4, 5 });
-        SetMode(PlayModes.Explore);
+        //SetMode(PlayModes.Explore);
         //Game.SendEvent(GameEvent.Story_Npc_Update, 0);
     }
-    public void SetMode(PlayModes mode)
-    {
-        Mode = mode;
-        Game.SendEvent(GameEvent.Game_PlayMode_Update, mode);
-    }
+    //public void SetMode(PlayModes mode)
+    //{
+    //    Mode = mode;
+    //    Game.SendEvent(GameEvent.Game_PlayMode_Update, mode);
+    //}
     //通过关卡
     public void AddStageIndex()
     {
@@ -63,17 +62,25 @@ public class StageStory : ModelBase
     //故事Id
     int[] StoryId { get; set; }
     int _totalSecs;
-    public StageStory(StageTimeComponent stageTimeComponent, UnityAction onSwitchToStoryMode, int remainSeconds)
+    PlotComponentBase currentPlot;
+    public StageStory(StageTimeComponent stageTimeComponent, int remainSeconds)
     {
         StageTimeComponent = stageTimeComponent;
         stageTimeComponent.OnPulseTrigger.AddListener(OnPulse);
         _totalSecs = remainSeconds;
         RemainSeconds = remainSeconds;
-        PlotManager.OnLinesEvent.AddListener((t, l) =>
-        {
-            if(t == Lines.Story)onSwitchToStoryMode?.Invoke();
-            OnLine(t, l);
-        });
+        PlotManager.OnLinesEvent.AddListener(OnLine);
+        PlotManager.OnPlotBegin.AddListener(SetCurrentPlot);
+    }
+
+    void SetCurrentPlot(PlotComponentBase? plot)
+    {
+        var lastPlot = currentPlot;
+        currentPlot = plot;
+        if (currentPlot)
+            SendEvent(GameEvent.Story_Plot_Begin);
+        else
+            SendEvent(GameEvent.Story_End, lastPlot.story.Name);
     }
 
     void OnLine(Lines lineType, string[] lines)
@@ -88,6 +95,7 @@ public class StageStory : ModelBase
                 DialogLines = lines;
                 SendEvent(GameEvent.Story_Dialog_Send);
                 break;
+            default: throw new ArgumentOutOfRangeException(nameof(lineType), lineType, null);
         }
     }
 
@@ -110,4 +118,6 @@ public class StageStory : ModelBase
         RemainSeconds--;
         SendEvent(GameEvent.Stage_StageTime_Update);
     }
+
+    public void Plot_Next() => PlotManager.TriggerNext(currentPlot);
 }

@@ -1,4 +1,5 @@
 using System;
+using GMVC.Conditions;
 using UnityEngine;
 
 /// <summary>
@@ -12,10 +13,13 @@ public class PlayableUnit : ModelBase
     public int Lantern { get; private set; }= 1;
     public PlayerControlComponent PlayerControl { get; }
     public bool IsMoving => PlayerControl.IsMoving;
-
-    public PlayableUnit(PlayerControlComponent playerControl,int lantern, float lightStep)
+    Player Player { get; }
+    ConValue Hp => Player.Hp;
+    ConValue Mp => Player.Mp;
+    public PlayableUnit(Player player,PlayerControlComponent playerControl, int lantern, float lightStep)
     {
         Lantern = lantern;
+        Player = player;
         PlayerControl = playerControl;
         PlayerControl.Init(lightStep);
         PlayerControl.Lantern(Lantern);
@@ -23,8 +27,20 @@ public class PlayableUnit : ModelBase
         PlayerControl.OnPanicFinalize.AddListener(OnScaryFinalized);
         PlayerControl.OnPanicPulse.AddListener(OnPanicPulse);
         PlayerControl.OnGameItemTrigger.AddListener(OnGameItemInteractive);
+        PlayerControl.OnDamage.AddListener(OnDamage);
     }
-
+    // 当被伤害
+    void OnDamage(int damage)
+    {
+        if (damage < 0)
+        {
+            Log($"伤害值异常! = {damage}");
+            return;
+        }
+        Hp.Add(-damage);
+        SendEvent(GameEvent.Player_Hp_Update);
+        if(Player.IsDeath) SendEvent(GameEvent.Player_IsDeath);
+    }
     // 当游戏物品交互
     void OnGameItemInteractive(GameItemBase gameItem)
     {
@@ -66,4 +82,37 @@ public class PlayableUnit : ModelBase
         SendEvent(GameEvent.Player_Lantern_Update);
     }
     public void Move(Vector3 direction) => PlayerControl.axisMovement = direction.ToVector2();
+}
+
+public class Player
+{
+    public ConValue Hp { get; }
+    public ConValue Mp { get; }
+    public bool IsDeath => Hp.IsExhausted;
+    public Player(ConValue hp, ConValue mp)
+    {
+        Hp = hp;
+        Mp = mp;
+    }
+}
+/// <summary>
+/// 法术
+/// </summary>
+public class Spell
+{
+    public enum Types
+    {
+        Normal,
+        Fire,
+        Ice
+    }
+    public Types Type { get; }
+    public int Damage { get; }
+    public int Level { get; }
+    public Spell(Types type, int damage, int level)
+    {
+        Type = type;
+        Damage = damage;
+        Level = level;
+    }
 }

@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class GameLaunch : MonoBehaviour
 {
-    public GameRender RenderMode;
     public UiManager UiManager;
     public GameConfigure Configure;
     public AudioComponent AudioComponent;
@@ -19,7 +18,6 @@ public class GameLaunch : MonoBehaviour
         Game.Run(GameStart, 
                  AudioComponent, 
                  Configure.GameConfig, 
-                 RenderMode, 
                  SensorManager, 
                  PlotManager,
                  EnvironmentComponent);
@@ -29,22 +27,37 @@ public class GameLaunch : MonoBehaviour
     void GameStart()
     {
         UiManager.Init();
-        var initializers = Resources.FindObjectsOfTypeAll<MonoInitializer>();
-        foreach (var initializer in initializers) initializer.Initialization();
+        var initializers = Resources.FindObjectsOfTypeAll<GameStartInitializer>();
+        foreach (var initializer in initializers) initializer.GameStart();
     }
 }
 
 /// <summary>
-/// 实行自动初始化的MonoBehaviour基类
+/// 实行自动初始化的MonoBehaviour基类<br/>
+/// 注意一般上是使用在必须呀<see cref="Game"/>Game控制的组件上，<br/>
+/// 如果需要游戏中可控的组件请使用<see cref="Game.Run"/><br/>
+/// 注册在<see cref="Game"/>静态类中
 /// </summary>
-public abstract class MonoInitializer : MonoBehaviour
+public abstract class GameStartInitializer : MonoBehaviour
 {
 #if UNITY_EDITOR
     [SerializeField,LabelText("自动初始化-测试用")] protected bool autoInitInEditorOnly;
+    bool isGameStart;
+#endif
     void Start()
     {
-        if (autoInitInEditorOnly) Initialization();
-    }
+#if UNITY_EDITOR
+        if (autoInitInEditorOnly) GameStart();
 #endif
-    public abstract void Initialization();
+        OnStart();
+    }
+    protected virtual void OnStart(){}
+    public void GameStart()
+    {
+        if(isGameStart)return;
+        OnGameStart();
+        isGameStart = true;
+    }
+
+    protected abstract void OnGameStart();
 }

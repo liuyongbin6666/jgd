@@ -11,6 +11,18 @@ public class PlotManager : MonoBehaviour
 {
     Dictionary<StorySo, List<PlotComponentBase>> data = new();
     public readonly UnityEvent<StageStory.Lines, string[]> OnLinesEvent = new();
+    public readonly UnityEvent<PlotComponentBase> OnPlotBegin = new();
+    Dictionary<StorySo, string> currentMap = new();
+
+    public void Init(StorySo[] stories)
+    {
+        foreach (var story in stories)
+        {
+            data.Add(story,new List<PlotComponentBase>());
+            currentMap.Add(story,story.GetFirstPlot());
+        }
+    }
+
     public void RegComponent(PlotComponentBase plot)
     {
         if(!data.ContainsKey(plot.story)) data.Add(plot.story, new List<PlotComponentBase>());
@@ -24,9 +36,15 @@ public class PlotManager : MonoBehaviour
     {
         if (!data.TryGetValue(com.story, out var list)) return;
         var plotName = com.plotName;
-        var startPlots = com.story.BeginNext(plotName);
+        var storyEnd = com.story.IsStoryEnd(plotName);
         com.Display(false);
-        var plots = list.Join(startPlots, p => p.plotName, n => n, (p, _) => p).ToArray();
+        if (storyEnd)
+        {
+            SetCurrentPlot(null);
+            return;
+        }
+        var nextPlots = com.story.NextPlots(plotName);
+        var plots = list.Join(nextPlots, p => p.plotName, n => n, (p, _) => p).ToArray();
         foreach (var plot in plots)
         {
             plot.Display(true);
@@ -34,4 +52,16 @@ public class PlotManager : MonoBehaviour
         }
     }
     public void SendLines(StageStory.Lines type, string[] lines) => OnLinesEvent?.Invoke(type, lines);
+
+    public void SetCurrentPlot(PlotComponentBase plot)
+    {
+        if (plot) currentMap[plot.story] = plot.plotName;
+        OnPlotBegin.Invoke(plot);
+    }
+
+    public bool IsCurrentPlot(PlotComponentBase plot)
+    {
+        if (!currentMap.TryGetValue(plot.story, out var plotName)) return false;
+        return plot.plotName == plotName;
+    }
 }

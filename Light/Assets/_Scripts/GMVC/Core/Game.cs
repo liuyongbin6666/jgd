@@ -36,7 +36,6 @@ namespace GMVC.Core
 
         public static void Run(Action onGameStartAction, AudioComponent audioComponent, 
             GameConfig config,
-            GameRender renderMode,
             SensorManager sensorManager,
             PlotManager plotManager,
             EnvironmentComponent environmentComponent,
@@ -44,11 +43,11 @@ namespace GMVC.Core
         {
             if (IsRunning) throw new NotImplementedException("Game is running!");
             IsRunning = true;
-            RenderMode = renderMode;
             SensorManager = sensorManager;
+            PlotManager = plotManager;
+            PlotManager.Init(config.Stories);
             AudioComponent = audioComponent;
             AudioComponent.Init();
-            PlotManager = plotManager;
             Config = config;
             Environment = environmentComponent;
             Environment.Init();
@@ -75,7 +74,6 @@ namespace GMVC.Core
             }
         }
 
-        public static GameRender RenderMode { get; private set; }
         public static void SendEvent(string eventName, DataBag bag) => MessagingManager.Send(eventName, bag);
         public static void SendEvent(string eventName, params object[] args)
         {

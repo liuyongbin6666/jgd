@@ -28,7 +28,7 @@ public class StorySo : AutoNameSoBase
         if (plots.Contains(plot)) return;
         plots.Add(plot);
     }
-    public IEnumerable<string> BeginNext(string plotName)
+    public IEnumerable<string> NextPlots(string plotName)
     {
         var plot = GetPlot(plotName);
         return plot.NextPlots();
@@ -54,4 +54,6 @@ public class StorySo : AutoNameSoBase
         var lines =plot?.lines ?? Array.Empty<string>();
         return (plot?.lineType ?? 0, lines);
     }
+    public bool IsStoryEnd(string plotName) => GetPlot(plotName).isStoryFinalize;
+    public string GetFirstPlot() => plots[0].Name;
 }
