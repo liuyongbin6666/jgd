@@ -21,11 +21,11 @@ public class GameController : ControllerBase
         World.StartStage();
         Debug.Log("游戏执行中！");
     }
-    public void SwitchPlayMode(GameStage.PlayModes mode)
-    {
-        World.Stage.SetMode(mode);
-        World.Stage.Story.Plot_Next();
-    }
+    //public void SwitchPlayMode(GameStage.PlayModes mode)
+    //{
+    //    World.Stage.SetMode(mode);
+    //    World.Stage.Story.Plot_Next();
+    //}
     public void Game_End()
     {
         World.End();

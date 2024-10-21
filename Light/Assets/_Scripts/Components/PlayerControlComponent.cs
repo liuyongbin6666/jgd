@@ -3,6 +3,8 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using Utls;
+
 public class PlayerControlComponent : MonoBehaviour
 {
 
@@ -66,7 +68,7 @@ public class PlayerControlComponent : MonoBehaviour
     }
     void OnColliderOnView(Collider[] colliders)
     {
-        this.Log($"发现：{string.Join(',',colliders.Select(c=>c.name))}");
+        DebugExtension.Log(this, $"发现：{string.Join(',',colliders.Select(c=>c.name))}");
     }
     public void SetSpeed(float speed) => moveSpeed = speed;
     public void StopPanic() => StopAllCoroutines();//暂时这样停止，实际上会停止所有协程。

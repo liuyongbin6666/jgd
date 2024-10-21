@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utls;
 
 /// <summary>
 /// 传感器基类，基于<seealso cref="SensorManager"/>实现触发事件<br/>
@@ -36,9 +37,9 @@ public abstract class SensorListenerBase : GameStartInitializer
     {
         if (!IsInit) return false;
         if (!gameObject.activeSelf) return false; // 不可触发，跳过
-        if (!IsTriggerable) return false; // 不可触发，跳过
-        $"{name}检查CheckCondition = {CheckCondition()}".Log(this);
+        if (!IsTriggerable) return false; // 不可触发，跳过       
         if (!CheckCondition()) return false; //条件不满足，跳过
+        //XArg.Format(new { IsInit, active = gameObject.activeSelf, IsTriggerable, condition = CheckCondition() }).Log(this);
         TriggerEvent();
         return Repeat == RepeatMode.Once; //返回是否finalize
     }
