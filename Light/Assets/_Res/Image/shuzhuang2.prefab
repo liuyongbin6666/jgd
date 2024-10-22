@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2829508843209166966}
   - component: {fileID: 3841991984698744579}
-  - component: {fileID: 3560078954677377544}
+  - component: {fileID: 7240669618126834030}
   m_Layer: 0
   m_Name: shuzhuang2
   m_TagString: Untagged
@@ -85,8 +85,8 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!136 &3560078954677377544
-CapsuleCollider:
+--- !u!65 &7240669618126834030
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -103,8 +103,6 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.3095703
-  m_Height: 0.39257812
-  m_Direction: 1
+  serializedVersion: 3
+  m_Size: {x: 0.68, y: 0.27, z: 0.05}
   m_Center: {x: 0, y: 0, z: 0}
