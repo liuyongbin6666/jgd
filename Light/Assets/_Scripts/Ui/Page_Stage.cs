@@ -18,6 +18,8 @@ namespace Ui
         View_Top view_top { get; }
         View_Npc view_npc { get; }
         View_StoryPlayer view_storyPlayer { get; }
+        View_Win view_win { get; }
+        View_Defeat view_defeat { get; }
         View_Joystick view_joystick { get; }
         PlayableController PlayableController => Game.GetController<PlayableController>();
         GameController GameController => Game.GetController<GameController>();
@@ -37,6 +39,8 @@ namespace Ui
                 //GameController.SwitchPlayMode(GameStage.PlayModes.Explore);
                 view_storyPlayer.Hide();
             });
+            view_win = new View_Win(v.Get<View>("view_win"));
+            view_defeat = new View_Defeat(v.Get<View>("view_defeat"));
 
             /**********事件注册**********/
 
@@ -175,6 +179,19 @@ namespace Ui
             }
         }
 
+        class View_Win:UiBase
+        {
+            public View_Win(IView v) : base(v, false)
+            {
+            }
+        }
+
+        class View_Defeat:UiBase
+        {
+            public View_Defeat(IView v) : base(v, false)
+            {
+            }
+        }
 
         class View_Joystick : UiBase
         {
