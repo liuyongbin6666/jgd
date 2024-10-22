@@ -5,11 +5,11 @@
 #define VLB_LIGHT_TEMPERATURE_SUPPORT
 #endif
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
-using System.Collections;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts.SD
 {
     [ExecuteInEditMode]
     [DisallowMultipleComponent]
@@ -42,7 +42,7 @@ namespace VLB
         /// RGBA plain color, if colorMode is Flat (takes account of the alpha value).
         /// </summary>
 #if UNITY_2018_1_OR_NEWER
-        [ColorUsageAttribute(false, true)]
+        [ColorUsage(false, true)]
 #else
         [ColorUsageAttribute(false, true, 0f, 8f, 0.125f, 3f)]
 #endif

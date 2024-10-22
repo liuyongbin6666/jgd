@@ -1,47 +1,46 @@
 ﻿using System.Collections;
-using GMVC.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyComponent : PlayerTrackingComponentBase
+namespace Components
 {
-    [SerializeField] NavMeshAgent nav; 
-    public Transform target;
-    // Start is called before the first frame update
-    protected override void OnStart() => Init();
+    public class EnemyComponent : PlayerTrackingComponentBase
+    {
+        [SerializeField] NavMeshAgent nav; 
+        public Transform target;
+        public bool StopMove;
+        // Start is called before the first frame update
+        protected override void OnGameInit() => Init();
 
-    public void Init()
-    {
-        nav.updateRotation = false;
-    }
-
-    protected override void OnPlayerTrackingEnter(PlayerControlComponent player)
-    {
-        StopAllCoroutines();
-        StartCoroutine(UpdateTarget(player.transform));
-    }
-
-    protected override void OnPlayerTrackingExit(PlayerControlComponent player)
-    {
-        //UpdateTarget(null);
-    }
-    //设置速度
-    public void SetSpeed(float speed) => nav.speed = speed;
-    IEnumerator UpdateTarget(Transform t)//获取当前目标位置
-    {
-        target = t;
-        while (target)
+        public void Init()
         {
-            yield return new WaitForSeconds(0.2f);
+            nav.updateRotation = false;
+        }
+
+        protected override void OnPlayerTrackingEnter(PlayerControlComponent player)
+        {
+            StopAllCoroutines();
+            StartCoroutine(UpdateTarget(player.transform));
+        }
+
+        protected override void OnPlayerTrackingExit(PlayerControlComponent player)
+        {
+            //UpdateTarget(null);
+        }
+        //设置速度
+        public void SetSpeed(float speed) => nav.speed = speed;
+        IEnumerator UpdateTarget(Transform t)//获取当前目标位置
+        {
             target = t;
-            if (target)
+            while (target)
             {
-                nav.enabled = true;
-                nav.SetDestination(target.position);
-            }
-            else
-            {
-                nav.enabled = false;
+                yield return new WaitForSeconds(0.2f);
+                target = t;
+                nav.enabled = target;
+                if (target && !StopMove)
+                {
+                    nav.SetDestination(target.position);
+                }
             }
         }
     }

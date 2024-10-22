@@ -1,32 +1,38 @@
 using System.Collections;
+using GameData;
 using Sirenix.OdinInspector;
 using UnityEngine;
-/// <summary>
-/// 跟踪控件，用于跟踪目标位置
-/// </summary>
-public class FollowComponent : GameStartInitializer
-{
-    [SerializeField] Transform followTransform;
-    [SerializeField] float delaySec = 0.1f;
+using Utls;
 
-    protected override void OnGameStart() => Init();
-    void Init()
+namespace Components
+{
+    /// <summary>
+    /// 跟踪控件，用于跟踪目标位置
+    /// </summary>
+    public class FollowComponent : GameStartInitializer
     {
-        if (!followTransform) return;
-        StartCoroutine(FollowRoutine());
-        IEnumerator FollowRoutine()
+        [SerializeField] Transform followTransform;
+        [SerializeField] float delaySec = 0.1f;
+
+        protected override void OnGameStart() => Init();
+        void Init()
         {
-            while (followTransform)
+            if (!followTransform) return;
+            StartCoroutine(FollowRoutine());
+            IEnumerator FollowRoutine()
             {
-                yield return new WaitForSeconds(delaySec);
-                FollowLocation();
+                while (followTransform)
+                {
+                    yield return new WaitForSeconds(delaySec);
+                    FollowLocation();
+                }
             }
         }
-    }
-    [Button("跟踪物件位置")]public void FollowLocation()
-    {
-        if (!followTransform) return;
-        var t = transform.position;
-        transform.position = followTransform.position.ChangeY(t.y);
+        [Button("跟踪物件位置")]public void FollowLocation()
+        {
+            if (!followTransform) return;
+            var t = transform.position;
+            transform.position = followTransform.position.ChangeY(t.y);
+        }
     }
 }

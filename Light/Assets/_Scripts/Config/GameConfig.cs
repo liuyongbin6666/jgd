@@ -1,9 +1,13 @@
 using System;
+using Components;
 
-[Serializable]public class GameConfig
+namespace Config
 {
-    public PlayerControlComponent PlayerPrefab;
-    public StageTimeComponent StageTimeComponent;
-    public StoryItemDataSO StoryItemDataSo;
-    public StorySo[] Stories;
+    [Serializable]public class GameConfig
+    {
+        public PlayerControlComponent PlayerPrefab;
+        public StageTimeComponent StageTimeComponent;
+        public StoryItemDataSO StoryItemDataSo;
+        public StorySo[] Stories;
+    }
 }

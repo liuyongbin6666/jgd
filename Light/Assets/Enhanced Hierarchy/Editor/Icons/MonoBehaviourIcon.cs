@@ -38,7 +38,7 @@ namespace EnhancedHierarchy.Icons {
             }
         }
 
-        private static IEnumerable<(Type, Component c)> GetHierarchyWithUGuiFiltered()
+        static IEnumerable<(Type, Component c)> GetHierarchyWithUGuiFiltered()
         {
             return EnhancedHierarchy.Components
                 .Select(c => (c.GetType(), c))

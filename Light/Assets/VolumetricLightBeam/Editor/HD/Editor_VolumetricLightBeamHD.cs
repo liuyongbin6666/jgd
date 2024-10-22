@@ -2,6 +2,9 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using VolumetricLightBeam.Scripts;
+using VolumetricLightBeam.Scripts.HD;
+using VolumetricLightBeam.Scripts.SD;
 
 #pragma warning disable 0429, 0162 // Unreachable expression code detected (because of Noise3D.isSupported on mobile)
 
@@ -60,7 +63,7 @@ namespace VLB
                 {
                     if (!hasLightSpot) EditorGUILayout.BeginHorizontal();    // mandatory to have the color picker on the same line (when the button "from light" is not here)
                     {
-                        if (Config.Instance.featureEnabledColorGradient == FeatureEnabledColorGradient.Off)
+                        if (VolumetricLightBeam.Scripts.Config.Instance.featureEnabledColorGradient == FeatureEnabledColorGradient.Off)
                         {
                             EditorGUILayout.PropertyField(m_ColorFlat, EditorStrings.Beam.ColorMode);
                         }
@@ -157,7 +160,7 @@ namespace VLB
 
             if (FoldableHeader.Begin(this, EditorStrings.Beam.HD.HeaderRaymarching))
             {
-                Editor_Config.DrawRaymarchingQualitiesPopup(Config.Instance, m_RaymarchingQualityID, EditorStrings.Beam.HD.RaymarchingQuality);
+                Editor_Config.DrawRaymarchingQualitiesPopup(VolumetricLightBeam.Scripts.Config.Instance, m_RaymarchingQualityID, EditorStrings.Beam.HD.RaymarchingQuality);
 
                 EditorGUILayout.PropertyField(m_JitteringFactor, EditorStrings.Beam.HD.JitteringFactor);
 
@@ -182,7 +185,7 @@ namespace VLB
             }
             FoldableHeader.End();
 
-            if (Config.Instance.featureEnabledNoise3D)
+            if (VolumetricLightBeam.Scripts.Config.Instance.featureEnabledNoise3D)
             {
                 if (FoldableHeader.Begin(this, EditorStrings.Beam.Header3DNoise))
                 {
@@ -292,11 +295,11 @@ namespace VLB
             {
                 DrawButtonAddComponentDust();
 
-                bool showButtonCookie = Config.Instance.featureEnabledCookie && m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeamHD beam) => { return beam.GetComponent<VolumetricCookieHD>() == null; });
+                bool showButtonCookie = VolumetricLightBeam.Scripts.Config.Instance.featureEnabledCookie && m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeamHD beam) => { return beam.GetComponent<VolumetricCookieHD>() == null; });
                 if (showButtonCookie && GUILayout.Button(EditorData.Instance.contentAddCookieHD, buttonAddComponentStyle))
                     AddComponentToTargets<VolumetricCookieHD>();
 
-                bool showButtonShadow = Config.Instance.featureEnabledShadow && m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeamHD beam) => { return beam.GetComponent<VolumetricShadowHD>() == null; });
+                bool showButtonShadow = VolumetricLightBeam.Scripts.Config.Instance.featureEnabledShadow && m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeamHD beam) => { return beam.GetComponent<VolumetricShadowHD>() == null; });
                 if (showButtonShadow && GUILayout.Button(EditorData.Instance.contentAddShadowHD, buttonAddComponentStyle))
                     AddComponentToTargets<VolumetricShadowHD>();
 

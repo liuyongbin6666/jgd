@@ -8,11 +8,10 @@
 #endif
 
 using UnityEngine;
-using System.Collections;
 
 #pragma warning disable 0429, 0162 // Unreachable expression code detected (because of Noise3D.isSupported on mobile)
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts.HD
 {
     [AddComponentMenu("")] // hide it from Component search
     [ExecuteInEditMode]

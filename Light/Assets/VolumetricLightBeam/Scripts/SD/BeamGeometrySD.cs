@@ -7,12 +7,12 @@
 #define VLB_SRP_SUPPORT // Comment this to disable SRP support
 #endif
 
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 #pragma warning disable 0429, 0162 // Unreachable expression code detected (because of Noise3D.isSupported on mobile)
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts.SD
 {
     [AddComponentMenu("")] // hide it from Component search
     [ExecuteInEditMode]

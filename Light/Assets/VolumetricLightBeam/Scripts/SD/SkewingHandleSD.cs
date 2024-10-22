@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts.SD
 {
     [ExecuteInEditMode]
     [HelpURL(Consts.Help.SD.UrlSkewingHandle)]

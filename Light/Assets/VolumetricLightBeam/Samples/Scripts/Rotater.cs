@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace VLB_Samples
+namespace VolumetricLightBeam.Samples.Scripts
 {
     public class Rotater : MonoBehaviour
     {

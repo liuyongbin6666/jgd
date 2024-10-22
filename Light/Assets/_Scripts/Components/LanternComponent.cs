@@ -1,30 +1,34 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utls;
 
-/// <summary>
-/// 灯笼控件
-/// </summary>
-public class LanternComponent : CountdownComponent
+namespace Components
 {
-    [SerializeField,LabelText("减弱时长")] float _lastingPerFirefly = 3f;
-    [SerializeField] LightVisionComponent _light;
-    [SerializeField] VisionLevelComponent _visionLevel;
-    protected override int PulseTimes => 1;
-    protected override float Duration => _lastingPerFirefly;
-    public float VisionRadius => _visionLevel.VisionRadius;
-    public void Init()
+    /// <summary>
+    /// 灯笼控件
+    /// </summary>
+    public class LanternComponent : CountdownComponent
     {
-        _light.Init();
-        StartCountdown();
-    }
-    public void SetVision(float radius) => _light.SetOuterRadius(radius);
-    public void AddVision(float radius) => _light.AddOuterRadius(radius);
+        [SerializeField,LabelText("减弱时长")] float _lastingPerFirefly = 3f;
+        [SerializeField] LightVisionComponent _light;
+        [SerializeField] VisionLevelComponent _visionLevel;
+        protected override int PulseTimes => 1;
+        protected override float Duration => _lastingPerFirefly;
+        public float VisionRadius => _visionLevel.VisionRadius;
+        public void Init()
+        {
+            _light.Init();
+            StartCountdown();
+        }
+        public void SetVision(float radius) => _light.SetOuterRadius(radius);
+        public void AddVision(float radius) => _light.AddOuterRadius(radius);
 
-    public void SetVisionLevel(int level)
-    {
-        _visionLevel.LoadLightLevel(level,out var isMaxLevel);
-        if (isMaxLevel) StartCountdown(true);
-    }
+        public void SetVisionLevel(int level)
+        {
+            _visionLevel.LoadLightLevel(level,out var isMaxLevel);
+            if (isMaxLevel) StartCountdown(true);
+        }
 
-    public Collider[] CheckForEnemiesInView(LayerMask layer) => _light.CheckForEnemiesInView(layer);
+        public Collider[] CheckForEnemiesInView(LayerMask layer) => _light.CheckForEnemiesInView(layer);
+    }
 }

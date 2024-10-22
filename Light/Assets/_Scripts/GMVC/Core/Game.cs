@@ -1,5 +1,9 @@
 using System;
 using System.Collections;
+using Components;
+using Config;
+using Controller;
+using GameData;
 using GMVC.Utls;
 using UnityEngine;
 using UnityEngine.Events;

@@ -1,22 +1,25 @@
+using Config;
 using GMVC.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Utls;
 
-/// <summary>
-/// 怪物死亡传感器，
-/// </summary>
-public class BossDeathTrackingSensor : PlotSensorBase
+namespace Components
 {
-    [SerializeField, LabelText("传感器")] SensorSoBase sensorSo;
-    [SerializeField, LabelText("Boss")] BossComponent boss;
-    protected override SensorSoBase SensorSo => sensorSo;
-    protected override SensorManager SensorManager => Game.SensorManager;
-    protected override void OnSensorInit(){}
-
-    protected override bool CheckCondition()
+    /// <summary>
+    /// 怪物死亡传感器，
+    /// </summary>
+    public class BossDeathTrackingSensor : PlotSensorBase
     {
-        //XArg.Format(new{boss.IsDeath}).Log(this);
-        return boss.IsDeath;
+        [SerializeField, LabelText("传感器")] SensorSoBase sensorSo;
+        [SerializeField, LabelText("Boss")] BossComponent boss;
+        protected override SensorSoBase SensorSo => sensorSo;
+        protected override SensorManager SensorManager => Game.SensorManager;
+        protected override void OnSensorInit(){}
+
+        protected override bool CheckCondition()
+        {
+            //XArg.Format(new{boss.IsDeath}).Log(this);
+            return boss.IsDeath;
+        }
     }
 }

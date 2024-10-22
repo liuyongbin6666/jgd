@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IHit
+namespace fight_aspect
 {
-    void GetHit(float t);
-    void GetHeal(float t);
+    public interface IHit
+    {
+        void GetHit(float t);
+        void GetHeal(float t);
+    }
 }

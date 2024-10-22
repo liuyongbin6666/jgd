@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts.SD
 {
     [AddComponentMenu("")] // hide it from Component search
     [DisallowMultipleComponent]

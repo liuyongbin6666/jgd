@@ -2,6 +2,9 @@
 #define VLB_SRP_SUPPORT // Comment this to disable SRP support
 #endif
 
+
+using System.Collections.Generic;
+using UnityEditor;
 #if VLB_SRP_SUPPORT
 #if UNITY_2019_1_OR_NEWER
 using AliasCurrentPipeline = UnityEngine.Rendering.RenderPipelineManager;
@@ -14,14 +17,7 @@ using CallbackType = System.Action<UnityEngine.Camera>;
 #endif // UNITY_2019_1_OR_NEWER
 #endif // VLB_SRP_SUPPORT
 
-using UnityEngine;
-using System.Collections.Generic;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public static class SRPHelper
     {

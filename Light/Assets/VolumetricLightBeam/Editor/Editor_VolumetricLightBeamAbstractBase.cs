@@ -2,6 +2,9 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using VolumetricLightBeam.Scripts;
+using VolumetricLightBeam.Scripts.HD;
+using VolumetricLightBeam.Scripts.SD;
 
 namespace VLB
 {

@@ -1,8 +1,13 @@
-public class BossComponent : GameItemBase
+using GameData;
+
+namespace Components
 {
-    public bool IsDeath;
-    public override GameItemType Type => GameItemType.Boss;
-    public override void Invoke(PlayableUnit player)
+    public class BossComponent : GameItemBase
     {
+        public bool IsDeath;
+        public override GameItemType Type => GameItemType.Boss;
+        public override void Invoke(PlayableUnit player)
+        {
+        }
     }
 }

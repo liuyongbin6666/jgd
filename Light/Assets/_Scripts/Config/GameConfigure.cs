@@ -1,7 +1,9 @@
-using System;
 using UnityEngine;
 
-public class GameConfigure : MonoBehaviour
+namespace Config
 {
-    public GameConfig GameConfig;
+    public class GameConfigure : MonoBehaviour
+    {
+        public GameConfig GameConfig;
+    }
 }

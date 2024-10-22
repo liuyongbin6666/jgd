@@ -1,26 +1,27 @@
 ﻿using Sirenix.OdinInspector;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+namespace Components
 {
-    public float Speed=0.75f;
-    public Transform player;
-    public Vector3 Offset;
-    [SerializeField, LabelText("采用动态镜头跟踪")] public bool dynamics;
-    private void Awake()
+    public class CameraController : MonoBehaviour
     {
-        Offset = transform.position-player.position;
-    }
-    private void LateUpdate()
-    {
-        if(player!=null)
+        public float Speed=0.75f;
+        public Transform player;
+        public Vector3 Offset;
+        [SerializeField, LabelText("采用动态镜头跟踪")] public bool dynamics;
+        private void Awake()
         {
-            if (dynamics)
-                transform.position = Vector3.Lerp(transform.position, (player.position + Offset), Speed * Time.deltaTime);
-            else
-                transform.position = player.position;
+            Offset = transform.position-player.position;
+        }
+        private void LateUpdate()
+        {
+            if(player!=null)
+            {
+                if (dynamics)
+                    transform.position = Vector3.Lerp(transform.position, (player.position + Offset), Speed * Time.deltaTime);
+                else
+                    transform.position = player.position;
+            }
         }
     }
 }

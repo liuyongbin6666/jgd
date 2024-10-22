@@ -4,10 +4,8 @@
 #endif
 
 using UnityEngine;
-using UnityEngine.Serialization;
-using System.Collections;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts.HD
 {
     [ExecuteInEditMode]
     [DisallowMultipleComponent]

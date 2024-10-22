@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using UnityEditor;
+using VolumetricLightBeam.Scripts;
 
 namespace VLB
 {

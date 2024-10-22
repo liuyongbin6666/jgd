@@ -4,6 +4,8 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using System.Collections.Generic;
 using System.Linq;
+using VolumetricLightBeam.Scripts;
+using VolumetricLightBeam.Scripts.SD;
 
 #pragma warning disable 0429, 0162 // Unreachable expression code detected (because of Noise3D.isSupported on mobile)
 
@@ -86,7 +88,7 @@ namespace VLB
                 {
                     if (!hasLightSpot) EditorGUILayout.BeginHorizontal();    // mandatory to have the color picker on the same line (when the button "from light" is not here)
                     {
-                        if (Config.Instance.featureEnabledColorGradient == FeatureEnabledColorGradient.Off)
+                        if (VolumetricLightBeam.Scripts.Config.Instance.featureEnabledColorGradient == FeatureEnabledColorGradient.Off)
                         {
                             EditorGUILayout.PropertyField(color, EditorStrings.Beam.ColorMode);
                         }
@@ -145,7 +147,7 @@ namespace VLB
                 else
                     intensityInside.floatValue = intensityOutside.floatValue;
 
-                if(Config.Instance.isHDRPExposureWeightSupported)
+                if(VolumetricLightBeam.Scripts.Config.Instance.isHDRPExposureWeightSupported)
                 {
                     EditorGUILayout.PropertyField(hdrpExposureWeight, EditorStrings.Beam.HDRPExposureWeight);
                 }
@@ -159,7 +161,7 @@ namespace VLB
 
                 EditorGUILayout.Separator();
 
-                if (Config.Instance.featureEnabledShaderAccuracyHigh)
+                if (VolumetricLightBeam.Scripts.Config.Instance.featureEnabledShaderAccuracyHigh)
                 {
                     EditorGUILayout.PropertyField(shaderAccuracy, EditorStrings.Beam.ShaderAccuracy);
                     EditorGUILayout.Separator();
@@ -256,7 +258,7 @@ namespace VLB
             }
             FoldableHeader.End();
 
-            if (Config.Instance.featureEnabledNoise3D)
+            if (VolumetricLightBeam.Scripts.Config.Instance.featureEnabledNoise3D)
             {
                 if (FoldableHeader.Begin(this, EditorStrings.Beam.Header3DNoise))
                 {
@@ -328,7 +330,7 @@ namespace VLB
                     }
                     if (EditorGUI.EndChangeCheck()) { SetMeshesDirty(); }
 
-                    if (Config.Instance.featureEnabledMeshSkewing)
+                    if (VolumetricLightBeam.Scripts.Config.Instance.featureEnabledMeshSkewing)
                     {
                         var vec3 = skewingLocalForwardDirection.vector3Value;
                         var vec2 = Vector2.zero;
@@ -425,7 +427,7 @@ namespace VLB
                     }
                     if (Application.isPlaying)
                     {
-                        if(Config.Instance.fadeOutCameraTransform == null)
+                        if(VolumetricLightBeam.Scripts.Config.Instance.fadeOutCameraTransform == null)
                         {
                             EditorGUILayout.HelpBox(EditorStrings.Beam.HelpFadeOutNoMainCamera, MessageType.Error);
                         }
@@ -513,7 +515,7 @@ namespace VLB
             {
                 DrawButtonAddComponentDust();
 
-                bool showButtonOcclusion = Config.Instance.featureEnabledDynamicOcclusion && m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeamSD beam) => { return beam.GetComponent<DynamicOcclusionAbstractBase>() == null; });
+                bool showButtonOcclusion = VolumetricLightBeam.Scripts.Config.Instance.featureEnabledDynamicOcclusion && m_Targets.HasAtLeastOneTargetWith((VolumetricLightBeamSD beam) => { return beam.GetComponent<DynamicOcclusionAbstractBase>() == null; });
                 if (showButtonOcclusion && GUILayout.Button(EditorData.Instance.contentAddDynamicOcclusion, buttonAddComponentStyle))
                 {
                     var menu = new GenericMenu();

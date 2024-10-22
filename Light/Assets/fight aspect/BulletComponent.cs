@@ -1,116 +1,124 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using Components;
+using GameData;
+using GMVC.Utls;
 using UnityEngine;
+using Utls;
 
-public class BulletComponent : MonoBehaviour
+namespace fight_aspect 
 {
-    public float distance;
-    public float currentDistance;
-    public Vector3 targetPosition;
-    public Vector3 currentPosition;
-    public float speed;
-    public Vector3 direct;
-    public float startTime;
-    public float duration=2f;//生命周期
-    public AttackStyle attackStyle;
-    public Transform target;
-    public void Init(Transform target,AttackStyle attackStyle)
+    public class BulletComponent : TrackingComponentBase
     {
-        this.target = target;
-        this.attackStyle = attackStyle;        
-        targetPosition = target.position;
-        currentPosition = transform.position;
-        direct = (targetPosition-currentPosition).normalized;
-        distance = (targetPosition-currentPosition).magnitude;
-        currentDistance = distance;
-        SetSpeed(2f);
-        startTime = Time.time;
-        Shot();
-    }
-    private void Start()
-    {
-        
-    }
-    private void Update()
-    {
-        //if(Time.time>startTime+duration)
-        //{
-        //    Destorythis();
-        //}
-    }
-    public void Shot()
-    {
-        if(attackStyle==AttackStyle.direct)
+        public Spell Spell;
+        public float distance;
+        public float currentDistance;
+        public Vector3 targetPosition;
+        public Vector3 currentPosition;
+        public float Speed = 2f;
+        public Vector3 direct;
+        public float startTime;
+        public float duration=2f;//生命周期
+        public BulletTracking BulletTracking;
+        public Transform Target;
+        bool KeepActive => Target || Time.time - startTime < duration;
+        public bool IsBulletInit { get; private set; }
+
+        public void Set(Transform owner,Transform target,string targetTag,Spell spell,BulletTracking bulletTracking,float speed = -1)
         {
-            StartCoroutine(ShotDirect());
+            SetTargetTag(targetTag);
+            Spell = spell;
+            Target = target;
+            BulletTracking = bulletTracking;        
+            targetPosition = target.position;
+            currentPosition = owner.position;
+            transform.position = owner.position;
+            direct = (targetPosition-currentPosition).normalized;
+            distance = (targetPosition-currentPosition).magnitude;
+            currentDistance = distance;
+            startTime = Time.time;
+            if(speed>0) Speed = speed;
+            this.Display(true);
+            IsBulletInit = true;
         }
-        if(attackStyle==AttackStyle.halftrack)
+
+        void ResetBullet()
         {
-            StartCoroutine(ShotHalfTrack());
+            StopAllCoroutines();
+            Target = null;
+            currentPosition = Vector3.zero;
+            direct = Vector3.zero;
+            distance = 0;
+            currentDistance = distance;
+            startTime = Time.time;
+            IsBulletInit = false;
+            this.Display(false);
         }
-        if(attackStyle==AttackStyle.track)
+
+        public void UpdateBullet()
         {
-            StartCoroutine(ShotTrack());
-        }
-    }
-    public IEnumerator ShotTrack()//追踪攻击
-    {
-        while(gameObject)
-        {
-            gameObject.transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-            yield return 0f;
-        }
-        
-    }
-    public IEnumerator ShotDirect()//定向攻击
-    {
-        while (gameObject)
-        {
-            transform.position += direct * Time.deltaTime * speed;
-            yield return 0f;
-        }
-    }
-    public IEnumerator ShotHalfTrack()//半追踪
-    {
-        while(gameObject)
-        {
-            currentDistance = (targetPosition - currentPosition).magnitude;
-            if(currentDistance>distance/2)
+            if (!KeepActive)
             {
-                gameObject.transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-                targetPosition = target.position;
-                currentPosition = transform.position;
+                ResetBullet();
+                return;
             }
-            else
+            Action updateAction;
+            switch (BulletTracking)
             {
-                direct = (targetPosition - currentPosition).normalized;
-                attackStyle = AttackStyle.direct;
-                break;
+                case BulletTracking.Track:
+                    updateAction = Tracking;
+                    break;
+                case BulletTracking.Direct:
+                    updateAction = Direct;
+                    break;
+                case BulletTracking.HalfTrack:
+                {
+                    var switchDirect = false;
+                    updateAction = HalfTrackRoutine(ref switchDirect);
+                    if (switchDirect) direct = (targetPosition - currentPosition).normalized;
+                }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            yield return 0f;
+            updateAction?.Invoke();
+            XArg.Format(new { transform.position, tar = Target.position }).Log(this);
+            return;
+
+            Action HalfTrackRoutine(ref bool switchDirect) //半追踪
+            {
+                currentDistance = (targetPosition - currentPosition).magnitude;
+                if (currentDistance > distance / 2)
+                    return Tracking;
+                if (!switchDirect) switchDirect = true;
+                return Direct;
+            }
+
+            void Tracking() //追踪攻击
+                => gameObject.transform.position = Vector3
+                    .MoveTowards(transform.position, Target.position, Speed * Time.deltaTime);
+
+            void Direct() //定向攻击
+                => transform.position += direct * Time.deltaTime * Speed;
         }
-        Shot(); 
-    }
-    void SetScale(float scale)
-    {
-        transform.localScale = new Vector3(scale, scale, scale);
-    }
-    void SetSpeed(float speed) => this.speed = speed;
-    public void Destorythis()
-    {
-        Destroy(gameObject);
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.tag==target.tag)
+
+        protected override void OnTrackingEnter(GameObject go)
         {
-            Destorythis();
+            var colHandler = go.GetComponent<Collider3DHandler>();
+            if (Target && colHandler.root != Target.gameObject) // 如果已经有目标，且不是当前目标继续等待真正的目标
+                return;
+            var handler = colHandler.root.GetComponent<BulletHandler>();
+            handler.BulletImpact(Spell);
+            ResetBullet();
+        }
+        protected override void OnTrackingExit(GameObject go)
+        {
+
         }
     }
-}
-public enum AttackStyle
-{
-    track,
-    direct,
-    halftrack
+    public enum BulletTracking
+    {
+        [InspectorName("追踪")]Track,
+        [InspectorName("直飞")]Direct,
+        [InspectorName("半追踪")]HalfTrack
+    }
 }

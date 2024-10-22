@@ -1,6 +1,8 @@
 ﻿#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
+using VolumetricLightBeam.Scripts;
+using VolumetricLightBeam.Scripts.SD;
 
 namespace VLB
 {
@@ -20,7 +22,7 @@ namespace VLB
         {
             base.OnInspectorGUI();
 
-            if (!Config.Instance.featureEnabledDynamicOcclusion)
+            if (!VolumetricLightBeam.Scripts.Config.Instance.featureEnabledDynamicOcclusion)
             {
                 EditorGUILayout.HelpBox(EditorStrings.DynOcclusion.HelpFeatureDisabled, MessageType.Warning);
             }

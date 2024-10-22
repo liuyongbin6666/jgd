@@ -1,15 +1,13 @@
-﻿#if UNITY_EDITOR
-//#define PROFILE_INSTANCE_LOADING
+﻿
 using UnityEditor;
-#endif
 using UnityEngine;
-using UnityEngine.Serialization;
-
-#if VLB_URP
 using UnityEngine.Rendering.Universal;
-#endif
+using UnityEngine.Serialization;
+using VolumetricLightBeam.Scripts.HD;
+using VolumetricLightBeam.Scripts.SD;
+//#define PROFILE_INSTANCE_LOADING
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     [HelpURL(Consts.Help.UrlConfig)]
     public class Config : ScriptableObject

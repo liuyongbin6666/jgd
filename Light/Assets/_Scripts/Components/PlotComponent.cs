@@ -1,41 +1,43 @@
 using System.Collections;
-using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-/// <summary>
-/// 情节控件 - IsFinalize 控制是否触发"完成"
-/// </summary>
-public class PlotComponent : PlotComponentBase
+namespace Components
 {
-    enum TextMode
+    /// <summary>
+    /// 情节控件 - IsFinalize 控制是否触发"完成"
+    /// </summary>
+    public class PlotComponent : PlotComponentBase
     {
-        [InspectorName("情节开启")]Begin,
-        [InspectorName("情节完成")]Finalize,
-        [InspectorName("不自动播放")] None
-    }
-    [SerializeField,LabelText("开始触发")]readonly UnityEvent onTrigger;
-    [SerializeField,LabelText("台词间隔秒")]float lineInterval = 1f;
-    [LabelText("情节(自动)完成")]public bool IsFinalize;
-    [SerializeField,LabelText("文本播放在")] TextMode mode;
-
-    protected override void OnBegin()
-    {
-        StartCoroutine(BeginRoutine());
-        return;
-
-        IEnumerator BeginRoutine()
+        enum TextMode
         {
-            onTrigger?.Invoke();
-            yield return null;
-            if (mode == TextMode.Begin) SendLines();
-            yield return new WaitUntil(() => IsFinalize);
-            Finalization();
+            [InspectorName("情节开启")]Begin,
+            [InspectorName("情节完成")]Finalize,
+            [InspectorName("不自动播放")] None
         }
-    }
-    protected override void OnFinalization()
-    {
-        if(mode == TextMode.Finalize)SendLines();
+        [SerializeField,LabelText("开始触发")]readonly UnityEvent onTrigger;
+        [SerializeField,LabelText("台词间隔秒")]float lineInterval = 1f;
+        [LabelText("情节(自动)完成")]public bool IsFinalize;
+        [SerializeField,LabelText("文本播放在")] TextMode mode;
+
+        protected override void OnBegin()
+        {
+            StartCoroutine(BeginRoutine());
+            return;
+
+            IEnumerator BeginRoutine()
+            {
+                onTrigger?.Invoke();
+                yield return null;
+                if (mode == TextMode.Begin) SendLines();
+                yield return new WaitUntil(() => IsFinalize);
+                Finalization();
+            }
+        }
+        protected override void OnFinalization()
+        {
+            if(mode == TextMode.Finalize)SendLines();
+        }
     }
 }

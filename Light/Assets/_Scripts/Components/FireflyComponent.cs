@@ -1,17 +1,21 @@
+using GameData;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-/// <summary>
-/// 萤火虫控件
-/// </summary>
-public class FireflyComponent : GameItemBase
+namespace Components
 {
-    [SerializeField,LabelText("虫灯值")] int _lantern = 1;
-    public override GameItemType Type => GameItemType.Firefly;
-
-    public override void Invoke(PlayableUnit player)
+    /// <summary>
+    /// 萤火虫控件
+    /// </summary>
+    public class FireflyComponent : GameItemBase
     {
-        player.AddLantern(_lantern);
-        Destroy(gameObject);
+        [SerializeField,LabelText("虫灯值")] int _lantern = 1;
+        public override GameItemType Type => GameItemType.Firefly;
+
+        public override void Invoke(PlayableUnit player)
+        {
+            player.AddLantern(_lantern);
+            Destroy(gameObject);
+        }
     }
 }

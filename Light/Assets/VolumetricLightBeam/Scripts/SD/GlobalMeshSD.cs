@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts.SD
 {
     public static class GlobalMeshSD
     {

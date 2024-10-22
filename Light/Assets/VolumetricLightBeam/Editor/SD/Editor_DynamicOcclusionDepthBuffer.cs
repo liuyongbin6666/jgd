@@ -1,6 +1,8 @@
 ﻿#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
+using VolumetricLightBeam.Scripts;
+using VolumetricLightBeam.Scripts.SD;
 
 namespace VLB
 {
@@ -26,7 +28,7 @@ namespace VLB
             {
                 EditorGUILayout.PropertyField(layerMask, EditorStrings.DynOcclusion.LayerMask);
 
-                if(Config.Instance.geometryOverrideLayer == false)
+                if(VolumetricLightBeam.Scripts.Config.Instance.geometryOverrideLayer == false)
                 {
                     EditorGUILayout.HelpBox(EditorStrings.DynOcclusion.HelpOverrideLayer, MessageType.Warning);
                 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     [HelpURL(Consts.Help.UrlEffectFromProfile)]
     public class EffectFromProfile : MonoBehaviour

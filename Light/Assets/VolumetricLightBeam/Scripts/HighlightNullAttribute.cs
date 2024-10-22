@@ -1,9 +1,7 @@
-﻿using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+﻿using UnityEditor;
+using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     /// <summary>
     /// Highlight in red in inspector in not set

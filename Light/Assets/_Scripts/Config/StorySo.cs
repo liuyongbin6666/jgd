@@ -1,59 +1,63 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameData;
 using GMVC.Data;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "故事", menuName = "配置/故事")]
-public class StorySo : AutoNameSoBase
+namespace Config
 {
+    [CreateAssetMenu(fileName = "故事", menuName = "配置/故事")]
+    public class StorySo : AutoNameSoBase
+    {
 
-    [OnValueChanged(nameof(ResetPlots))]public List<PlotSoBase> plots;
-    void ResetPlots()
-    {
-        foreach (var plot in plots) plot.story = this;
-    }
-    [Button("清除列表")]public void ClearList()
-    {
-        foreach (var plot in plots.ToArray())
+        [OnValueChanged(nameof(ResetPlots))]public List<PlotSoBase> plots;
+        void ResetPlots()
         {
-            plots.Remove(plot);
-            plot.RemoveStory();
+            foreach (var plot in plots) plot.story = this;
         }
-    }
-    public IEnumerable<string> GetPlotNames() => plots?.Select(p => p.Name) ?? Array.Empty<string>();
-    public void RegPlot(PlotSoBase plot)
-    {
-        if (plots.Contains(plot)) return;
-        plots.Add(plot);
-    }
-    public IEnumerable<string> NextPlots(string plotName)
-    {
-        var plot = GetPlot(plotName);
-        return plot.NextPlots();
-    }
+        [Button("清除列表")]public void ClearList()
+        {
+            foreach (var plot in plots.ToArray())
+            {
+                plots.Remove(plot);
+                plot.RemoveStory();
+            }
+        }
+        public IEnumerable<string> GetPlotNames() => plots?.Select(p => p.Name) ?? Array.Empty<string>();
+        public void RegPlot(PlotSoBase plot)
+        {
+            if (plots.Contains(plot)) return;
+            plots.Add(plot);
+        }
+        public IEnumerable<string> NextPlots(string plotName)
+        {
+            var plot = GetPlot(plotName);
+            return plot.NextPlots();
+        }
 
-    public bool IsAutoBegin(string plotName)
-    {
-        var plot = GetPlot(plotName);
+        public bool IsAutoBegin(string plotName)
+        {
+            var plot = GetPlot(plotName);
         
-        return plot.autoBegin;
-    }
+            return plot.autoBegin;
+        }
 
-    PlotSoBase GetPlot(string plotName)
-    {
-        var plot = plots.FirstOrDefault(p => p.Name == plotName);
-        if (!plot) throw new NotImplementedException($"{name}:找不到剧情：{plotName}");
-        return plot;
-    }
+        PlotSoBase GetPlot(string plotName)
+        {
+            var plot = plots.FirstOrDefault(p => p.Name == plotName);
+            if (!plot) throw new NotImplementedException($"{name}:找不到剧情：{plotName}");
+            return plot;
+        }
 
-    public (StageStory.Lines,string[]) GetLines(string plotName)
-    {
-        var plot = GetPlot(plotName);
-        var lines =plot?.lines ?? Array.Empty<string>();
-        return (plot?.lineType ?? 0, lines);
+        public (StageStory.Lines,string[]) GetLines(string plotName)
+        {
+            var plot = GetPlot(plotName);
+            var lines =plot?.lines ?? Array.Empty<string>();
+            return (plot?.lineType ?? 0, lines);
+        }
+        public bool IsStoryEnd(string plotName) => GetPlot(plotName).isStoryFinalize;
+        public string GetFirstPlot() => plots[0].Name;
     }
-    public bool IsStoryEnd(string plotName) => GetPlot(plotName).isStoryFinalize;
-    public string GetFirstPlot() => plots[0].Name;
 }

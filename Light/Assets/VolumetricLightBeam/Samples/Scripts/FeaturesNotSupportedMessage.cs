@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
+using VolumetricLightBeam.Scripts;
 
-namespace VLB_Samples
+namespace VolumetricLightBeam.Samples.Scripts
 {
     public class FeaturesNotSupportedMessage : MonoBehaviour
     {
         void Start()
         {
-            if(!VLB.Noise3D.isSupported)
-                Debug.LogWarning(VLB.Noise3D.isNotSupportedString);
+            if(!Noise3D.isSupported)
+                Debug.LogWarning(Noise3D.isNotSupportedString);
         }
     }
 }

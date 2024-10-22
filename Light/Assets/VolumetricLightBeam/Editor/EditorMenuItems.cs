@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEditor;
 using System.Reflection;
 using System;
+using VolumetricLightBeam.Scripts;
+using VolumetricLightBeam.Scripts.HD;
+using VolumetricLightBeam.Scripts.SD;
 
 namespace VLB
 {
@@ -114,7 +117,7 @@ namespace VLB
         [MenuItem("CONTEXT/" + TrackRealtimeChangesOnLightHD.ClassName + kDocumentationSuffix, false, kMenuItemPriorityDocumentation)]
         static void Menu_TrackRealtimeChangesOnLight_Doc(MenuCommand menuCommand) { Application.OpenURL(Consts.Help.HD.UrlTrackRealtimeChangesOnLight); }
 
-        [MenuItem("CONTEXT/" + Config.ClassName + kDocumentationSuffix, false, kMenuItemPriorityDocumentation)]
+        [MenuItem("CONTEXT/" + VolumetricLightBeam.Scripts.Config.ClassName + kDocumentationSuffix, false, kMenuItemPriorityDocumentation)]
         static void Menu_Config_Doc(MenuCommand menuCommand) { Application.OpenURL(Consts.Help.UrlConfig); }
 
         /////////////////////////////
@@ -133,7 +136,7 @@ namespace VLB
         [MenuItem("CONTEXT/" + VolumetricCookieHD.ClassName + kOpenConfigSuffix, false, kMenuItemPriorityOpenConfig)]
         [MenuItem("CONTEXT/" + VolumetricShadowHD.ClassName + kOpenConfigSuffix, false, kMenuItemPriorityOpenConfig)]
         [MenuItem("CONTEXT/" + TrackRealtimeChangesOnLightHD.ClassName + kOpenConfigSuffix, false, kMenuItemPriorityOpenConfig)]
-        public static void Menu_Beam_Config(MenuCommand menuCommand) { Config.EditorSelectInstance(); }
+        public static void Menu_Beam_Config(MenuCommand menuCommand) { VolumetricLightBeam.Scripts.Config.EditorSelectInstance(); }
 
         /////////////////////////////
         // ADDITIONAL COMPONENTS
@@ -151,11 +154,11 @@ namespace VLB
 
         const string kAddDynamicOcclusionRaycasting = "CONTEXT/" + VolumetricLightBeamSD.ClassName + "/Add Dynamic Occlusion (Raycasting)";
         [MenuItem(kAddDynamicOcclusionRaycasting, false)] static void Menu_AddDynamicOcclusionRaycasting_Command(MenuCommand menuCommand) { EditorExtensions.AddComponentFromEditor<DynamicOcclusionRaycasting>(menuCommand.context as VolumetricLightBeamSD); }
-        [MenuItem(kAddDynamicOcclusionRaycasting, true)] static bool Menu_AddDynamicOcclusionRaycasting_Validate() { return Config.Instance.featureEnabledDynamicOcclusion && EditorExtensions.CanAddComponentFromEditor<DynamicOcclusionAbstractBase>(GetActiveVolumetricLightBeam()); }
+        [MenuItem(kAddDynamicOcclusionRaycasting, true)] static bool Menu_AddDynamicOcclusionRaycasting_Validate() { return VolumetricLightBeam.Scripts.Config.Instance.featureEnabledDynamicOcclusion && EditorExtensions.CanAddComponentFromEditor<DynamicOcclusionAbstractBase>(GetActiveVolumetricLightBeam()); }
 
         const string kAddDynamicOcclusionDepthBuffer = "CONTEXT/" + VolumetricLightBeamSD.ClassName + "/Add Dynamic Occlusion (Depth Buffer)";
         [MenuItem(kAddDynamicOcclusionDepthBuffer, false)] static void Menu_AddDynamicOcclusionDepthBuffer_Command(MenuCommand menuCommand) { EditorExtensions.AddComponentFromEditor<DynamicOcclusionDepthBuffer>(menuCommand.context as VolumetricLightBeamSD); }
-        [MenuItem(kAddDynamicOcclusionDepthBuffer, true)] static bool Menu_AddDynamicOcclusionDepthBuffer_Validate() { return Config.Instance.featureEnabledDynamicOcclusion && EditorExtensions.CanAddComponentFromEditor<DynamicOcclusionAbstractBase>(GetActiveVolumetricLightBeam()); }
+        [MenuItem(kAddDynamicOcclusionDepthBuffer, true)] static bool Menu_AddDynamicOcclusionDepthBuffer_Validate() { return VolumetricLightBeam.Scripts.Config.Instance.featureEnabledDynamicOcclusion && EditorExtensions.CanAddComponentFromEditor<DynamicOcclusionAbstractBase>(GetActiveVolumetricLightBeam()); }
 
         const string kAddTriggerZoneSD = "CONTEXT/" + VolumetricLightBeamSD.ClassName + "/Add Trigger Zone";
         [MenuItem(kAddTriggerZoneSD, false)] static void Menu_AddTriggerZone_CommandSD(MenuCommand menuCommand) => Menu_AddTriggerZone_Command_Common(menuCommand);
@@ -209,11 +212,11 @@ namespace VLB
 
         const string kAddShadow = "CONTEXT/" + VolumetricLightBeamHD.ClassName + "/Add Volumetric Shadow";
         [MenuItem(kAddShadow, false)] static void Menu_AddShadow_Command(MenuCommand menuCommand) { EditorExtensions.AddComponentFromEditor<VolumetricShadowHD>(menuCommand.context as VolumetricLightBeamHD); }
-        [MenuItem(kAddShadow, true)] static bool Menu_AddShadow_Validate() { return Config.Instance.featureEnabledShadow && EditorExtensions.CanAddComponentFromEditor<VolumetricShadowHD>(GetActiveVolumetricLightBeam()); }
+        [MenuItem(kAddShadow, true)] static bool Menu_AddShadow_Validate() { return VolumetricLightBeam.Scripts.Config.Instance.featureEnabledShadow && EditorExtensions.CanAddComponentFromEditor<VolumetricShadowHD>(GetActiveVolumetricLightBeam()); }
 
         const string kAddCookie = "CONTEXT/" + VolumetricLightBeamHD.ClassName + "/Add Volumetric Cookie";
         [MenuItem(kAddCookie, false)] static void Menu_AddCookie_Command(MenuCommand menuCommand) { EditorExtensions.AddComponentFromEditor<VolumetricCookieHD>(menuCommand.context as VolumetricLightBeamHD); }
-        [MenuItem(kAddCookie, true)] static bool Menu_AddCookie_Validate() { return Config.Instance.featureEnabledCookie && EditorExtensions.CanAddComponentFromEditor<VolumetricCookieHD>(GetActiveVolumetricLightBeam()); }
+        [MenuItem(kAddCookie, true)] static bool Menu_AddCookie_Validate() { return VolumetricLightBeam.Scripts.Config.Instance.featureEnabledCookie && EditorExtensions.CanAddComponentFromEditor<VolumetricCookieHD>(GetActiveVolumetricLightBeam()); }
 
         const string kAddTrackRealtime = "CONTEXT/" + VolumetricLightBeamHD.ClassName + "/Add Track Realtime Changes on Light";
         [MenuItem(kAddTrackRealtime, false)] static void Menu_AddTrackRealtime_Command(MenuCommand menuCommand) { EditorExtensions.AddComponentFromEditor<TrackRealtimeChangesOnLightHD>(menuCommand.context as VolumetricLightBeamHD); }
@@ -231,7 +234,7 @@ namespace VLB
         const string kEditMenu = "Edit/" + kCategoryName;
 
         [MenuItem(kEditMenu + "\u2699 Open Config", false, 20001)]
-        static void Menu_EditOpenConfig() { Config.EditorSelectInstance(); }
+        static void Menu_EditOpenConfig() { VolumetricLightBeam.Scripts.Config.EditorSelectInstance(); }
 
 #if UNITY_2019_3_OR_NEWER
         [MenuItem(kEditMenu + "Enable scene Pickability on all beams", false, 20101)]

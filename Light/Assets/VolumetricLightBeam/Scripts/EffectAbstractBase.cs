@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
+using VolumetricLightBeam.Scripts.HD;
+using VolumetricLightBeam.Scripts.SD;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     [AddComponentMenu("")] // hide it from Component search
     public class EffectAbstractBase : MonoBehaviour

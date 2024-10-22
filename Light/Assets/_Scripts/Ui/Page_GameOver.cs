@@ -1,19 +1,23 @@
+using GameData;
 using GMVC.Core;
 using GMVC.Views;
 using UnityEngine.UI;
 
-public class Page_GameOver : UiBase
+namespace Ui
 {
-    Text text_title { get; }
-    Button btn_restart { get; }
-
-    public Page_GameOver(IView v,bool display = true) : base(v, display)
+    public class Page_GameOver : UiBase
     {
-        text_title = v.Get<Text>("text_title");
-        Game.RegEvent(GameEvent.Game_StateChanged, b =>
+        Text text_title { get; }
+        Button btn_restart { get; }
+
+        public Page_GameOver(IView v,bool display = true) : base(v, display)
         {
-            var state = Game.World.Status;
-            Display(state == GameWorld.GameStates.End);
-        });
+            text_title = v.Get<Text>("text_title");
+            Game.RegEvent(GameEvent.Game_StateChanged, b =>
+            {
+                var state = Game.World.Status;
+                Display(state == GameWorld.GameStates.End);
+            });
+        }
     }
 }

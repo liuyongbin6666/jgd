@@ -5,7 +5,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts.SD
 {
     [ExecuteInEditMode]
     [HelpURL(Consts.Help.SD.UrlDynamicOcclusionRaycasting)]

@@ -1,8 +1,11 @@
-/// <summary>
-/// 游戏元素
-/// </summary>
-public interface IGameElement
+namespace GameData
 {
-    string Type { get; }
-    string Name { get; }
+    /// <summary>
+    /// 游戏元素
+    /// </summary>
+    public interface IGameElement
+    {
+        string Type { get; }
+        string Name { get; }
+    }
 }

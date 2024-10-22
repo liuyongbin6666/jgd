@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using VolumetricLightBeam.Scripts.SD;
 
-namespace VLB_Samples
+namespace VolumetricLightBeam.Samples.Scripts
 {
     [RequireComponent(typeof(Collider), typeof(Rigidbody), typeof(MeshRenderer))]
     public class CheckIfInsideBeam : MonoBehaviour
@@ -35,7 +36,7 @@ namespace VLB_Samples
 
         void OnTriggerStay(Collider trigger)
         {
-            var dynamicOcclusion = trigger.GetComponent<VLB.DynamicOcclusionRaycasting>();
+            var dynamicOcclusion = trigger.GetComponent<DynamicOcclusionRaycasting>();
 
             if (dynamicOcclusion)
             {

@@ -1,10 +1,8 @@
 ﻿using System;
-using UnityEngine;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
+using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     [Serializable]
     public struct MinMaxRangeFloat : IEquatable<MinMaxRangeFloat>

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public static class SpotLightHelper
     {

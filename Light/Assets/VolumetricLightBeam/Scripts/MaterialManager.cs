@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Rendering;
-using System.Collections;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public static class MaterialManager
     {

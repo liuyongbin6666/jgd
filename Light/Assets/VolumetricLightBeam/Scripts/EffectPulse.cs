@@ -1,8 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     [HelpURL(Consts.Help.UrlEffectPulse)]
     public class EffectPulse : EffectAbstractBase

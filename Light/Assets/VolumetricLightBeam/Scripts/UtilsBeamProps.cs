@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using VolumetricLightBeam.Scripts.HD;
+using VolumetricLightBeam.Scripts.SD;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public static class UtilsBeamProps
     {

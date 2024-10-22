@@ -1,6 +1,7 @@
 ﻿#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
+using VolumetricLightBeam.Scripts.SD;
 
 namespace VLB
 {
@@ -18,7 +19,7 @@ namespace VLB
             if (thisTarget == null)
                 return;
 
-            if(Config.Instance.featureEnabledMeshSkewing == false)
+            if(VolumetricLightBeam.Scripts.Config.Instance.featureEnabledMeshSkewing == false)
                 EditorGUILayout.HelpBox(EditorStrings.SkewingHandle.HelpFeatureDisabled, MessageType.Warning);
 
             EditorGUILayout.PropertyField(volumetricLightBeam, EditorStrings.SkewingHandle.Beam);

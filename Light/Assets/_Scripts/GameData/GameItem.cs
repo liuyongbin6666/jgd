@@ -1,13 +1,17 @@
 using UnityEngine;
 
-public enum GameItemType
+namespace GameData
 {
-    [InspectorName("萤火虫")] Firefly,
-    Boss,
-}
+    public enum GameItemType
+    {
+        [InspectorName("萤火虫")] Firefly,
+        Boss,
+        Bullet,
+    }
 
-public interface IGameItem
-{
-    GameItemType Type { get; }
-    void Invoke(PlayableUnit player);
+    public interface IGameItem
+    {
+        GameItemType Type { get; }
+        void Invoke(PlayableUnit player);
+    }
 }

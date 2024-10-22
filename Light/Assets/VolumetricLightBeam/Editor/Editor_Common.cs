@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using VolumetricLightBeam.Scripts;
 
 namespace VLB
 {
@@ -38,7 +39,7 @@ namespace VLB
             else            buttonClicked = GUILayout.Button(EditorStrings.Common.ButtonOpenGlobalConfig);
 
             if (buttonClicked)
-                Config.EditorSelectInstance();
+                VolumetricLightBeam.Scripts.Config.EditorSelectInstance();
         }
 
 

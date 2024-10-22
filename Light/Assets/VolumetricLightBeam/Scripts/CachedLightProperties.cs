@@ -1,7 +1,7 @@
 ﻿#if UNITY_EDITOR
 using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public struct CachedLightProperties
     {

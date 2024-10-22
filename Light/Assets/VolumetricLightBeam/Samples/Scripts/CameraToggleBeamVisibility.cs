@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VLB_Samples
+namespace VolumetricLightBeam.Samples.Scripts
 {
     [RequireComponent(typeof(Camera))]
     public class CameraToggleBeamVisibility : MonoBehaviour
@@ -13,7 +13,7 @@ namespace VLB_Samples
             {
                 var cam = GetComponent<Camera>();
 
-                int layerID = VLB.Config.Instance.geometryLayerID;
+                int layerID = VolumetricLightBeam.Scripts.Config.Instance.geometryLayerID;
                 int layerMask = 1 << layerID;
                 if ((cam.cullingMask & layerMask) == layerMask)
                 {

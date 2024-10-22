@@ -1,4 +1,4 @@
-﻿namespace VLB
+﻿namespace VolumetricLightBeam.Scripts
 {
     public enum FeatureEnabledColorGradient
     {

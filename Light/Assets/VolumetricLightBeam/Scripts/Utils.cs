@@ -1,7 +1,9 @@
 ﻿using System;
 using UnityEngine;
+using VolumetricLightBeam.Scripts.HD;
+using VolumetricLightBeam.Scripts.SD;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public static class Utils
     {

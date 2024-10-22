@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public class PolygonHelper : MonoBehaviour
     {

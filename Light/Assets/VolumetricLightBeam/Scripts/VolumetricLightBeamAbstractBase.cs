@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public abstract class VolumetricLightBeamAbstractBase : MonoBehaviour
     {

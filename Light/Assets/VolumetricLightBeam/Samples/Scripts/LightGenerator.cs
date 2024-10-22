@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+﻿using UnityEditor;
+using UnityEngine;
+using VolumetricLightBeam.Scripts;
+using VolumetricLightBeam.Scripts.SD;
 
-namespace VLB_Samples
+namespace VolumetricLightBeam.Samples.Scripts
 {
     public class LightGenerator : MonoBehaviour
     {
@@ -24,14 +24,14 @@ namespace VLB_Samples
                 {
                     GameObject gao = null;
                     if(AddLight)
-                        gao = new GameObject("Light_" + i + "_" + j, typeof(Light), typeof(VLB.VolumetricLightBeamSD), typeof(Rotater));
+                        gao = new GameObject("Light_" + i + "_" + j, typeof(Light), typeof(VolumetricLightBeamSD), typeof(Rotater));
                     else
-                        gao = new GameObject("Light_" + i + "_" + j, typeof(VLB.VolumetricLightBeamSD), typeof(Rotater));
+                        gao = new GameObject("Light_" + i + "_" + j, typeof(VolumetricLightBeamSD), typeof(Rotater));
 
                     gao.transform.SetPositionAndRotation(   new Vector3(i * OffsetUnits, PositionY, j * OffsetUnits),
                                                             Quaternion.Euler(Random.Range(-45, 45) + 90f, Random.Range(0, 360), 0));
 
-                    var beam = gao.GetComponent<VLB.VolumetricLightBeamSD>();
+                    var beam = gao.GetComponent<VolumetricLightBeamSD>();
                
                     if (AddLight)
                     {
@@ -42,10 +42,10 @@ namespace VLB_Samples
                         light.intensity = Random.Range(0.2f, 5f);
                         light.spotAngle = Random.Range(10f, 90f);
 
-                        if(VLB.Config.Instance.geometryOverrideLayer)
+                        if(VolumetricLightBeam.Scripts.Config.Instance.geometryOverrideLayer)
                         {
                             // remove the layer of the beams from the light's culling mask to prevent from breaking GPU Instancing
-                            light.cullingMask = ~(1 << VLB.Config.Instance.geometryLayerID);
+                            light.cullingMask = ~(1 << VolumetricLightBeam.Scripts.Config.Instance.geometryLayerID);
                         }
                     }
                     else
@@ -58,7 +58,7 @@ namespace VLB_Samples
                     beam.coneRadiusStart = Random.Range(0f, 0.1f);
                     beam.geomCustomSides = Random.Range(12, 36);
                     beam.fresnelPow = Random.Range(1, 7.5f);
-                    beam.noiseMode = NoiseEnabled ? VLB.NoiseMode.WorldSpace : VLB.NoiseMode.Disabled;
+                    beam.noiseMode = NoiseEnabled ? NoiseMode.WorldSpace : NoiseMode.Disabled;
 
                     var rotater = gao.GetComponent<Rotater>();
                     rotater.EulerSpeed = new Vector3(0, Random.Range(-500, 500), 0);

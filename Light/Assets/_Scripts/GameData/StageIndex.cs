@@ -1,15 +1,18 @@
-﻿public class StageIndex : ModelBase
+﻿namespace GameData
 {
-    //关卡Id
-    public int Index { get; private set; } = 0;
-
-    public void Add()
+    public class StageIndex : ModelBase
     {
-        Index++;
-    }
+        //关卡Id
+        public int Index { get; private set; } = 0;
 
-    public void Reset()
-    {
-        Index = 0;
+        public void Add()
+        {
+            Index++;
+        }
+
+        public void Reset()
+        {
+            Index = 0;
+        }
     }
 }

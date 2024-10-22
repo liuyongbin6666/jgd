@@ -2,8 +2,10 @@
 #define FORCE_ENABLE_DEPTHBLEND_FOR_BATCHING
 
 using UnityEngine;
+using VolumetricLightBeam.Scripts.HD;
+using VolumetricLightBeam.Scripts.SD;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public static class BatchingHelper
     {

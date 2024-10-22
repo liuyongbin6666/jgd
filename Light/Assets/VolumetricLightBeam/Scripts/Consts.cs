@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using VolumetricLightBeam.Scripts.HD;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public static class Consts
     {
@@ -195,7 +196,7 @@ namespace VLB
             public const int DepthMapResolutionDefault = 128;
             public const bool OcclusionCullingDefault = true;
 
-            public static string GetErrorChangeRuntimeDepthMapResolution(VLB.VolumetricShadowHD comp) { return string.Format("Can't change {0} Shadow.depthMapResolution property at runtime after DepthCamera initialization", comp.name); }
+            public static string GetErrorChangeRuntimeDepthMapResolution(VolumetricShadowHD comp) { return string.Format("Can't change {0} Shadow.depthMapResolution property at runtime after DepthCamera initialization", comp.name); }
         }
 
         public static class Cookie

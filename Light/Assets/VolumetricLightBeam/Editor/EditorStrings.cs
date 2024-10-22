@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using UnityEngine;
+using VolumetricLightBeam.Scripts;
 
 namespace VLB
 {
@@ -243,7 +244,7 @@ namespace VLB
             public const string HelpDepthBufferAndBeam2D = "'Dynamic Occlusion (Depth Buffer)' doesn't work with 2D sprites nor 2D colliders. It will only track 3D objects.";
 
             public const string HelpOverrideLayer = "To keep good performance, it's highly recommended to set an 'Override Layer' in the Config when using this feature, to prevent from having a LayerMark including any Volumetric Beam.";
-            public static string HelpLayerMaskIssues { get { return string.Format("The beams are generated on the layer '{0}' (set in the Config), but this LayerMask includes this layer.\nTo keep good performance, it's highly recommended to set a LayerMask which doesn't include this layer!", UnityEngine.LayerMask.LayerToName(VLB.Config.Instance.geometryLayerID)); } }
+            public static string HelpLayerMaskIssues { get { return string.Format("The beams are generated on the layer '{0}' (set in the Config), but this LayerMask includes this layer.\nTo keep good performance, it's highly recommended to set a LayerMask which doesn't include this layer!", UnityEngine.LayerMask.LayerToName(VolumetricLightBeam.Scripts.Config.Instance.geometryLayerID)); } }
 
             public const string HelpFeatureDisabled = "The Dynamic Occlusion features have been disabled in the plugin's Config.";
         }
@@ -312,7 +313,7 @@ namespace VLB
             public static readonly GUIContent DepthMapResolution = new GUIContent("Depth Map Resolution", "Controls how large the depth texture captured by the virtual camera is.\nThe lower the resolution, the better the performance, but the less accurate the rendering.");
 
             public const string HelpOverrideLayer = "To keep good performance, it's highly recommended to set an 'Override Layer' in the Config when using this feature, to prevent from having a LayerMark including any Volumetric Beam.";
-            public static string HelpLayerMaskIssues { get { return string.Format("The beams are generated on the layer '{0}' (set in the Config), but this LayerMask includes this layer.\nTo keep good performance, it's highly recommended to set a LayerMask which doesn't include this layer!", UnityEngine.LayerMask.LayerToName(VLB.Config.Instance.geometryLayerID)); } }
+            public static string HelpLayerMaskIssues { get { return string.Format("The beams are generated on the layer '{0}' (set in the Config), but this LayerMask includes this layer.\nTo keep good performance, it's highly recommended to set a LayerMask which doesn't include this layer!", UnityEngine.LayerMask.LayerToName(VolumetricLightBeam.Scripts.Config.Instance.geometryLayerID)); } }
 
             public const string HelpFeatureDisabled = "The Shadow feature has been disabled in the plugin's Config.";
         }
@@ -357,8 +358,8 @@ namespace VLB
 - GPU Instancing: Dynamically batch multiple beams to combine and reduce draw calls.
 - SRP Batcher: Use the SRP Batcher to automatically batch multiple beams and reduce draw calls. Only available when using SRP.");
 
-            public static string GetErrorSrpAndMultiPassNotCompatible(ShaderMode shaderMode)    { return string.Format("Using a Scriptable Render Pipeline with 'Multi-Pass' Rendering Mode is not supported: please choose another Rendering Mode, or '{0}' will be used.", VLB.Config.Instance.GetActualRenderingMode(shaderMode)); }
-            public static string GetErrorSrpBatcherOnlyCompatibleWithSrp(ShaderMode shaderMode) { return string.Format("The 'SRP Batcher' Rendering Mode is only compatible when using a SRP: please choose another Rendering Mode, or '{0}' will be used.", VLB.Config.Instance.GetActualRenderingMode(shaderMode)); }
+            public static string GetErrorSrpAndMultiPassNotCompatible(ShaderMode shaderMode)    { return string.Format("Using a Scriptable Render Pipeline with 'Multi-Pass' Rendering Mode is not supported: please choose another Rendering Mode, or '{0}' will be used.", VolumetricLightBeam.Scripts.Config.Instance.GetActualRenderingMode(shaderMode)); }
+            public static string GetErrorSrpBatcherOnlyCompatibleWithSrp(ShaderMode shaderMode) { return string.Format("The 'SRP Batcher' Rendering Mode is only compatible when using a SRP: please choose another Rendering Mode, or '{0}' will be used.", VolumetricLightBeam.Scripts.Config.Instance.GetActualRenderingMode(shaderMode)); }
             public const string ErrorRenderPipelineMismatch = "It looks like the 'Render Pipeline' is not correctly set.\nPlease make sure to select the proper value depending on your pipeline in use.";
 
             public static readonly GUIContent URPDepthCameraScriptableRendererIndex = new GUIContent("Custom renderer index for Depth Camera", "When using URP, specify a custom Renderer index used by the depth cameras for the 'Dynamic Occlusion (Depth Buffer)' and 'HD Shadow' features.\nThe 'Renderer list' is editable in the URP asset.\n\nWe recommend to specify a custom index referencing the URP default 'ForwardRenderer' when you are using a custom renderer that doesn't support writing to depth render texture. This is the case if you encounter errors like 'RenderTexture.Create failed: colorFormat & depthStencilFormat cannot both be none'.\n\nSet -1 to disable this feature.");
@@ -394,8 +395,8 @@ namespace VLB
 
             public static readonly string InvalidPlatformOverride = string.Format(
                 "This Config asset has an invalid name. It should be named either:\n- '{0}{1}' for the default config.\n- '{0}PlatformName{1}' for a config specific to a platform, e.g. '{0}Android{1}'."
-                , VLB.Config.kAssetName
-                , VLB.Config.kAssetNameExt
+                , VolumetricLightBeam.Scripts.Config.kAssetName
+                , VolumetricLightBeam.Scripts.Config.kAssetNameExt
                 );
 
             public static readonly string WrongAssetLocation = string.Format(

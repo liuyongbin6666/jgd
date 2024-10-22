@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts.HD
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Light), typeof(VolumetricLightBeamHD))]

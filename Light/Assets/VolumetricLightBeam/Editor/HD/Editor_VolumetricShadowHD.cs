@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using VolumetricLightBeam.Scripts;
+using VolumetricLightBeam.Scripts.HD;
 
 namespace VLB
 {
@@ -37,7 +39,7 @@ namespace VLB
                 {
                     EditorGUILayout.PropertyField(m_LayerMask, EditorStrings.Shadow.LayerMask);
 
-                    if (Config.Instance.geometryOverrideLayer == false)
+                    if (VolumetricLightBeam.Scripts.Config.Instance.geometryOverrideLayer == false)
                     {
                         EditorGUILayout.HelpBox(EditorStrings.Shadow.HelpOverrideLayer, MessageType.Warning);
                     }

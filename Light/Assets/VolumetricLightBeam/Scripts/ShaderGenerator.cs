@@ -1,12 +1,13 @@
 ﻿#if UNITY_EDITOR
-using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+using VolumetricLightBeam.Scripts.HD;
 
-namespace VLB
+namespace VolumetricLightBeam.Scripts
 {
     public class ShaderGenerator : ScriptableObject
     {

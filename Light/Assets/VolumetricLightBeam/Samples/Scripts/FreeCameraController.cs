@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VLB_Samples
+namespace VolumetricLightBeam.Samples.Scripts
 {
     public class FreeCameraController : MonoBehaviour
     {

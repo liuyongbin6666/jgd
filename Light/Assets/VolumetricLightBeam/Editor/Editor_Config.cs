@@ -7,10 +7,13 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
+using VolumetricLightBeam.Scripts;
+using VolumetricLightBeam.Scripts.HD;
+using VolumetricLightBeam.Scripts.SD;
 
 namespace VLB
 {
-    [CustomEditor(typeof(Config))]
+    [CustomEditor(typeof(VolumetricLightBeam.Scripts.Config))]
     public class Editor_Config : Editor_Common
     {
         SerializedProperty geometryOverrideLayer = null, geometryLayerID = null, geometryTag = null, geometryRenderQueue = null, geometryRenderQueueHD = null, renderPipeline = null, renderingMode = null;
@@ -29,7 +32,7 @@ namespace VLB
         SerializedProperty useLightColorTemperature = null;
 #endif
 
-        Config m_TargetConfig = null;
+        VolumetricLightBeam.Scripts.Config m_TargetConfig = null;
         RenderQueueDrawer m_DrawerRenderQueue;
         RenderQueueDrawer m_DrawerRenderQueueHD;
 
@@ -43,7 +46,7 @@ namespace VLB
 
             Noise3D.LoadIfNeeded(); // Try to load Noise3D, maybe for the 1st time
 
-            m_TargetConfig = this.target as Config;
+            m_TargetConfig = this.target as VolumetricLightBeam.Scripts.Config;
 
             RaymarchingQualitiesInit();
         }
@@ -81,8 +84,8 @@ namespace VLB
             var p = (RuntimePlatform)platform;
             var clone = UnityEngine.Object.Instantiate(m_TargetConfig);
             Debug.Assert(clone);
-            var path = AssetDatabase.GetAssetPath(m_TargetConfig).Replace(m_TargetConfig.name + Config.kAssetNameExt, "");
-            Config.CreateAsset(clone, path + Config.kAssetName + p.ToString() + Config.kAssetNameExt);
+            var path = AssetDatabase.GetAssetPath(m_TargetConfig).Replace(m_TargetConfig.name + VolumetricLightBeam.Scripts.Config.kAssetNameExt, "");
+            VolumetricLightBeam.Scripts.Config.CreateAsset(clone, path + VolumetricLightBeam.Scripts.Config.kAssetName + p.ToString() + VolumetricLightBeam.Scripts.Config.kAssetNameExt);
             Selection.activeObject = clone;
         }
 
@@ -226,7 +229,7 @@ namespace VLB
             Debug.Assert(m_ListQualities != null);
             m_ListQualities.DoLayoutList();
 
-            DrawRaymarchingQualitiesPopup(Config.Instance, defaultRaymarchingQualityUniqueID, EditorStrings.Config.HD.DefaultRaymarchingQuality);
+            DrawRaymarchingQualitiesPopup(VolumetricLightBeam.Scripts.Config.Instance, defaultRaymarchingQualityUniqueID, EditorStrings.Config.HD.DefaultRaymarchingQuality);
 
 #if VLB_DEBUG
             for (int i = 0; i < m_TargetConfig.raymarchingQualitiesCount; ++i)
@@ -245,7 +248,7 @@ namespace VLB
 #endif // VLB_DEBUG
         }
 
-        public static void DrawRaymarchingQualitiesPopup(Config instance, SerializedProperty prop, GUIContent content)
+        public static void DrawRaymarchingQualitiesPopup(VolumetricLightBeam.Scripts.Config instance, SerializedProperty prop, GUIContent content)
         {
             Debug.Assert(instance != null);
 
@@ -558,7 +561,7 @@ namespace VLB
             serializedObject.ApplyModifiedProperties();
 
             if (m_NeedToRefreshShader)
-                m_TargetConfig.RefreshShaders(Config.RefreshShaderFlags.All); // need to be done AFTER ApplyModifiedProperties
+                m_TargetConfig.RefreshShaders(VolumetricLightBeam.Scripts.Config.RefreshShaderFlags.All); // need to be done AFTER ApplyModifiedProperties
 
             if (m_NeedToReloadNoise)
                 Noise3D._EditorForceReloadData(); // Should be called AFTER ApplyModifiedProperties so the Config instance has the proper values when reloading data
