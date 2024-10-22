@@ -19,7 +19,7 @@ namespace Controller
                 return;
             }
             var player = new Player(new ConValue("血量", 100), new ConValue("魔法", 100));
-            World.InitStage(new PlayableUnit(player,Config.PlayerPrefab, 1, 1),
+            World.InitStage(new PlayableUnit(player,Config.PlayerPrefab, 1),
                             new StageIndex(),
                             new StageStory(Config.StageTimeComponent, 180));
             World.StartStage();

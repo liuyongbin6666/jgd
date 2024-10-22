@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Linq;
 using fight_aspect;
 using GameData;
@@ -8,56 +10,58 @@ using Utls;
 
 namespace Components
 {
-    public class PlayerControlComponent : MonoBehaviour
+    public class PlayerControlComponent : MonoBehaviour,IBattleUnit
     {
+        enum PlayerAnim
+        {
+            Idle = -1,
+            Move = 0,
+            Attack = 1,
+            React = 2,
+        }
         [SerializeField] GameLaunch gameLaunch;
         [SerializeField, LabelText("移动速度")] float moveSpeed = 5f;
-        [SerializeField]BulletHandler bulletHandler;
-        public bool IsMoving => axisMovement != Vector2.zero;
-        public float VisionRadius => _lantern.VisionRadius;
+        [SerializeField] BulletHandler bulletHandler;
         [SerializeField] Rigidbody rb3D;
-        //[SerializeField] LightVisionComponent _lightVision;
         [SerializeField] Animator anim;
         [SerializeField] Collider3DHandler _unitCollider3D;
         [SerializeField] LanternComponent _lantern;
-        [SerializeField] int _maxLantern = 5;
-        int currentLantern = 0;
+        [SerializeField] SpriteRenderer renderer;
+        [SerializeField] AttackComponent attackComponent;
+        [SerializeField,LabelText("最大虫灯数")] int _maxLantern = 5;
         [SerializeField] PanicComponent _panicCom;
-        [SerializeField,LabelText("灯光步进")] float _lightOuterStep = 0.5f;
         [SerializeField,LabelText("周围检测层")] LayerMask _detectLayer;
         [LabelText("移动摇杆")]public Vector2 axisMovement;
+        [LabelText("法术")] public Spell spell;
+        public Spell Spell => spell;
+        public bool IsMoving => axisMovement != Vector2.zero;
+        Transform body => _unitCollider3D.transform;
+
+        public bool stopMoving;
         public readonly UnityEvent OnLanternTimeout = new();
         public readonly UnityEvent OnPanicFinalize = new();
         public readonly UnityEvent<int> OnPanicPulse = new();
         public readonly UnityEvent<GameItemBase> OnGameItemTrigger= new();
-        public readonly UnityEvent<int> OnDamage = new();
         public readonly UnityEvent<Spell> OnSpellImpact = new();
-        public void Init(float lightOuterStep)
+        public void Init()
         {
-            _lightOuterStep = lightOuterStep;
             _lantern.Init();
             _lantern.OnCountdownComplete.AddListener(OnLanternTimeout.Invoke);
             _panicCom.Init();
             _panicCom.OnPulseTrigger.AddListener(ScaryPulse);
-            bulletHandler.OnBulletEvent.AddListener(OnSpellImpact.Invoke);
-            //_unitCollider?.OnTriggerEnter.AddListener(ColliderEnter);
-            //_unitCollider?.OnCollisionEnter.AddListener(c => ColliderEnter(c.collider));
+            bulletHandler.OnBulletEvent.AddListener(SpellImpact);
+            attackComponent.Init(this);
+            attackComponent.OnAttack.AddListener(_=>AnimSet(PlayerAnim.Attack));
+            attackComponent.Enable(true);
             //_unitCollider3D?.OnTriggerEnterEvent.AddListener(ColliderEnter);
             //_unitCollider3D?.OnCollisionEnterEvent.AddListener(c => ColliderEnter(c.collider));
         }
 
-        void ColliderEnter(Collider2D col2D)
+        void SpellImpact(Spell spell,Vector3 direction)
         {
-            //if (CheckIf(GameTag.Firefly, FireFlyCollect)) return;
-            //if (CheckIf(GameTag.GameItem, GameItemTrigger)) return;
-            return;
-
-            bool CheckIf(string objTag, UnityAction<Collider2D> onTriggerAction)
-            {
-                if (!col2D.CompareTag(objTag)) return false;
-                onTriggerAction(col2D);
-                return true;
-            }
+            rb3D.AddForce(direction* spell.force, ForceMode.Impulse);// 击退
+            AnimSet(PlayerAnim.React);
+            OnSpellImpact.Invoke(spell);
         }
 
         //当恐慌时
@@ -72,7 +76,7 @@ namespace Components
         }
         void OnColliderOnView(Collider[] colliders)
         {
-            DebugExtension.Log(this, $"发现：{string.Join(',',colliders.Select(c=>c.name))}");
+            $"发现：{string.Join(',',colliders.Select(c=>c.name))}".Log(this);
         }
         public void SetSpeed(float speed) => moveSpeed = speed;
         public void StopPanic() => StopAllCoroutines();//暂时这样停止，实际上会停止所有协程。
@@ -91,24 +95,26 @@ namespace Components
         }
 
         public void StartPanic() => _panicCom.StartPanic();
-        //void Update()
-        //{
-        //    axisMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        //}
         void FixedUpdate()
         {
             // 使用 MovePosition 进行物理移动，这样可以确保碰撞检测正常
-            if (axisMovement != Vector2.zero)
+            if (axisMovement != Vector2.zero && !stopMoving)
             {
-                var local = rb3D.transform.localScale;
-                var flipX = axisMovement.x < 0 ? 1 : -1;
-                rb3D.transform.localScale = new Vector3(flipX, local.y, local.z);
+                var local = body.localScale;
+                var flipX = axisMovement.x switch
+                {
+                    <= 0 => 1,
+                    > 0 => -1,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+                body.localScale = local.ChangeX(flipX);
                 rb3D.MovePosition(rb3D.position + new Vector3(
-                                      axisMovement.x, 0, axisMovement.y) * moveSpeed * Time.fixedDeltaTime);
-                AnimSet(0);
+                                      axisMovement.x, 0, axisMovement.y) 
+                    * moveSpeed * Time.fixedDeltaTime);
+                AnimSet(PlayerAnim.Move);
             }
             else
-                AnimSet(-1);
+                AnimSet(PlayerAnim.Idle);
 
             detectionTimer += Time.fixedDeltaTime;
             if (detectionTimer >= detectionInterval)
@@ -118,11 +124,55 @@ namespace Components
             }
         }
 
-        void AnimSet(int animInt)
+        bool isReactingSpell;
+
+        void AnimSet(PlayerAnim playerAnim)
         {
-            if (anim.GetInteger(GameTag.AnimInt) == animInt) return;
-            anim.SetInteger(GameTag.AnimInt, animInt);
-            anim.SetTrigger(GameTag.AnimTrigger);
+            if (isReactingSpell) return; // 对于React(强制性)状态，不再切换
+            var animInt = (int)playerAnim;
+            
+            switch (playerAnim)
+            {
+                case PlayerAnim.React:
+                    StartCoroutine(ReactRoutine(0.3f));
+                    break;
+                case PlayerAnim.Attack:
+                    StartCoroutine(ReactRoutine(0.5f));
+                    break;
+                case PlayerAnim.Idle:
+                case PlayerAnim.Move:
+                default:
+                    TriggerAnim();
+                    break;
+            }
+            return;
+
+            IEnumerator ReactRoutine(float sec)
+            {
+                TriggerAnim();
+                SetInjured(true);
+                stopMoving = true;
+                isReactingSpell = true;
+                yield return new WaitForSeconds(sec);
+                SetInjured(false);
+                isReactingSpell = false;
+                stopMoving = false;
+            }
+
+            void TriggerAnim()
+            {
+                if (anim.GetInteger(GameTag.AnimInt) == animInt) return;
+                anim.SetInteger(GameTag.AnimInt, animInt);
+                anim.SetTrigger(GameTag.AnimTrigger);
+            }
+
+            void SetInjured(bool isEmit)
+            {
+                var mpb = new MaterialPropertyBlock();
+                renderer.GetPropertyBlock(mpb);
+                mpb.SetFloat("_INJURED", isEmit ? 1f : 0f);
+                renderer.SetPropertyBlock(mpb);
+            }
         }
 
         //为了优化FixedUpdate调用大量的2d物理来检测周围物件，原本1秒调用50次(fixedUpdate)改成1秒10次以减少gc带来的性能开销。
@@ -135,6 +185,7 @@ namespace Components
         }
 
         public void GameItemInteraction(GameItemBase gameItem) => OnGameItemTrigger.Invoke(gameItem);
+        public void BulletImpact(BulletComponent bullet) => bulletHandler.BulletImpact(bullet);
     }
 
     internal static class PlayerControlComponentExtensions

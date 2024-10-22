@@ -7,12 +7,11 @@ using UnityEngine.Pool;
 
 namespace fight_aspect
 {
-    public class BulletManager : GameStartInitializer
+    public class BulletManager : MonoBehaviour
     {
         public BulletComponent bulletPrefab;
         ObjectPool<BulletComponent> pool;
-        protected override void OnGameStart() => Init();
-        void Init()
+        public void Init()
         {
             pool = new ObjectPool<BulletComponent>(Bullet_Spawn,
                 bullets.Add,
@@ -38,10 +37,12 @@ namespace fight_aspect
             return bullet;
         }
         #endregion
-        public void Shoot(Transform owner,PlayerControlComponent player, BulletTracking bulletTracking)
+        public BulletComponent Shoot(IBattleUnit owner, GameObject target, BulletTracking bulletTracking,float lasting)
         {
+            if (owner == null || !target) return null;
             var bullet = pool.Get();
-            bullet.Set(owner, player.transform, player.tag, new Spell(Spell.Types.Normal, 1, 1), bulletTracking);
+            bullet.Set(owner, target, bulletTracking,  lasting);
+            return bullet;
         }
     }
 }

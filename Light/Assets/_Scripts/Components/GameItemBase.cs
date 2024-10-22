@@ -1,5 +1,6 @@
 using GameData;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Components
 {
@@ -48,6 +49,22 @@ namespace Components
         {
             var player = go.GetPlayerControlFromColliderHandler();
             if (player != null) OnPlayerTrackingExit(player);
+        }
+    }
+    /// <summary>
+    /// 基于<seealso cref="Collider3DHandler"/>的碰撞处理组件基类
+    /// </summary>
+    public abstract class ColliderHandlerComponent : ColliderComponentBase
+    {
+        protected override void OnCollider3DEnter(Collider col) => CheckHandler(col, OnHandlerEnter);
+        protected override void OnCollider3DExit(Collider col) => CheckHandler(col, OnHandlerExit);
+        protected abstract void OnHandlerEnter(Collider3DHandler handler);
+        protected abstract void OnHandlerExit(Collider3DHandler handler);
+        void CheckHandler(Collider col, UnityAction<Collider3DHandler> onColliderAction)
+        {
+            var handler = col.GetComponent<Collider3DHandler>();
+            if (!handler) return;
+            onColliderAction(handler);
         }
     }
 }

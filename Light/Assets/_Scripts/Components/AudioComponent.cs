@@ -29,7 +29,7 @@ namespace Components
                     _gameEventMap = new Dictionary<string, string>
                     {
                         { "闪电", GameEvent.Env_Lightning },
-                        { "恐慌", GameEvent.Player_Panic_Pulse },
+                        { "恐慌", GameEvent.Player_Panic_Pulse },                       
                     };
                 return _gameEventMap;
             }

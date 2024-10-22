@@ -12,7 +12,8 @@ namespace Utls
         public static Vector3 ChangeYZ(this Vector3 v, float y, float z) => new(v.x, y, z);
         public static Vector2 ChangeX(this Vector2 v, float x) => new(x, v.y);
         public static Vector2 ChangeY(this Vector2 v, float y) => new(v.x, y);
-        public static Vector2 ToVector2(this Vector3 v) => new(v.x, v.y);
+        public static Vector2 ToXZ(this Vector3 v) => new(v.x, v.z);
+        public static Vector2 ToXY(this Vector3 v) => new(v.x, v.y);
         public static Vector3 ToVector3(this Vector2 v, float z = 0) => new(v.x, v.y, z);
     }
 }

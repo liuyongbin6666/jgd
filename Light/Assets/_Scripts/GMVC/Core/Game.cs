@@ -3,6 +3,7 @@ using System.Collections;
 using Components;
 using Config;
 using Controller;
+using fight_aspect;
 using GameData;
 using GMVC.Utls;
 using UnityEngine;
@@ -27,6 +28,7 @@ namespace GMVC.Core
         public static AudioComponent AudioComponent { get; private set; }
         public static GameConfig Config { get; private set; }
         static EnvironmentComponent Environment { get; set; }
+        public static BulletManager BulletManager { get; private set; }
         public static MonoService MonoService
         {
             get
@@ -38,15 +40,18 @@ namespace GMVC.Core
         }
         static Res _res;
 
-        public static void Run(Action onGameStartAction, AudioComponent audioComponent, 
+        public static void Run(Action onGameStartAction, AudioComponent audioComponent,
             GameConfig config,
             SensorManager sensorManager,
             PlotManager plotManager,
+            BulletManager bulletManager,
             EnvironmentComponent environmentComponent,
             float startAfter = 0.5f)
         {
             if (IsRunning) throw new NotImplementedException("Game is running!");
             IsRunning = true;
+            BulletManager = bulletManager;
+            BulletManager.Init();
             SensorManager = sensorManager;
             PlotManager = plotManager;
             PlotManager.Init(config.Stories);

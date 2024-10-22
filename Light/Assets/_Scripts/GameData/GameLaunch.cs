@@ -1,5 +1,6 @@
 using Components;
 using Config;
+using fight_aspect;
 using GMVC.Core;
 using Sirenix.OdinInspector;
 using Ui;
@@ -14,6 +15,7 @@ namespace GameData
         public AudioComponent AudioComponent;
         public PlotManager PlotManager;
         public SensorManager SensorManager;
+        public BulletManager BulletManager;
         public EnvironmentComponent EnvironmentComponent;
         void Start()
         {
@@ -22,6 +24,7 @@ namespace GameData
                      Configure.GameConfig, 
                      SensorManager, 
                      PlotManager,
+                     BulletManager,
                      EnvironmentComponent);
         }
 

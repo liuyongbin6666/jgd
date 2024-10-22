@@ -1,5 +1,7 @@
+using System;
 using Components;
 using GMVC.Conditions;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utls;
 
@@ -19,46 +21,40 @@ namespace GameData
         Player Player { get; }
         ConValue Hp => Player.Hp;
         ConValue Mp => Player.Mp;
-        public PlayableUnit(Player player,PlayerControlComponent playerControl, int lantern, float lightStep)
+        public PlayableUnit(Player player,PlayerControlComponent playerControl, int lantern)
         {
             Lantern = lantern;
             Player = player;
             PlayerControl = playerControl;
-            PlayerControl.Init(lightStep);
+            PlayerControl.Init();
             PlayerControl.Lantern(Lantern);
             PlayerControl.OnLanternTimeout.AddListener(OnLanternTimeout);
             PlayerControl.OnPanicFinalize.AddListener(OnScaryFinalized);
             PlayerControl.OnPanicPulse.AddListener(OnPanicPulse);
             PlayerControl.OnGameItemTrigger.AddListener(OnGameItemInteractive);
-            PlayerControl.OnDamage.AddListener(OnDamage);
             PlayerControl.OnSpellImpact.AddListener(OnSpellImpact);
         }
 
         void OnSpellImpact(Spell spell)
         {
-            Hp.Add(spell.Damage);
-            SendEvent(GameEvent.Battle_Spell_On_Player, spell.Damage);
-        }
-
-        // 当被伤害
-        void OnDamage(int damage)
-        {
+            var damage = spell.Damage;
             if (damage < 0)
             {
-                Log($"伤害值异常! = {damage}");
+                Debug.LogError($"伤害值异常! = {damage}");
                 return;
             }
             Hp.Add(-damage);
+            SendEvent(GameEvent.Battle_Spell_On_Player, spell.Damage); 
             SendEvent(GameEvent.Player_Hp_Update);
             if(Player.IsDeath) SendEvent(GameEvent.Player_IsDeath);
         }
+
         // 当游戏物品交互
         void OnGameItemInteractive(GameItemBase gameItem)
         {
             gameItem.Invoke(this);
             SendEvent(GameEvent.GameItem_Interaction, gameItem.Type);// 游戏物品交互，发射了枚举入参为游戏物品类型
         }
-
         //当恐慌心跳, times = 剩余次数
         void OnPanicPulse(int times)
         {
@@ -92,7 +88,7 @@ namespace GameData
             PlayerControl.Lantern(Lantern);
             SendEvent(GameEvent.Player_Lantern_Update);
         }
-        public void Move(Vector3 direction) => PlayerControl.axisMovement = direction.ToVector2();
+        public void Move(Vector3 direction) => PlayerControl.axisMovement = direction.ToXY();
     }
 
     public class Player
@@ -109,22 +105,27 @@ namespace GameData
     /// <summary>
     /// 法术
     /// </summary>
-    public struct Spell
+    [Serializable]public struct Spell
     {
         public enum Types
         {
-            Normal,
-            Fire,
-            Ice
+            [InspectorName("普通")]Normal,
+            [InspectorName("火")]Fire,
+            [InspectorName("冰")]Ice
         }
-        public Types Type;
-        public int Damage;
-        public int Level;
-        public Spell(Types type, int damage, int level)
+        [LabelText("类型")]public Types Type;
+        [LabelText("伤害")]public int Damage;
+        [LabelText("等级")]public int Level;
+        [LabelText("延迟")]public float Delay;
+        [LabelText("击退")]public float force;
+
+        public Spell(Types type, int damage, int level, float force, float delay)
         {
             Type = type;
             Damage = damage;
             Level = level;
+            this.force = force;
+            Delay = delay;
         }
     }
 }
