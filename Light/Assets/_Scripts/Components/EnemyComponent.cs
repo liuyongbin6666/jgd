@@ -14,14 +14,14 @@ namespace Components
         enum TargetReaction
         {
             [InspectorName("无")]None,
-            [InspectorName("追逐")]Chase,
-            [InspectorName("攻击")]Attack,
+            [InspectorName("追逐")]Chasing,
+            [InspectorName("攻击")]Attacking,
         }
         [SerializeField] NavMeshAgent nav;
         [SerializeField] AttackComponent attackComponent;
         [LabelText("血量")]public int HP = 10;
         public Transform target;
-        public bool StopMove;
+        [LabelText("强制不移动")]public bool StopMove;//用于强制停止移动，但非状态控制
         [LabelText("法术")]public Spell spell;
         public Spell Spell => spell;
         [SerializeField,LabelText("行动")] TargetReaction reaction;
@@ -32,24 +32,8 @@ namespace Components
             if(IsInit) return;
             IsInit = true;
             attackComponent.Init(this);
-            attackComponent.OnAttack.AddListener(Attack);
             nav.updateRotation = false;
             nav.enabled = true;
-        }
-
-        void Attack(BulletComponent bul)
-        {
-            StopCoroutine(AttackWaiting());
-            StartCoroutine(AttackWaiting());
-            return;
-
-            IEnumerator AttackWaiting()
-            {
-                StopMove = true;
-                yield return new WaitWhile(() => bul.gameObject.activeSelf);
-                StopMove = false;
-                reaction = target == null ? TargetReaction.None : TargetReaction.Chase;
-            }
         }
 
         protected override void OnPlayerTrackingEnter(PlayerControlComponent player)
@@ -57,7 +41,6 @@ namespace Components
             if(!IsInit)return;
             StopAllCoroutines();
             target = player.transform;
-            StartCoroutine(UpdateTarget());
         }
 
         protected override void OnPlayerTrackingExit(PlayerControlComponent player)
@@ -66,36 +49,42 @@ namespace Components
         }
         //设置速度
         public void SetSpeed(float speed) => nav.speed = speed;
-        IEnumerator UpdateTarget()//获取当前目标位置
+
+        void Update()
         {
-            while (target)
+            if (!target) reaction = TargetReaction.None;
+            switch (reaction)
             {
-                switch (reaction)
-                {
-                    case TargetReaction.Chase:
-                        if (target && !StopMove)
-                        {
-                            nav.SetDestination(target.position);
-                            var distance = Vector2.Distance(transform.position.ToXZ(), target.position.ToXZ());
-                            if(distance < 1.5f)
-                            {
-                                nav.isStopped = true;
-                                reaction = TargetReaction.Attack;
-                            }
-                        }
-                        break;
-                    case TargetReaction.Attack:
-                        attackComponent.Enable(target);
-                        break;
-                    case TargetReaction.None:
-                        reaction = TargetReaction.Chase;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-                yield return new WaitForSeconds(0.2f);
+                case TargetReaction.Chasing:
+                    MoveUpdate();
+                    break;
+                case TargetReaction.Attacking:
+                    AttackUpdate();
+                    break;
             }
-            reaction = TargetReaction.None;
+        }
+        void AttackUpdate()
+        {
+            if (attackComponent.IsCDComplete)
+            {
+                attackComponent.Attack(target.gameObject);
+                reaction = TargetReaction.Chasing;
+            }else if (attackComponent.IsInRange(target))
+            {
+                reaction = TargetReaction.Chasing;
+            }
+        }
+        void MoveUpdate()
+        {
+            var isInRange = attackComponent.IsInRange(target);
+            nav.isStopped = isInRange;
+            reaction = isInRange switch
+            {
+                true => TargetReaction.Attacking,
+                _ => TargetReaction.Chasing
+            };
+            if (reaction != TargetReaction.Chasing) return;
+            if (StopMove) nav.SetDestination(target.position);
         }
 
         public void BulletImpact(BulletComponent bullet)

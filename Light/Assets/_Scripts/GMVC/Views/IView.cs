@@ -25,7 +25,7 @@ namespace GMVC.Views
         T Get<T>(int index);
         T GetComponent<T>();
         Coroutine StartCo(IEnumerator enumerator);
-        void StopCo(IEnumerator enumerator);
+        void StopCo(Coroutine coroutine);
         void StopAllCo();
         void SetWidth(float width);
         void SetHeight(float height);
