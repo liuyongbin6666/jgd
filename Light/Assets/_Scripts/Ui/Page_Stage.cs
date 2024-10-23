@@ -39,8 +39,8 @@ namespace Ui
                 //GameController.SwitchPlayMode(GameStage.PlayModes.Explore);
                 view_storyPlayer.Hide();
             });
-            view_win = new View_Win(v.Get<View>("view_win"));
-            view_defeat = new View_Defeat(v.Get<View>("view_defeat"));
+            //view_win = new View_Win(v.Get<View>("view_win"));//todo 下一关事件
+            //view_defeat = new View_Defeat(v.Get<View>("view_defeat"));//todo 返回page main事件
 
             /**********事件注册**********/
 
@@ -181,15 +181,21 @@ namespace Ui
 
         class View_Win:UiBase
         {
-            public View_Win(IView v) : base(v, false)
+            private Button btn_next { get; }
+            public View_Win(IView v,UnityAction onNextAction) : base(v, false)
             {
+                btn_next = v.Get<Button>("btn_next");
+                btn_next.onClick.AddListener(onNextAction);
             }
         }
 
         class View_Defeat:UiBase
         {
-            public View_Defeat(IView v) : base(v, false)
+            Button btn_return { get; }
+            public View_Defeat(IView v,UnityAction onReturnAction) : base(v, false)
             {
+                btn_return = v.Get<Button>("btn_return");
+                btn_return.onClick.AddListener(onReturnAction);
             }
         }
 
