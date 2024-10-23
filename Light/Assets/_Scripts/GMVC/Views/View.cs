@@ -74,7 +74,7 @@ namespace GMVC.Views
         //}
         #endregion        
         public Coroutine StartCo(IEnumerator enumerator) => StartCoroutine(enumerator);
-        public void StopCo(IEnumerator enumerator) => StopCoroutine(enumerator);
+        public void StopCo(Coroutine coroutine) => StopCoroutine(coroutine);
         public void StopAllCo() => StopAllCoroutines();
 
         public void SetWidth(float width) => RectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);

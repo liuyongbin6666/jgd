@@ -14,6 +14,7 @@ namespace GMVC.Core
         }
         [SerializeField] protected AudioSource bgm;
         [SerializeField] protected AudioSource[] sfx;
+        Coroutine PlayCo { get; set; }
         AudioSource GetAudioSource(Types type)
         {
             return type switch
@@ -23,14 +24,17 @@ namespace GMVC.Core
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
         }
-
         public void Play(Types type, AudioClip clip, Action onCompleteCallback = null)
         {
             var audioSource = GetAudioSource(type);
             if (!audioSource || audioSource == null) return;
             audioSource.clip = clip;
-            StopCoroutine(OnComplete());
-            StartCoroutine(OnComplete());
+            if(PlayCo!=null)
+            {
+                StopCoroutine(PlayCo);
+                PlayCo = null;
+            }
+            PlayCo = StartCoroutine(OnComplete());
 
             IEnumerator OnComplete()
             {
@@ -41,8 +45,6 @@ namespace GMVC.Core
                 onCompleteCallback?.Invoke();
             }
         }
-
-
         public void Stop(Types type)=> GetAudioSource(type)?.Stop();
 
         public void SetVolume(Types type, float volume)
