@@ -83,6 +83,7 @@ namespace fight_aspect
             yield return new WaitForSeconds(cd);
             IsCDComplete = true;
             OnCdComplete.Invoke();
+            CoundownCo = null;
         }
     }
 }

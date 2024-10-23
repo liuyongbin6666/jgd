@@ -16,6 +16,8 @@ namespace Components
         [LabelText("法术")]public Spell Spell;
         public GameObject Target;
         public bool IsCdComplete=> attackComponent.IsCDComplete;
+        public float AttackDelay => Spell.Delay;
+
         public void Init(IBattleUnit unit)
         {
             attackComponent.Init(unit);
@@ -41,6 +43,6 @@ namespace Components
             glow.gameObject.SetActive(active);
         }
         public void AttackTarget() => attackComponent.Attack(Target);
-
+        public void ResetCd() => attackComponent.RestartCD();
     }
 }

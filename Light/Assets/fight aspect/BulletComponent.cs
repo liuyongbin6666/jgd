@@ -20,7 +20,7 @@ namespace fight_aspect
         public float duration=2f;//生命周期
         public BulletTracking BulletTracking;
         public Transform Target;
-        bool KeepActive => Target || Time.time - startTime < duration;
+        bool KeepActive => Target || Time.deltaTime - startTime < duration;
         public bool IsBulletInit { get; private set; }
 
         public void Set(IBattleUnit owner, GameObject target, 
@@ -53,7 +53,7 @@ namespace fight_aspect
             direction = Vector3.zero;
             distance = 0;
             currentDistance = distance;
-            startTime = Time.time;
+            startTime = Time.deltaTime;
             IsBulletInit = false;
             this.Display(false);
         }
@@ -64,7 +64,7 @@ namespace fight_aspect
                 ResetBullet();
                 return;
             }
-            if (Time.time - startTime < Spell.Delay) return;
+            //if (Time.time - startTime < Spell.Delay) return;
             Action updateAction;
             switch (BulletTracking)
             {
