@@ -1,96 +1,95 @@
-﻿using System;
-using System.Collections;
-using fight_aspect;
+﻿using fight_aspect;
 using GameData;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
-using Utls;
 
 namespace Components
 {
-    public class EnemyComponent : PlayerTrackingComponentBase,IBattleUnit
+    public class EnemyComponent : PlayerTrackingComponentBase, IBattleUnit
     {
-        enum TargetReaction
-        {
-            [InspectorName("无")]None,
-            [InspectorName("追逐")]Chasing,
-            [InspectorName("攻击")]Attacking,
-        }
-        [SerializeField] NavMeshAgent nav;
-        [SerializeField] AttackComponent attackComponent;
-        [LabelText("血量")]public int HP = 10;
+        [SerializeField] public NavMeshAgent nav;
+        [SerializeField] public AttackComponent attackComponent;
+        [SerializeField] public VisionActiveComponent VisionActive;
+        [SerializeField] public Rigidbody rb3D;
+        [SerializeField] Animator anim; // 添加 Animator 组件
+        [SerializeField, LabelText("血量")] public int HP = 10;
         public Transform target;
-        [LabelText("强制不移动")]public bool StopMove;//用于强制停止移动，但非状态控制
-        [LabelText("法术")]public Spell spell;
+        [LabelText("强制不移动")] public bool StopMove; // 用于强制停止移动
+        [LabelText("法术")] public Spell spell;
         public Spell Spell => spell;
-        [SerializeField,LabelText("行动")] TargetReaction reaction;
-        bool IsInit { get; set; }
+
+        IGameUnitState currentState;
+        bool isInitialized;
+
         protected override void OnGameInit() => Init();
+
         public void Init()
         {
-            if(IsInit) return;
-            IsInit = true;
+            if (isInitialized) return;
+            isInitialized = true;
             attackComponent.Init(this);
+            //VisionActive.OnActiveEvent.AddListener(OnPlayerTriggerActive);
             nav.updateRotation = false;
             nav.enabled = true;
+            // 设置初始状态为 EnemyIdleState
+            SwitchState(new EnemyIdleState(this));
+            ResetCD();
+        }
+        //void OnPlayerTriggerActive()//当玩家视野触发激活时
+        //{ 
+        //}
+        public void SwitchState(IGameUnitState newState)
+        {
+            currentState?.ExitState();
+            currentState = newState;
+            currentState?.EnterState();
         }
 
+        void Update()
+        {
+            currentState?.UpdateState();
+        }
+
+        public void UpdateAnimation(string animName)
+        {
+            // 播放指定名称的动画
+            anim.Play(animName);
+        }
         protected override void OnPlayerTrackingEnter(PlayerControlComponent player)
         {
-            if(!IsInit)return;
-            StopAllCoroutines();
+            if (!isInitialized) return;
             target = player.transform;
+            // 如果当前不是攻击或追逐状态，切换到追逐状态
+            if (!(currentState is EnemyAttackState) && !(currentState is EnemyChaseState))
+            {
+                SwitchState(new EnemyChaseState(this));
+            }
         }
 
         protected override void OnPlayerTrackingExit(PlayerControlComponent player)
         {
-            //UpdateTarget(null);
+            //if (target == player.transform)
+            //{
+            //    target = null;
+            //    SwitchState(new EnemyIdleState(this));
+            //}
         }
-        //设置速度
-        public void SetSpeed(float speed) => nav.speed = speed;
 
-        void Update()
-        {
-            if (!target) reaction = TargetReaction.None;
-            switch (reaction)
-            {
-                case TargetReaction.Chasing:
-                    MoveUpdate();
-                    break;
-                case TargetReaction.Attacking:
-                    AttackUpdate();
-                    break;
-            }
-        }
-        void AttackUpdate()
-        {
-            if (attackComponent.IsCDComplete)
-            {
-                attackComponent.Attack(target.gameObject);
-                reaction = TargetReaction.Chasing;
-            }else if (attackComponent.IsInRange(target))
-            {
-                reaction = TargetReaction.Chasing;
-            }
-        }
-        void MoveUpdate()
-        {
-            var isInRange = attackComponent.IsInRange(target);
-            nav.isStopped = isInRange;
-            reaction = isInRange switch
-            {
-                true => TargetReaction.Attacking,
-                _ => TargetReaction.Chasing
-            };
-            if (reaction != TargetReaction.Chasing) return;
-            if (StopMove) nav.SetDestination(target.position);
-        }
+        // 设置速度
+        public void SetSpeed(float speed) => nav.speed = speed;
 
         public void BulletImpact(BulletComponent bullet)
         {
+            var sp = bullet.Spell;
+            var direction = bullet.ImpactDirection(transform);
+            rb3D.AddForce(direction * sp.force, ForceMode.Impulse);
             HP -= bullet.Spell.Damage;
-            if (HP <= 0) Destroy(gameObject);
+            if (HP <= 0)
+            {
+                SwitchState(new EnemyDeadState(this));
+            }
         }
+        public void ResetCD() => attackComponent.RestartCD();
     }
 }

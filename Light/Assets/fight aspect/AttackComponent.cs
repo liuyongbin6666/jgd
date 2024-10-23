@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Components;
 using GameData;
 using Sirenix.OdinInspector;
@@ -24,36 +25,34 @@ namespace fight_aspect
         [SerializeField,LabelText("攻击CD")]float cd= 1f;
         [SerializeField,LabelText("请选择射击方式")] BulletTracking bulletTracking;
         [SerializeField, LabelText("子弹维持时长")] float lasting = 1f;
-        [SerializeField, LabelText("跳过第一次CD")] bool skipFirstCd;
-        [SerializeField, LabelText("攻击范围")] SphereCollider attackRange;
         //[SerializeField, LabelText("执行攻击")]public bool isAttack;
         float startTime;
-        //GameObject target;
+        readonly List<GameObject> targets = new();
         //public readonly UnityEvent<BulletComponent> OnAttack = new();
         public readonly UnityEvent<Collider3DHandler> OnTargetSpotted = new();
         public readonly UnityEvent<Collider3DHandler> OnTargetLeave= new();
         public readonly UnityEvent OnCdComplete = new();
         IBattleUnit BattleUnit { get; set; }
         bool IsInit { get; set; }
-        public bool IsCDComplete { get; private set; }
+        public bool IsCooldown { get; private set; }
         public void Init(IBattleUnit unit)
         {
             BattleUnit = unit;
             IsInit = true;
         }
-        public bool IsInRange(Transform tran) => attackRange.IsInRange(tran);
+        public bool IsInRange(Transform tran) => targets.Contains(tran.gameObject);
         /// <summary>
         /// 重置cd
         /// </summary>
         public void RestartCD()
         {
-            IsCDComplete = false;
+            IsCooldown = false;
             if(CoundownCo!=null)
             {
                 StopCoroutine(CoundownCo);
                 CoundownCo = null;
             }
-            CoundownCo = StartCoroutine(CountingColdDown());
+            CoundownCo = StartCoroutine(CountingCooldown());
         }
 
         Coroutine CoundownCo { get; set; }
@@ -62,26 +61,30 @@ namespace fight_aspect
         protected override void OnHandlerEnter(Collider3DHandler handler)
         {
             if (!IsInit) return;
+            if (targets.Contains(handler.root)) return;
+            targets.Add(handler.root);
             OnTargetSpotted.Invoke(handler);
         }
         //当目标离开通知上层
         protected override void OnHandlerExit(Collider3DHandler handler)
         {
             if (!IsInit) return;
+            if (!targets.Contains(handler.root)) return;
+            targets.Remove(handler.root);
             OnTargetLeave.Invoke(handler);
         }
         public bool Attack(GameObject target)
         {
-            var canAttack = target && IsCDComplete;
+            var canAttack = target && IsCooldown;
             if(!canAttack) return false;
             var bullet = bulletManager.Shoot(BattleUnit, target, bulletTracking, lasting);
             if (bullet) RestartCD();
             return bullet;
         }
-        IEnumerator CountingColdDown()
+        IEnumerator CountingCooldown()
         {
             yield return new WaitForSeconds(cd);
-            IsCDComplete = true;
+            IsCooldown = true;
             OnCdComplete.Invoke();
             CoundownCo = null;
         }

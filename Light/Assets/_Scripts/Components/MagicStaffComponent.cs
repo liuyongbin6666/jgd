@@ -15,7 +15,7 @@ namespace Components
         [SerializeField] AttackComponent attackComponent;
         [LabelText("法术")]public Spell Spell;
         public GameObject Target;
-        public bool IsCdComplete=> attackComponent.IsCDComplete;
+        public bool IsCdComplete=> attackComponent.IsCooldown;
         public float AttackDelay => Spell.Delay;
 
         public void Init(IBattleUnit unit)

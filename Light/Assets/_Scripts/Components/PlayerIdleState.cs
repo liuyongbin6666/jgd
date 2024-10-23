@@ -4,11 +4,11 @@ using Utls;
 
 namespace Components
 {
-    public class IdleState : IGameUnitState
+    public class PlayerIdleState : IGameUnitState
     {
         PlayerControlComponent player;
 
-        public IdleState(PlayerControlComponent player)
+        public PlayerIdleState(PlayerControlComponent player)
         {
             this.player = player;
         }
@@ -22,11 +22,11 @@ namespace Components
         {
             if (player.IsMoving)
             {
-                player.SwitchState(new MoveState(player));
+                player.SwitchState(new PlayerMoveState(player));
             }
             else if (player.Target && player.IsCdDone)
             {
-                player.SwitchState(new AttackState(player));
+                player.SwitchState(new PlayerAttackState(player));
             }
         }
 
@@ -35,11 +35,11 @@ namespace Components
             // 离开Idle状态时的处理
         }
     }
-    public class MoveState : IGameUnitState
+    public class PlayerMoveState : IGameUnitState
     {
         PlayerControlComponent player;
 
-        public MoveState(PlayerControlComponent player)
+        public PlayerMoveState(PlayerControlComponent player)
         {
             this.player = player;
         }
@@ -53,7 +53,7 @@ namespace Components
         {
             if (!player.IsMoving)
             {
-                player.SwitchState(new IdleState(player));
+                player.SwitchState(new PlayerIdleState(player));
             }
             else
             {
@@ -66,10 +66,10 @@ namespace Components
             // 离开Move状态时的处理
         }
     }
-    public class AttackState : IGameUnitState
+    public class PlayerAttackState : IGameUnitState
     {
         PlayerControlComponent player;
-        public AttackState(PlayerControlComponent player)
+        public PlayerAttackState(PlayerControlComponent player)
         {
             this.player = player;
         }
@@ -83,11 +83,11 @@ namespace Components
         {
             if (player.IsMoving)
             {
-                player.SwitchState(new MoveState(player));
+                player.SwitchState(new PlayerMoveState(player));
             }
             else if (player.anim.GetInteger(GameTag.AnimInt) == -1)
             {
-                player.SwitchState(new IdleState(player));
+                player.SwitchState(new PlayerIdleState(player));
             }
         }
 
@@ -96,13 +96,13 @@ namespace Components
             player.ResetAttackCD();
         }
     }
-    public class ReactState : IGameUnitState
+    public class PlayerReactState : IGameUnitState
     {
         PlayerControlComponent player;
         float reactDuration = 0.3f;
         float reactTimer;
 
-        public ReactState(PlayerControlComponent player)
+        public PlayerReactState(PlayerControlComponent player)
         {
             this.player = player;
         }
@@ -121,7 +121,7 @@ namespace Components
             {
                 player.SetInjured(false);
                 player.stopMoving = false;
-                player.SwitchState(new IdleState(player));
+                player.SwitchState(new PlayerIdleState(player));
             }
         }
 

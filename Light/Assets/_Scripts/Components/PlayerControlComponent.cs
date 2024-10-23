@@ -23,7 +23,7 @@ namespace Components
     public class PlayerControlComponent : MonoBehaviour, IBattleUnit
     {
         [SerializeField] GameLaunch gameLaunch;
-        [SerializeField] BulletHandler bulletHandler;
+        //[SerializeField] BulletHandler bulletHandler;
         [SerializeField] Rigidbody rb3D;
         public Animator anim;
         [SerializeField] Collider3DHandler bodyCollider;
@@ -60,11 +60,10 @@ namespace Components
             _lantern.OnCountdownComplete.AddListener(OnLanternTimeout.Invoke);
             _panicCom.Init();
             _panicCom.OnPulseTrigger.AddListener(ScaryPulse);
-            bulletHandler.OnBulletEvent.AddListener(SpellImpact);
             magicStaff.Init(this);
 
             // 初始化状态为 Idle
-            SwitchState(new IdleState(this));
+            SwitchState(new PlayerIdleState(this));
         }
 
         void Update()
@@ -82,7 +81,7 @@ namespace Components
         void SpellImpact(Spell spell, Vector3 direction)
         {
             rb3D.AddForce(direction * spell.force, ForceMode.Impulse);
-            SwitchState(new ReactState(this));
+            SwitchState(new PlayerReactState(this));
             OnSpellImpact.Invoke(spell);
         }
 
@@ -139,9 +138,9 @@ namespace Components
             mpb.SetFloat("_INJURED", isEmit ? 1f : 0f);
             renderer.SetPropertyBlock(mpb);
         }
-
+        public void BulletImpact(BulletComponent bullet) =>
+            SpellImpact(bullet.Spell, bullet.ImpactDirection(transform));
         public void GameItemInteraction(GameItemBase gameItem) => OnGameItemTrigger.Invoke(gameItem);
-        public void BulletImpact(BulletComponent bullet) => bulletHandler.BulletImpact(bullet);
         public void TryAttackTarget() => magicStaff.AttackTarget();
         public void ResetAttackCD() => magicStaff.ResetCd();
     }

@@ -6,7 +6,8 @@ namespace Components
     public class CameraController : MonoBehaviour
     {
         public float Speed=0.75f;
-        public Transform player;
+        public PlayerControlComponent playerControl;
+        Transform player => playerControl.transform;
         public Vector3 Offset;
         [SerializeField, LabelText("采用动态镜头跟踪")] public bool dynamics;
         private void Awake()

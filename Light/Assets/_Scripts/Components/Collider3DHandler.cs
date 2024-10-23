@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using Utls;
 
 namespace Components
 {
@@ -15,12 +16,42 @@ namespace Components
         public readonly UnityEvent<Collision> OnCollisionEnterEvent=new();
         public readonly UnityEvent<Collision> OnCollisionExitEvent=new();
         public readonly UnityEvent<Collision> OnCollisionStayEvent=new();
-        void OnTriggerEnter(Collider other)=> OnTriggerEnterEvent?.Invoke(other);
-        void OnTriggerExit(Collider other) => OnTriggerExitEvent?.Invoke(other);
-        void OnTriggerStay(Collider other) => OnTriggerStayEvent?.Invoke(other);
-        void OnCollisionEnter(Collision other)=> OnCollisionEnterEvent?.Invoke(other);
-        void OnCollisionExit(Collision other)=> OnCollisionExitEvent?.Invoke(other);
-        void OnCollisionStay(Collision other) => OnCollisionStayEvent?.Invoke(other);
+        void OnTriggerEnter(Collider other)
+        {
+            //$"Enter:{other.name}".Log(this);
+            OnTriggerEnterEvent?.Invoke(other);
+        }
+
+        void OnTriggerExit(Collider other)
+        {
+            //$"Exit:{other.name}".Log(this);
+            OnTriggerExitEvent?.Invoke(other);
+        }
+
+        void OnTriggerStay(Collider other)
+        {
+            //$"Stay:{other.name}".Log(this);
+            OnTriggerStayEvent?.Invoke(other);
+        }
+
+        void OnCollisionEnter(Collision other)
+        {
+            //$"Enter:{other.collider.name}".Log(this);
+            OnCollisionEnterEvent?.Invoke(other);
+        }
+
+        void OnCollisionExit(Collision other)
+        {
+            //$"Exit:{other.collider.name}".Log(this);
+            OnCollisionExitEvent?.Invoke(other);
+        }
+
+        void OnCollisionStay(Collision other)
+        {
+            //$"Stay:{other.collider.name}".Log(this);
+            OnCollisionStayEvent?.Invoke(other);
+        }
+
         public void RegEnter(UnityAction<GameObject> callback)
         {
             OnTriggerEnterEvent.AddListener(c=>callback(c.gameObject));

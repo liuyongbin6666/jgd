@@ -22,7 +22,7 @@ namespace fight_aspect
         public Transform Target;
         bool KeepActive => Target || Time.deltaTime - startTime < duration;
         public bool IsBulletInit { get; private set; }
-
+        public Vector3 ImpactDirection(Transform body) => (body.position - transform.position).normalized;
         public void Set(IBattleUnit owner, GameObject target, 
             BulletTracking bulletTracking, 
             float lasting,
