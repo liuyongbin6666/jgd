@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31daef8934550cb42afc812f0c0a10a7, type: 3}
-  m_Name: "\u60C5\u8282-1.npc\u8BF4\u8BDD"
+  m_Name: "\u60C5\u8282-5.\u7ED3\u675F"
   m_EditorClassIdentifier: 
   referenceSo: {fileID: 11400000}
-  _name: "1.npc\u8BF4\u8BDD"
-  story: {fileID: 11400000, guid: 07f1b33f36f3da64b90306d212a18ca6, type: 2}
+  _name: "5.\u7ED3\u675F"
+  story: {fileID: 11400000, guid: 628e9890976304a46baa7781ae47e9dc, type: 2}
   isStoryFinalize: 0
   autoBegin: 0
   lineType: 1
   lines:
-  - "\u6211\u53EA\u60F3\u77E5\u9053\uFF0C\u90A3\u662F\u4EF6\u4EC0\u4E48\u6837\u7684\u793C\u7269\u3002"
-  nextPlots:
-  - "2.\u5893\u7891"
+  - "\u90A3\u4E48\uFF0C\u9A97\u5B50\u5510\u514B\u591A\u5927\u4EBA\uFF0C\u8FD8\u80FD\u7ED9\u6211\u4E00\u679A\u5E78\u8FD0\u786C\u5E01\u5417\uFF1F"
+  nextPlots: []

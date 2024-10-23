@@ -17,6 +17,7 @@ MonoBehaviour:
   story: {fileID: 11400000, guid: 468dcb41363f47b40a1f2dc3f789142b, type: 2}
   isStoryFinalize: 0
   autoBegin: 0
+  lineType: 1
   lines:
   - "\u4F60\u770B\u5230\u4E86\u5417\uFF1F\u90A3\u4EAE\u95EA\u95EA\u7684\u4E1C\u897F\u3002"
   nextPlots:

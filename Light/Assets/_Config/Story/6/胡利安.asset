@@ -9,16 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31daef8934550cb42afc812f0c0a10a7, type: 3}
-  m_Name: "\u60C5\u8282-6.boss"
+  m_Script: {fileID: 11500000, guid: cda096c0fefda2441951c54772e4792a, type: 3}
+  m_Name: "\u80E1\u5229\u5B89"
   m_EditorClassIdentifier: 
   referenceSo: {fileID: 11400000}
-  _name: 6.boss
-  story: {fileID: 11400000, guid: fb2b4bf533513e142816cac9d25cb834, type: 2}
-  isStoryFinalize: 0
-  autoBegin: 0
-  lineType: 1
-  lines:
-  - 
-  nextPlots:
-  - "7.\u7ED3\u675F"
+  _name: "\u80E1\u5229\u5B89"
+  plots: []
