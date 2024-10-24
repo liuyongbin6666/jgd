@@ -16,9 +16,9 @@ namespace Controller
             Player.Move(direction);
         }
 
-        public void CastSpell(int spellId)
+        public void ChargeSpell(int spellId)
         {
-            Player.CastSpell(spellId);
+            Player.ChargeSpell(spellId);
         }
     }
 }

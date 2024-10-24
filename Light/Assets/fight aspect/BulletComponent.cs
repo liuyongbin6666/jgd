@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Components;
 using DG.Tweening;
 using GameData;
 using GMVC.Utls;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utls;
 
@@ -10,18 +12,19 @@ namespace fight_aspect
 {
     public class BulletComponent : ColliderHandlerComponent
     {
-        public Spell Spell;
-        public float distance;
-        public float currentDistance;
-        public Vector3 targetPosition;
-        public Vector3 currentPosition;
+        [SerializeField,LabelText("子弹")] Bullet[] bullets;
+        public Spell Spell { get; private set; }
+        float distance;
+        float currentDistance;
+        Vector3 targetPosition;
+        Vector3 currentPosition;
         public float Speed = 2f;
-        public Vector3 direction;
-        public float startTime;
-        public float duration=2f;//生命周期
-        public BulletTracking BulletTracking;
+        Vector3 direction;
+        float startTime;
+        float duration=2f;//生命周期
+        BulletTracking BulletTracking;
         public Transform Target;
-        [SerializeField] GameObject explode;
+        Bullet bulletCache;
         bool KeepActive => Target || Time.deltaTime - startTime < duration;
         public bool IsBulletInit { get; private set; }
         public Vector3 ImpactDirection(Transform body) => (body.position - transform.position).normalized;
@@ -43,14 +46,23 @@ namespace fight_aspect
             currentDistance = distance;
             startTime = Time.time;
             if (speed > 0) Speed = speed;
-            explode.Display(false);
+            ShowBullet(Spell.Type);
             this.Display(true);
             IsBulletInit = true;
+        }
+
+        void ShowBullet(Spell.Types type)
+        {
+            bulletCache = bullets.FirstOrDefault(b => b.spellType == type);
+            if(bulletCache==null)
+                Debug.LogError($"{nameof(ShowBullet)}:找不到子弹类型: {type}");
+            bulletCache.ShowBullet(true);
         }
 
         void ResetBullet()
         {
             StopAllCoroutines();
+            foreach (var bullet in bullets) bullet.Reset();
             Target = null;
             currentPosition = Vector3.zero;
             direction = Vector3.zero;
@@ -125,7 +137,11 @@ namespace fight_aspect
 
         void StartExplosion()
         {
-            DOTween.Sequence().AppendCallback(() => explode.Display(true))
+            DOTween.Sequence().AppendCallback(() =>
+                {
+                    bulletCache.ShowBullet(false);
+                    bulletCache.ShowExplode(true);
+                })
                 .AppendInterval(0.5f)
                 .AppendCallback(ResetBullet);
         }
@@ -133,6 +149,21 @@ namespace fight_aspect
         protected override void OnHandlerExit(Collider3DHandler handler)
         {
             
+        }
+
+        [Serializable]class Bullet
+        {
+            [LabelText("魔法类型")]public Spell.Types spellType;
+            [LabelText("子弹"),SerializeField] GameObject bullet;
+            [LabelText("爆炸"),SerializeField] GameObject explode;
+
+            public void Reset()
+            {
+                bullet.Display(false);
+                explode.Display(false);
+            }
+            public void ShowBullet(bool display) => bullet.Display(display);
+            public void ShowExplode(bool display) => explode.Display(display);
         }
     }
     public enum BulletTracking

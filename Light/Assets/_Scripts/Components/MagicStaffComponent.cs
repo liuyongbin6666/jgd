@@ -17,7 +17,18 @@ namespace Components
         [SerializeField,LabelText("散光")] ParticleSystem glow;
         [SerializeField] AttackComponent attackComponent;
         [LabelText("法术")]public Spell Spell;
-        public List<GameObject> Targets;
+        List<GameObject> targets = new();
+
+        public IEnumerable<GameObject> Targets
+        {
+            get
+            {
+                if (targets.Any(t => !t))
+                    targets = targets.Where(t => t).ToList();
+                return targets;
+            }
+        }
+
         public bool IsCdComplete=> attackComponent.IsCooldown;
         public float AttackDelay => Spell.Delay;
         public void Init(IBattleUnit unit)
@@ -30,13 +41,13 @@ namespace Components
         }
         void TargetLeave(Collider3DHandler handler)
         {
-            if (Targets.Count ==0 || !Targets.Contains(handler.root)) return;
-            Targets.Remove(handler.root);
+            if (targets.Count ==0 || !targets.Contains(handler.root)) return;
+            targets.Remove(handler.root);
         }
         void TargetSpotted(Collider3DHandler handler)
         {
-            if (Targets.Contains(handler.root)) return;
-            Targets.Add(handler.root);
+            if (targets.Contains(handler.root)) return;
+            targets.Add(handler.root);
         }
         void CDComplete() => SetActive(true);
         [Button("开启")]public void SetActive(bool active)
@@ -46,9 +57,11 @@ namespace Components
         }
         public void AttackTarget()
         {
-            attackComponent.Attack(Targets.OrderBy(t =>
-                Vector2.Distance(t.transform.position.ToXY(), transform.position.ToXY()))
-                .FirstOrDefault());
+            var target = targets.Where(t=>t)
+                .OrderBy(t => Vector2.Distance(t.transform.position.ToXY(), transform.position.ToXY()))
+                .FirstOrDefault();
+            if (target == null) return;
+            attackComponent.Attack(target);
         }
         public void ResetCd() => attackComponent.RestartCD();
     }

@@ -5,8 +5,7 @@ namespace GameData
     public enum GameItemType
     {
         [InspectorName("萤火虫")] Firefly,
-        Boss,
-        Bullet,
+        [InspectorName("魔法")] Spell,
     }
 
     public interface IGameItem

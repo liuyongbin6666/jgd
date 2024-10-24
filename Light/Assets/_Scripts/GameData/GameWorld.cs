@@ -62,6 +62,7 @@ namespace GameData
         public const string Player_Panic_Finalize = "Player_Panic_Finalize";//恐慌心跳结束触发
         public const string Player_IsDeath = "Player_IsDeath";//玩家死亡
         public const string Player_Hp_Update = "Player_Hp_Update";//玩家血量更新
+        public const string Player_Spell_Add = "Player_Spell_Add";//玩家法术添加
 
         //环境
         public const string Env_Lightning = "Env_Lightning";// 闪电
@@ -80,7 +81,7 @@ namespace GameData
         //战斗
         public const string Battle_Spell_On_Player = "Battle_Spell_On_Player"; //战斗法术对玩家伤害
         public const string Battle_Spell_Finish = "Battle_Spell_Finish"; //战斗法术消耗完毕
-        public const string Battle_Spell_Cast= "Battle_Spell_Cast";//战斗法术释放
+        public const string Battle_Spell_Update= "Battle_Spell_Update";//战斗法术释放
 
         public const string Story_Npc_Update = "Story_Npc_Update";
     }

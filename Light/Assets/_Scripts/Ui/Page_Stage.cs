@@ -44,7 +44,7 @@ namespace Ui
 
             view_win = new View_Win(v.Get<View>("view_win"),GameController.Game_NextStage);//todo 下一关事件
             view_defeat = new View_Defeat(v.Get<View>("view_defeat"),GameController.Game_End);//todo 返回page main事件
-            view_latern = new View_lantern(v.Get<View>("view_lantern"), PlayableController.CastSpell);
+            view_latern = new View_lantern(v.Get<View>("view_lantern"), PlayableController.ChargeSpell);
             view_effect = new View_Effect(v.Get<View>("view_effect"));
 
             /**********事件注册**********/
@@ -76,13 +76,15 @@ namespace Ui
                 view_latern.SetPanic(1f * remain / max);
                 view_effect.PlayPanic();
             });
+            Game.RegEvent(GameEvent.Player_Spell_Add, _ => view_latern.SetSpell(Stage.Player.Spells));
             Game.RegEvent(GameEvent.Battle_Spell_Finish, b => view_latern.SpellRemoveAt(b.Get<int>(0)));
-            Game.RegEvent(GameEvent.Battle_Spell_Cast, b =>
+            Game.RegEvent(GameEvent.Battle_Spell_Update, b =>
             {
                 var index = b.Get<int>(0);
                 var remain = b.Get<int>(1);
                 var max = b.Get<int>(2);
                 view_latern.SpellUpdate(index, 1f * remain / max);
+                view_latern.SetSelected(Stage.Player.SelectedSpellIndex);
             });
             Game.RegEvent(GameEvent.Stage_StageTime_Update, _ => view_top.UpdateStageTime(Stage.Story.RemainSeconds));
             Game.RegEvent(GameEvent.Story_Lines_Send, b => view_storyPlayer.ShowStory(Stage.Story.StoryLines));
@@ -290,29 +292,42 @@ namespace Ui
                 SpellList.Remove(ui);
                 ui.Destroy();
             }
-            public void SetSpell(int spells)
+            public void SetSelected(int index)
+            {
+                for (var i = 0; i < SpellList.List.Count; i++)
+                {
+                    var ui = SpellList.List[i];
+                    ui.SetSelected(index == i);
+                }
+            }
+            public void SetSpell(List<Spell> spells)
             {
                 SpellList.ClearList(u=>u.Destroy());
-                for (int i = 0; i < spells; i++)
+                for (int i = 0; i < spells.Count; i++)
                 {
+                    var spell = spells[i];
                     var index = i;
-                    SpellList.Instance(v => new Prefab_Spell(v, () => OnSpellAction?.Invoke(index)));
+                    var ui = SpellList.Instance(v => new Prefab_Spell(v, () => OnSpellAction?.Invoke(index)));
+                    ui.SetValue(1);
                 }
             }
             class Prefab_Spell : UiBase
             {
                 Slider slider_value { get; }
                 Button btn_click { get; }
-                Image image_bg { get; }
+                Image img_bg { get; }
+                Image img_selected { get; }
                 public Prefab_Spell(IView v,UnityAction onClickAction ,bool display = true) : base(v, display)
                 {
                     slider_value = v.Get<Slider>("slider_value");
                     btn_click = v.Get<Button>("btn_click");
                     btn_click.onClick.AddListener(onClickAction);
-                    image_bg = v.Get<Image>("image_bg");
+                    img_bg = v.Get<Image>("img_bg");
+                    img_selected = v.Get<Image>("img_selected");
                 }
-                public void SetImage(Sprite sprite) => image_bg.sprite = sprite;
+                public void SetImage(Sprite sprite) => img_bg.sprite = sprite;
                 public void SetValue(float value) => slider_value.value = 1 - value;
+                public void SetSelected(bool selected) => img_selected.Display(selected);
             }
             class View_Condition : UiBase
             {

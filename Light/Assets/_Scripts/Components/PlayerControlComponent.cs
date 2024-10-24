@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using fight_aspect;
 using GameData;
+using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -40,7 +41,15 @@ namespace Components
         [LabelText("移动摇杆")]
         public Vector2 axisMovement;
 
-        public Spell Spell => magicStaff.Spell;
+        public Spell Spell
+        {
+            get
+            {
+                if (Game.World.Stage.Player.SelectedSpellIndex < 0) return magicStaff.Spell;
+                return Game.World.Stage.Player.SelectedSpell;
+            }
+        }
+
         public bool IsMoving => axisMovement != Vector2.zero || stopMoving;
         public IEnumerable<GameObject> Targets => magicStaff.Targets;
         public float AttackDelay => magicStaff.AttackDelay;
