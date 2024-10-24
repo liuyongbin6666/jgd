@@ -1,7 +1,9 @@
+using Components;
 using Config;
 using GameData;
 using GMVC.Conditions;
 using GMVC.Core;
+using GMVC.Utls;
 using UnityEngine;
 
 namespace Controller
@@ -18,25 +20,39 @@ namespace Controller
                 Debug.LogWarning("游戏状态错误！");
                 return;
             }
-
-            var player = new Player(new ConValue("血量", 100),
-                new ConValue("魔法", 100),
-                new ConValue("虫灯", 8, 8, 2));
-            World.InitStage(new PlayableUnit(player,Config.PlayerPrefab),
-                            new StageIndex(),
-                            new StageStory(Config.StageTimeComponent, 180));
-            World.StartStage();
+            Config.PlayerPrefab.Display(false);
+            var player = InstancePlayer();
+            World.Start();
+            World.SetGameStage(player, new StageStory(Config.StageTimeComponent, 180));
+            World.StartGameStage();
             Debug.Log("游戏执行中！");
         }
+
+        PlayableUnit InstancePlayer()
+        {
+            var player = DefaultPlayer();
+            var playerControl = Object.Instantiate(Config.PlayerPrefab, Config.PlayerPrefab.transform.parent);
+            return new PlayableUnit(player, playerControl);
+        }
+        Player DefaultPlayer()
+        {
+            return new Player(new ConValue("血量", 100),
+                new ConValue("魔法", 100),
+                new ConValue("虫灯", 8, 8, 2));
+        }
+
         //public void SwitchPlayMode(GameStage.PlayModes mode)
         //{
         //    World.Stage.SetMode(mode);
         //    World.Stage.Story.Plot_Next();
         //}
-        public void Game_End()
+        public void Game_End() => World.End();
+
+        public void Game_NextStage()
         {
-            World.End();
-            Debug.Log("游戏结束！");
+            World.NextGameStage();
+            World.SetGameStage(InstancePlayer(), new StageStory(Config.StageTimeComponent, 180));
+            World.StartGameStage();
         }
     }
 }

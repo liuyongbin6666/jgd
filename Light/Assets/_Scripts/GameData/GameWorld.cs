@@ -12,27 +12,29 @@ namespace GameData
         }
         public GameStates Status { get; private set; }
         public GameStage Stage { get; private set; }
+        public int StageIndex { get; private set; }
 
-        public void InitStage(PlayableUnit player, StageIndex stageIndex, StageStory stageStory)
+        public void Start()
         {
-            Stage = new GameStage(player,stageIndex,stageStory);
-            SetState(GameStates.Start);
-        }
-        public void StartStage()
-        {
-            Stage.Stage_Start();
-            SetState(GameStates.Playing);
+            State_Set(GameStates.Start);
         }
         public void End()
         {
-            SetState(GameStates.End);
+            State_Set(GameStates.End);
         }
 
-        void SetState(GameStates state)
+        void State_Set(GameStates state)
         {
             Status = state;
             Game.SendEvent(GameEvent.Game_StateChanged, state);
         }
+        public void StartGameStage()
+        {
+            Stage.Stage_Start();
+            State_Set(GameStates.Playing);
+        }
+        public void SetGameStage(PlayableUnit player, StageStory stageStory) => Stage = new GameStage(player, stageStory);
+        public void NextGameStage() => StageIndex++;
     }
 
     public class GameTag
@@ -44,6 +46,7 @@ namespace GameData
     }
     public class GameEvent
     {
+        public const string Stage_StageTime_Over = "Stage_StageTime_Over";// 关卡时间结束
         public const string GameItem_Interaction = "GameItem_Interaction";// 游戏物品交互
         public const string Stage_StageTime_Update = "Stage_StageTime_Update";
 

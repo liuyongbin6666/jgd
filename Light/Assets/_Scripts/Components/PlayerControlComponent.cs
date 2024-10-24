@@ -1,5 +1,6 @@
 using fight_aspect;
 using GameData;
+using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -47,7 +48,7 @@ namespace Components
         [HideInInspector]
         public bool stopMoving;
 
-        private IGameUnitState currentState;
+        IGameUnitState currentState;
 
         public readonly UnityEvent OnLanternTimeout = new();
         public readonly UnityEvent OnPanicFinalize = new();
@@ -57,6 +58,7 @@ namespace Components
 
         public void Init()
         {
+            this.Display(true);
             _lantern.Init();
             _lantern.OnCountdownComplete.AddListener(OnLanternTimeout.Invoke);
             _panicCom.OnPulseTrigger.AddListener(OnPanicPulse.Invoke);
@@ -87,7 +89,7 @@ namespace Components
         }
         public void SetSpeed(float speed) => moveSpeed = speed;
         public void StopPanic() => StopAllCoroutines(); // 暂时这样停止，实际上会停止所有协程。
-        public void Lantern(int lantern)
+        public void Lantern_Update(int lantern)
         {
             var hasVision = lantern <= _minLantern;//虫灯最小值
             var lanternLevel = Mathf.Clamp(lantern, 0, _maxLantern);

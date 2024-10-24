@@ -14,14 +14,12 @@ namespace GameData
         {
             Story,Explore
         }
-        public StageIndex StageIndex { get; private set; }
         public StageStory Story { get; private set; }
         public PlayableUnit Player { get; private set; }
         public PlayModes Mode { get; private set; } = PlayModes.Explore;//暂时默认探索模式
-        public GameStage(PlayableUnit player, StageIndex stageIndex, StageStory stageStory)
+        public GameStage(PlayableUnit player, StageStory stageStory)
         {
             Player = player;
-            StageIndex = stageIndex;
             Story = stageStory;
         }
 
@@ -29,7 +27,7 @@ namespace GameData
         public void Stage_Start()
         {
             Story.StartTimer();
-            Story.SetStory(new[] { 1, 2, 3, 4, 5 });
+            Player.Enable(true);
             //SetMode(PlayModes.Explore);
             //Game.SendEvent(GameEvent.Story_Npc_Update, 0);
         }
@@ -39,11 +37,6 @@ namespace GameData
         //    Game.SendEvent(GameEvent.Game_PlayMode_Update, mode);
         //}
         //通过关卡
-        public void AddStageIndex()
-        {
-            StageIndex.Add();
-        }
-
     }
 
     /// <summary>
@@ -61,8 +54,7 @@ namespace GameData
         public int RemainSeconds { get; private set; }
         public string[] StoryLines { get; private set; }
         public string[] DialogLines { get; private set; }
-        //故事Id
-        int[] StoryId { get; set; }
+        
         int _totalSecs;
         PlotComponentBase currentPlot;
         public StageStory(StageTimeComponent stageTimeComponent, int remainSeconds)
@@ -74,7 +66,6 @@ namespace GameData
             PlotManager.OnLinesEvent.AddListener(OnLine);
             PlotManager.OnPlotBegin.AddListener(SetCurrentPlot);
         }
-
         void SetCurrentPlot(PlotComponentBase? plot)
         {
             var lastPlot = currentPlot;
@@ -84,7 +75,6 @@ namespace GameData
             else
                 SendEvent(GameEvent.Story_End, lastPlot.story.Name);
         }
-
         void OnLine(Lines lineType, string[] lines)
         {
             switch (lineType)
@@ -100,15 +90,6 @@ namespace GameData
                 default: throw new ArgumentOutOfRangeException(nameof(lineType), lineType, null);
             }
         }
-
-        public void SetStory(int[] ids)
-        {
-            StoryId = ids;
-        }
-        public int GetStoryId()
-        {
-            return StoryId[Game.World.Stage.StageIndex.Index];
-        }
         public void StartTimer() => StageTimeComponent.StartCountdown();
         public void Reset()
         {
@@ -118,7 +99,7 @@ namespace GameData
         void OnPulse(int arg0)
         {
             RemainSeconds--;
-            SendEvent(GameEvent.Stage_StageTime_Update);
+            SendEvent(RemainSeconds > 0 ? GameEvent.Stage_StageTime_Update : GameEvent.Stage_StageTime_Over);
         }
 
         public void Plot_Next() => PlotManager.TriggerNext(currentPlot);

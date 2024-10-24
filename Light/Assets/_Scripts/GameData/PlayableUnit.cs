@@ -1,9 +1,11 @@
 using System;
 using Components;
 using GMVC.Conditions;
+using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utls;
+using Object = UnityEngine.Object;
 
 namespace GameData
 {
@@ -27,7 +29,7 @@ namespace GameData
             Player = player;
             PlayerControl = playerControl;
             PlayerControl.Init();
-            PlayerControl.Lantern(Lantern);
+            PlayerControl.Lantern_Update(Lantern);
             PlayerControl.OnLanternTimeout.AddListener(OnLanternTimeout);
             PlayerControl.OnPanicFinalize.AddListener(OnScaryFinalized);
             PlayerControl.OnPanicPulse.AddListener(OnPanicPulse);
@@ -84,10 +86,11 @@ namespace GameData
                 PlayerControl.StartPanic();// 开始恐慌
             }
             Log($"value = {value}");
-            PlayerControl.Lantern(Lantern);
+            PlayerControl.Lantern_Update(Lantern);
             SendEvent(GameEvent.Player_Lantern_Update);
         }
         public void Move(Vector3 direction) => PlayerControl.axisMovement = direction.ToXY();
+        public void Enable(bool enable) => PlayerControl.Display(enable);
     }
 
     public class Player

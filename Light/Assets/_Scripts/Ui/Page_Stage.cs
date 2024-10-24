@@ -40,12 +40,11 @@ namespace Ui
                 //GameController.SwitchPlayMode(GameStage.PlayModes.Explore);
                 view_storyPlayer.Hide();
             });
-            //view_win = new View_Win(v.Get<View>("view_win"));//todo 下一关事件
-            //view_defeat = new View_Defeat(v.Get<View>("view_defeat"));//todo 返回page main事件
+            view_win = new View_Win(v.Get<View>("view_win"),GameController.Game_NextStage);//todo 下一关事件
+            view_defeat = new View_Defeat(v.Get<View>("view_defeat"),GameController.Game_End);//todo 返回page main事件
             view_latern = new View_lantern(v.Get<View>("view_lantern"));
 
             /**********事件注册**********/
-
             Game.RegEvent(GameEvent.Game_StateChanged, b =>
             {
                 view_joystick.SetActive(IsPlaying && IsExploring);
