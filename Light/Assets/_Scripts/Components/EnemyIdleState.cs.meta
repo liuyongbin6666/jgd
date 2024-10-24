@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Light/Assets/_Scripts/Components/EnemyIdleState.cs.meta
 guid: 1ec9fde0e1b45814da2f87e9a2624317
+========
+guid: a91a208bea24b0a42b290d4eb006d744
+>>>>>>>> origin/dev:Light/Assets/_Scripts/Components/PlayerIdleState.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
