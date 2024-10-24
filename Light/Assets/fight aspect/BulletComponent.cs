@@ -35,7 +35,7 @@ namespace fight_aspect
         {
             SetTargetTag(target.tag);
             duration = lasting;
-            Spell = owner.Spell;
+            Spell = owner.CastSpell();
             Target = target.transform;
             BulletTracking = bulletTracking;
             targetPosition = target.transform.position;

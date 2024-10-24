@@ -34,17 +34,9 @@ namespace Controller
             var playerControl = Object.Instantiate(Config.PlayerPrefab, Config.PlayerPrefab.transform.parent);
             return new PlayableUnit(player, playerControl);
         }
-        Player DefaultPlayer()
-        {
-            return new Player(new ConValue("血量", 100),
-                new ConValue("虫灯", 8, 8, 2));
-        }
-
-        //public void SwitchPlayMode(GameStage.PlayModes mode)
-        //{
-        //    World.Stage.SetMode(mode);
-        //    World.Stage.Story.Plot_Next();
-        //}
+        Player DefaultPlayer() =>
+            new(new ConValue("血量", 10),
+                new ConValue("虫灯", 10, 10, 3));
         public void Game_End() => World.End();
 
         public void Game_NextStage()

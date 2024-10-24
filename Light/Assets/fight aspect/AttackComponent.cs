@@ -13,8 +13,9 @@ namespace fight_aspect
     {
         GameObject gameObject { get; }
         Transform transform { get; }
-        Spell Spell{ get; }
+        //Spell Spell{ get; }
         void BulletImpact(BulletComponent bullet);
+        Spell CastSpell();
     }
     /// <summary>
     /// 通用攻击组件,用于处理攻击CD,攻击范围,攻击目标

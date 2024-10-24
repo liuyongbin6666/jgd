@@ -67524,6 +67524,12 @@ MonoBehaviour:
   moveSpeed: 1.5
   _maxLantern: 5
   _minLantern: 1
+  Spell:
+    Type: 0
+    Damage: 1
+    Level: 1
+    Delay: 0
+    force: 3
   axisMovement: {x: 0, y: 0}
   stopMoving: 0
 --- !u!54 &1641657403
@@ -112376,12 +112382,6 @@ MonoBehaviour:
   innerPar: {fileID: 3017109412049786184}
   glow: {fileID: 5195177738186996055}
   attackComponent: {fileID: 5595919905628518169}
-  Spell:
-    Type: 0
-    Damage: 1
-    Level: 1
-    Delay: 0
-    force: 3
 --- !u!114 &5595919905628518169
 MonoBehaviour:
   m_ObjectHideFlags: 0

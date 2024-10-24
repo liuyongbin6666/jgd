@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Components;
 using GMVC.Conditions;
+using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace GameData
     /// </summary>
     public class PlayableUnit : ModelBase
     {
+        const int Lantern_Min = 1;
+
         /// <summary>
         /// 灯笼值
         /// </summary>
@@ -26,15 +29,15 @@ namespace GameData
         public ConValue Firefly => Player.Firefly;
         public List<Spell> Spells => Player.Spells;
         public int SelectedSpellIndex => Player.SpellIndex;
-        public Spell SelectedSpell => Player.CurrentSpell.Value;
 
         public PlayableUnit(Player player,PlayerControlComponent playerControl)
         {
             Player = player;
             PlayerControl = playerControl;
             PlayerControl.Init();
+            PlayerControl.OnCastSpell += CastSpell;
             PlayerControl.Lantern_Update(Lantern);
-            PlayerControl.OnLanternPulse.AddListener(()=>LanternUpdate(Lantern - 1));
+            PlayerControl.OnLanternPulse.AddListener(()=>AddLantern(-1));
             PlayerControl.OnPanicFinalize.AddListener(OnScaryFinalized);
             PlayerControl.OnPanicPulse.AddListener(OnPanicPulse);
             PlayerControl.OnGameItemTrigger.AddListener(OnGameItemInteractive);
@@ -74,27 +77,32 @@ namespace GameData
             SendEvent(GameEvent.Player_Panic_Finalize);
         }
 
-        public void AddLantern(int value) => LanternUpdate(Lantern + value);
-        //灯笼更新
-        void LanternUpdate(int value)
+        public void AddLantern(int value)
         {
-            Firefly.Set(value);
-            if (Lantern == 1)
+            //灯笼更新
+            Firefly.Set(Lantern + value);
+            if (Lantern == Lantern_Min)
             {
-                PlayerControl.StartPanic();// 开始恐慌
+                PlayerControl.StartPanic(); // 开始恐慌
             }
             //Log($"value = {value}");
             PlayerControl.Lantern_Update(Lantern);
             SendEvent(GameEvent.Player_Lantern_Update);
         }
+
         public void Move(Vector3 direction) => PlayerControl.axisMovement = direction.ToXY();
         public void Enable(bool enable) => PlayerControl.Display(enable);
 
-        public void CastSpell(int spellIndex)
+        Spell CastSpell()
         {
-            Player.CastSpell(spellIndex,out bool isFinish,out var remain,out var max);
+            //如果没有选择法术，就使用默认法术
+            if (SelectedSpellIndex < 0) return PlayerControl.Spell;
+            //特殊法术，需要发送事件
+            var spellIndex = SelectedSpellIndex;
+            Player.CastSpell(spellIndex, out bool isFinish, out var remain, out var max);
             if (isFinish) SendEvent(GameEvent.Battle_Spell_Finish, spellIndex);
             else SendEvent(GameEvent.Battle_Spell_Update, spellIndex, remain, max);
+            return Player.CurrentSpell;
         }
 
         public void AddSpell(Spell spell, int times)
@@ -104,6 +112,9 @@ namespace GameData
         }
         public void ChargeSpell(int spellIndex)
         {
+            if (Lantern < Lantern_Min) return;
+            if (Player.IsSpellMax(spellIndex)) return;
+            AddLantern(-1);
             var m = Player.ChargeSpell(spellIndex);
             Player.SelectSpell(spellIndex);
             SendEvent(GameEvent.Battle_Spell_Update, spellIndex, m.remain, m.max);
@@ -122,7 +133,6 @@ namespace GameData
         int _selectedSpellIndex;
         int CurrentSpellIndex()
         {
-            _selectedSpellIndex = -1;
             for (var i = 0; i < Magics.Count; i++)// 选择第一个有次数的法术
             {
                 var magic = Magics[i];
@@ -133,12 +143,12 @@ namespace GameData
                 }
                 if (_selectedSpellIndex == i && magic.Times > 0) return _selectedSpellIndex;
             }
+            _selectedSpellIndex = -1;
             return _selectedSpellIndex;
         }
-
-        public List<Spell> Spells => Magics.Select(s => s.Spell).ToList();
+        public List<Spell> Spells => Magics.Where(m => m.Times > 0).Select(s => s.Spell).ToList();
         public bool IsDeath => Hp.IsExhausted;
-        public Spell? CurrentSpell => Spells[_selectedSpellIndex];
+        public Spell CurrentSpell => Magics[_selectedSpellIndex].Spell;
 
         public Player(ConValue hp, ConValue firefly)
         {
@@ -154,6 +164,13 @@ namespace GameData
                 magic.AddTimes(times);
             }
         }
+
+        public bool IsSpellMax(int index)
+        {
+            var magic = Magics[index];
+            return magic.Times == magic.Max;
+        }
+
         public (int remain,int max) ChargeSpell(int index)
         {
             Magics[index].SetMax();
@@ -163,7 +180,6 @@ namespace GameData
         {
             var spell = Magics[spellIndex];
             isFinish = spell.Cast();
-            if(isFinish) Magics.RemoveAt(spellIndex);
             remain = spell.Times;
             max = spell.Max;
         }
@@ -175,7 +191,13 @@ namespace GameData
             public int Max { get; }
             public int Times { get; private set; }
             public void AddTimes(int times) => Times += times;
-            public bool Cast() => --Times > 0;
+            public bool Cast()
+            {
+                --Times;
+                Times = Math.Max(0, Times);
+                //返回是否消耗完
+                return Times <= 0;
+            }
 
             public Magic(Spell spell, int times)
             {

@@ -22,7 +22,7 @@ namespace GMVC.Core
 
         public static T GetController<T>() where T : class, IController => ServiceContainer.Get<T>();
         public static UiBuilder UiBuilder { get; private set; }
-        public static MessagingManager MessagingManager { get; } = new MessagingManager();
+        public static MessagingManager MessagingManager { get; } = new();
         public static IMainThreadDispatcher MainThread { get; private set; }
         public static Res Res { get; private set; }
         public static AudioComponent AudioComponent { get; private set; }

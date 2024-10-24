@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using fight_aspect;
 using GameData;
@@ -37,22 +38,13 @@ namespace Components
         [SerializeField, LabelText("移动速度")] float moveSpeed = 5f;
         [SerializeField, LabelText("虫灯最大值")] int _maxLantern = 5;
         [SerializeField, LabelText("虫灯最小值")] int _minLantern = 1;
+        [LabelText("法术")] public Spell Spell;
         float MovingSpeed => moveSpeed * _movingRatio;
         [LabelText("移动摇杆")]
         public Vector2 axisMovement;
 
-        public Spell Spell
-        {
-            get
-            {
-                if (Game.World.Stage.Player.SelectedSpellIndex < 0) return magicStaff.Spell;
-                return Game.World.Stage.Player.SelectedSpell;
-            }
-        }
-
         public bool IsMoving => axisMovement != Vector2.zero || stopMoving;
         public IEnumerable<GameObject> Targets => magicStaff.Targets;
-        public float AttackDelay => magicStaff.AttackDelay;
         public bool IsCdDone => magicStaff.IsCdComplete;
 
         [HideInInspector]
@@ -65,6 +57,7 @@ namespace Components
         public readonly UnityEvent<int,int> OnPanicPulse = new();
         public readonly UnityEvent<GameItemBase> OnGameItemTrigger = new();
         public readonly UnityEvent<Spell> OnSpellImpact = new();
+        public event Func<Spell> OnCastSpell;
         float _movingRatio = 1f;
 
         public void Init()
@@ -127,7 +120,7 @@ namespace Components
             if (axisMovement.x != 0) renderer.flipX = axisMovement.x > 0;
             rb3D.MovePosition(rb3D.position + new Vector3(
                 axisMovement.x, 0, axisMovement.y)
-                * moveSpeed * Time.deltaTime);
+                * MovingSpeed * Time.deltaTime);
         }
 
         public void SetInjured(bool isEmit)
@@ -139,6 +132,8 @@ namespace Components
         }
         public void BulletImpact(BulletComponent bullet) =>
             SpellImpact(bullet.Spell, bullet.ImpactDirection(transform));
+
+        public Spell CastSpell() => OnCastSpell.Invoke();
         public void GameItemInteraction(GameItemBase gameItem) => OnGameItemTrigger.Invoke(gameItem);
         public void TryAttackTarget() => magicStaff.AttackTarget();
         public void ResetAttackCD() => magicStaff.ResetCd();

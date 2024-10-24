@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using fight_aspect;
-using GameData;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utls;
@@ -16,7 +15,6 @@ namespace Components
         [SerializeField,LabelText("内光")] ParticleSystem innerPar;
         [SerializeField,LabelText("散光")] ParticleSystem glow;
         [SerializeField] AttackComponent attackComponent;
-        [LabelText("法术")]public Spell Spell;
         List<GameObject> targets = new();
 
         public IEnumerable<GameObject> Targets
@@ -30,7 +28,6 @@ namespace Components
         }
 
         public bool IsCdComplete=> attackComponent.IsCooldown;
-        public float AttackDelay => Spell.Delay;
         public void Init(IBattleUnit unit)
         {
             attackComponent.Init(unit);

@@ -17,7 +17,6 @@ namespace Components
         public Transform target;
         [LabelText("强制不移动")] public bool StopMove; // 用于强制停止移动
         [LabelText("法术")] public Spell spell;
-        public Spell Spell => spell;
 
         IGameUnitState currentState;
         bool isInitialized;
@@ -90,6 +89,8 @@ namespace Components
                 SwitchState(new EnemyDeadState(this));
             }
         }
+
+        public Spell CastSpell() => spell;
         public void ResetCD() => attackComponent.RestartCD();
     }
 }
