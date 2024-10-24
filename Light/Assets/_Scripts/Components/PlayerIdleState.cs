@@ -1,3 +1,4 @@
+using System.Linq;
 using GameData;
 using UnityEngine;
 using Utls;
@@ -24,7 +25,7 @@ namespace Components
             {
                 player.SwitchState(new PlayerMoveState(player));
             }
-            else if (player.Target && player.IsCdDone)
+            else if (player.Targets.Any() && player.IsCdDone)
             {
                 player.SwitchState(new PlayerAttackState(player));
             }

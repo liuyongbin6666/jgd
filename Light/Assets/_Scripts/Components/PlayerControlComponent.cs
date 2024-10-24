@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using fight_aspect;
 using GameData;
 using GMVC.Utls;
@@ -41,7 +42,7 @@ namespace Components
 
         public Spell Spell => magicStaff.Spell;
         public bool IsMoving => axisMovement != Vector2.zero || stopMoving;
-        public GameObject Target => magicStaff.Target;
+        public IEnumerable<GameObject> Targets => magicStaff.Targets;
         public float AttackDelay => magicStaff.AttackDelay;
         public bool IsCdDone => magicStaff.IsCdComplete;
 

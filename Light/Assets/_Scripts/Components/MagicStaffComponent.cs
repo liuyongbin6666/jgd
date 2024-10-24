@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using fight_aspect;
 using GameData;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utls;
 
 namespace Components
 {
@@ -14,10 +17,9 @@ namespace Components
         [SerializeField,LabelText("散光")] ParticleSystem glow;
         [SerializeField] AttackComponent attackComponent;
         [LabelText("法术")]public Spell Spell;
-        public GameObject Target;
+        public List<GameObject> Targets;
         public bool IsCdComplete=> attackComponent.IsCooldown;
         public float AttackDelay => Spell.Delay;
-
         public void Init(IBattleUnit unit)
         {
             attackComponent.Init(unit);
@@ -28,13 +30,13 @@ namespace Components
         }
         void TargetLeave(Collider3DHandler handler)
         {
-            if (!Target || Target != handler.root) return;
-            Target = null;
+            if (Targets.Count ==0 || !Targets.Contains(handler.root)) return;
+            Targets.Remove(handler.root);
         }
         void TargetSpotted(Collider3DHandler handler)
         {
-            if (Target && Target == handler.root) return;
-            Target = handler.root;
+            if (Targets.Contains(handler.root)) return;
+            Targets.Add(handler.root);
         }
         void CDComplete() => SetActive(true);
         [Button("开启")]public void SetActive(bool active)
@@ -42,7 +44,12 @@ namespace Components
             innerPar.gameObject.SetActive(active);
             glow.gameObject.SetActive(active);
         }
-        public void AttackTarget() => attackComponent.Attack(Target);
+        public void AttackTarget()
+        {
+            attackComponent.Attack(Targets.OrderBy(t =>
+                Vector2.Distance(t.transform.position.ToXY(), transform.position.ToXY()))
+                .FirstOrDefault());
+        }
         public void ResetCd() => attackComponent.RestartCD();
     }
 }

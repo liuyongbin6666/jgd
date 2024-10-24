@@ -1,5 +1,6 @@
 ﻿using System;
 using Components;
+using DG.Tweening;
 using GameData;
 using GMVC.Utls;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace fight_aspect
         public float duration=2f;//生命周期
         public BulletTracking BulletTracking;
         public Transform Target;
+        [SerializeField] GameObject explode;
         bool KeepActive => Target || Time.deltaTime - startTime < duration;
         public bool IsBulletInit { get; private set; }
         public Vector3 ImpactDirection(Transform body) => (body.position - transform.position).normalized;
@@ -41,6 +43,7 @@ namespace fight_aspect
             currentDistance = distance;
             startTime = Time.time;
             if (speed > 0) Speed = speed;
+            explode.Display(false);
             this.Display(true);
             IsBulletInit = true;
         }
@@ -117,7 +120,14 @@ namespace fight_aspect
                 return;
             var attackUnit = handler.root.GetComponent<IBattleUnit>();
             attackUnit.BulletImpact(this);
-            ResetBullet();
+            StartExplosion();
+        }
+
+        void StartExplosion()
+        {
+            DOTween.Sequence().AppendCallback(() => explode.Display(true))
+                .AppendInterval(0.5f)
+                .AppendCallback(ResetBullet);
         }
 
         protected override void OnHandlerExit(Collider3DHandler handler)
