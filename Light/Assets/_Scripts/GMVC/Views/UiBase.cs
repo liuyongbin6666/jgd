@@ -46,7 +46,7 @@ namespace GMVC.Views
         public virtual void ResetUi() { }
 
         public Coroutine StartCoroutine(IEnumerator enumerator) => _v.StartCo(enumerator);
-        public void StopCoroutine(IEnumerator coroutine) => _v.StopCo(coroutine);
+        public void StopCoroutine(Coroutine coroutine) => _v.StopCo(coroutine);
         public void StopAllCoroutines() => _v.StopAllCo();
 
         public void Destroy() => Object.Destroy(GameObject);

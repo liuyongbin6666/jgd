@@ -21,6 +21,7 @@ namespace Ui
         View_Win view_win { get; }
         View_Defeat view_defeat { get; }
         View_Joystick view_joystick { get; }
+        View_lantern view_latern { get; }
         PlayableController PlayableController => Game.GetController<PlayableController>();
         GameController GameController => Game.GetController<GameController>();
         GameWorld World => Game.World;
@@ -41,6 +42,7 @@ namespace Ui
             });
             //view_win = new View_Win(v.Get<View>("view_win"));//todo 下一关事件
             //view_defeat = new View_Defeat(v.Get<View>("view_defeat"));//todo 返回page main事件
+            view_latern = new View_lantern(v.Get<View>("view_lantern"));
 
             /**********事件注册**********/
 
@@ -179,6 +181,37 @@ namespace Ui
             }
         }
 
+        class View_lantern:UiBase
+        {
+            Button Button1 { get; }
+            Button Button2 { get; }
+            Button Button3 { get; }
+            Button Button4 { get; }//预留的按钮
+            View_energy view_energy { get; }
+
+            public View_lantern(IView v) :base(v)
+            {
+                view_energy =new View_energy(v.Get<View>("view_enegy"));
+                Button1 = v.Get<Button>("Button1");
+                Button1.onClick.AddListener(() => UpdateSlider(0f));
+                Button2 = v.Get<Button>("Button2");
+                Button2.onClick.AddListener(()=>UpdateSlider(0.5f));
+                Button3 = v.Get<Button>("Button3");
+                Button3.onClick.AddListener(()=>UpdateSlider(1f));
+                //Button4 = v.Get<Button>("Button4");
+                //Button4.onClick.AddListener(()=>{ });
+            }
+                 void UpdateSlider(float t) => view_energy.SetValue(t);
+            class View_energy :UiBase
+            {
+                Slider slider { get; }
+                public View_energy(IView v):base(v)
+                {
+                    slider = v.Get<Slider>("Slider");
+                }
+                public void SetValue(float t) => slider.value = t;
+            }
+        }
         class View_Win:UiBase
         {
             private Button btn_next { get; }

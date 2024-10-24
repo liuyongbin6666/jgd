@@ -29,7 +29,7 @@ namespace Components
         protected abstract void OnTrackingExit(GameObject go);
 
         protected override void OnCollider3DEnter(Collider col) => OnTrackingEnter(col.gameObject);
-        protected override void OnCollider3DExit(Collider col) => OnTrackingEnter(col.gameObject);
+        protected override void OnCollider3DExit(Collider col) => OnTrackingExit(col.gameObject);
     }
 
     /// <summary>

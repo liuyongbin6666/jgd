@@ -11,15 +11,16 @@ namespace Components
     /// </summary>
     public abstract class ColliderComponentBase : GameStartInitializer
     {
+        const string UnTagged = "Untagged";
         [SerializeField] Collider3DHandler _unitCollider3D;
         [SerializeField, ValueDropdown(nameof(GetTags)), LabelText("碰撞目标标签")] string _targetTag;
         //[LabelText("检测root标签")] public bool checkRootTag;
         static string[] GetTags() => UnityEditorInternal.InternalEditorUtility.tags;
-        protected override void OnGameStart(){}
+        protected override void OnGameStart() { }
         bool isInit;
         protected override void OnStart()
         {
-            if(isInit) throw new Exception("重复初始化");
+            if (isInit) throw new Exception("重复初始化");
             isInit = true;
             _unitCollider3D?.OnTriggerEnterEvent.AddListener(Collider3DEnter);
             _unitCollider3D?.OnTriggerExitEvent.AddListener(Collider3DExit);
@@ -31,10 +32,20 @@ namespace Components
         protected virtual void OnGameInit() { }
         void Collider3DExit(Collider col)
         {
+            if (_targetTag == UnTagged)
+            {
+                OnCollider3DExit(col);
+                return;
+            }
             if (col.gameObject.CompareTag(_targetTag)) OnCollider3DExit(col);
         }
         void Collider3DEnter(Collider col)
         {
+            if (_targetTag == UnTagged)
+            {
+                OnCollider3DEnter(col);
+                return;
+            }
             if (col.gameObject.CompareTag(_targetTag)) OnCollider3DEnter(col);
         }
         protected abstract void OnCollider3DEnter(Collider col);

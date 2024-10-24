@@ -25,10 +25,10 @@ namespace Utls
         {
             if (PulseTimes <= 0) throw new NotImplementedException("跳动次数至少要一次!");
             if (Duration <= 0) throw new NotImplementedException("持续市场不可以负数!");
-            IsRunning = true;
             var interval = Duration / PulseTimes;
             if (reset) StopCountdown();
             if (IsRunning) return;
+            IsRunning = true;
             InvokeRepeating(nameof(Execute), PulseTimes, interval);
         }
         public void StopCountdown()

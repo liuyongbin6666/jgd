@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utls;
 
 namespace Components
 {
-    public class VisionLevelComponent : MonoBehaviour
+    public class VisionLevelComponent : ColliderHandlerComponent 
     {
         [SerializeField] SphereCollider _collider;  // 关联的Collider
         [SerializeField] Light _pointLight;         // 关联的Point Light
         [SerializeField] LightSettings minSettings; // 最低值设置
         [SerializeField] LightSettings maxSettings; // 最高值设置
         [SerializeField] List<LightSettings> settings; // 设置数组
+        public List<GameObject> ObjInRange { get; private set; } = new();
 
         [Button("保存当前-Min")]void SetToMin() => minSettings = CurrentLightSetting();
         [Button("保存当前-Max")]void SetToMax() => maxSettings = CurrentLightSetting();
@@ -77,6 +80,18 @@ namespace Components
             _pointLight.range = range;
             _pointLight.transform.localPosition = new Vector3(_pointLight.transform.localPosition.x, setting.lightY, _pointLight.transform.localPosition.z);
             //Debug.Log($"当前等级: {index+1}, Intensity: {intensity}, Range: {range}");
+        }
+        protected override void OnHandlerEnter(Collider3DHandler handler)
+        {
+            ObjInRange = ObjInRange.Where(o => o).ToList();
+            if(ObjInRange.Contains(handler.root))return;
+            ObjInRange.Add(handler.root);
+        }
+
+        protected override void OnHandlerExit(Collider3DHandler handler)
+        {
+            ObjInRange = ObjInRange.Where(o => o).ToList();
+            ObjInRange.Remove(handler.root);
         }
     }
 

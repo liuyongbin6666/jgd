@@ -18,8 +18,11 @@ namespace Controller
                 Debug.LogWarning("游戏状态错误！");
                 return;
             }
-            var player = new Player(new ConValue("血量", 100), new ConValue("魔法", 100));
-            World.InitStage(new PlayableUnit(player,Config.PlayerPrefab, 1),
+
+            var player = new Player(new ConValue("血量", 100),
+                new ConValue("魔法", 100),
+                new ConValue("虫灯", 8, 8, 2));
+            World.InitStage(new PlayableUnit(player,Config.PlayerPrefab),
                             new StageIndex(),
                             new StageStory(Config.StageTimeComponent, 180));
             World.StartStage();

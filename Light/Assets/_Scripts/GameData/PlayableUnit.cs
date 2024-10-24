@@ -15,15 +15,15 @@ namespace GameData
         /// <summary>
         /// 灯笼值
         /// </summary>
-        public int Lantern { get; private set; }= 1;
+        public int Lantern => Firefly.Value;
         public PlayerControlComponent PlayerControl { get; }
         public bool IsMoving => PlayerControl.IsMoving;
         Player Player { get; }
         ConValue Hp => Player.Hp;
         ConValue Mp => Player.Mp;
-        public PlayableUnit(Player player,PlayerControlComponent playerControl, int lantern)
+        ConValue Firefly => Player.Firefly;
+        public PlayableUnit(Player player,PlayerControlComponent playerControl)
         {
-            Lantern = lantern;
             Player = player;
             PlayerControl = playerControl;
             PlayerControl.Init();
@@ -55,7 +55,7 @@ namespace GameData
             gameItem.Invoke(this);
             SendEvent(GameEvent.GameItem_Interaction, gameItem.Type);// 游戏物品交互，发射了枚举入参为游戏物品类型
         }
-        //当恐慌心跳, times = 剩余次数
+        //当恐慌心跳, times = 剩余次数, 1为最后一次
         void OnPanicPulse(int times)
         {
             //Log(times);
@@ -70,7 +70,7 @@ namespace GameData
         //当灯笼减弱时间触发
         void OnLanternTimeout()
         {
-            LanternUpdate(--Lantern);
+            LanternUpdate(Lantern - 1);
             //Log(nameof(OnLanternTimeout)+$" : {lantern}");
         }
 
@@ -78,10 +78,9 @@ namespace GameData
         //灯笼更新
         void LanternUpdate(int value)
         {
-            Lantern = value;// 灯笼++
-            if (Lantern <= 0)
+            Firefly.Set(value);
+            if (Lantern == 1)
             {
-                Lantern = 0;
                 PlayerControl.StartPanic();// 开始恐慌
             }
             Log($"value = {value}");
@@ -95,11 +94,13 @@ namespace GameData
     {
         public ConValue Hp { get; }
         public ConValue Mp { get; }
+        public ConValue Firefly { get; }
         public bool IsDeath => Hp.IsExhausted;
-        public Player(ConValue hp, ConValue mp)
+        public Player(ConValue hp, ConValue mp, ConValue firefly)
         {
             Hp = hp;
             Mp = mp;
+            Firefly = firefly;
         }
     }
     /// <summary>
