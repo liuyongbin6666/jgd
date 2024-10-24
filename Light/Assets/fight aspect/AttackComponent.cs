@@ -24,8 +24,8 @@ namespace fight_aspect
     {
         public BulletManager bulletManager;
         [SerializeField,LabelText("攻击CD")]float cd= 1f;
-        [SerializeField,LabelText("请选择射击方式")] BulletTracking bulletTracking;
-        [SerializeField, LabelText("子弹维持时长")] float lasting = 1f;
+        //[SerializeField,LabelText("请选择射击方式")] BulletTracking bulletTracking;
+        [SerializeField, LabelText("子弹维持时长"),ReadOnly] float bulletLasting { get; } = 3f;
         //[SerializeField, LabelText("执行攻击")]public bool isAttack;
         float startTime;
         readonly List<GameObject> targets = new();
@@ -78,7 +78,7 @@ namespace fight_aspect
         {
             var canAttack = target && IsCooldown;
             if(!canAttack) return false;
-            var bullet = bulletManager.Shoot(BattleUnit, target, bulletTracking, lasting);
+            var bullet = bulletManager.Shoot(BattleUnit, target, bulletLasting);
             if (bullet) RestartCD();
             return bullet;
         }

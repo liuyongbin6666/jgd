@@ -36,6 +36,21 @@ namespace Components
             // 离开Idle状态时的处理
         }
     }
+    public class PlayerDeathState : IGameUnitState
+    {
+        PlayerControlComponent player;
+
+        public PlayerDeathState(PlayerControlComponent player)
+        {
+            this.player = player;
+        }
+        public void EnterState()
+        {
+            player.UpdateAnim(IGameUnitState.Anims.Death);
+        }
+        public void UpdateState() { }
+        public void ExitState() { }
+    }
     public class PlayerMoveState : IGameUnitState
     {
         PlayerControlComponent player;

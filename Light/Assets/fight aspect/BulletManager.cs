@@ -1,6 +1,4 @@
-﻿using Components;
-using GameData;
-using GMVC.Utls;
+﻿using GMVC.Utls;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -37,11 +35,11 @@ namespace fight_aspect
             return bullet;
         }
         #endregion
-        public BulletComponent Shoot(IBattleUnit owner, GameObject target, BulletTracking bulletTracking,float lasting)
+        public BulletComponent Shoot(IBattleUnit owner, GameObject target, float lasting)
         {
             if (owner == null || !target) return null;
             var bullet = pool.Get();
-            bullet.Set(owner, target, bulletTracking,  lasting);
+            bullet.Set(owner, target, lasting);
             return bullet;
         }
     }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using fight_aspect;
 using GameData;
-using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -18,6 +17,7 @@ namespace Components
             Move = 0,
             Attack = 1,
             React = 2,
+            Death = -2,
         }
         void EnterState();
         void UpdateState();
@@ -39,6 +39,7 @@ namespace Components
         [SerializeField, LabelText("虫灯最大值")] int _maxLantern = 5;
         [SerializeField, LabelText("虫灯最小值")] int _minLantern = 1;
         [LabelText("法术")] public Spell Spell;
+        [LabelText("玩家面朝右")]public bool faceRight;
         float MovingSpeed => moveSpeed * _movingRatio;
         [LabelText("移动摇杆")]
         public Vector2 axisMovement;
@@ -117,11 +118,12 @@ namespace Components
 
         public void HandleMovement()
         {
-            if (axisMovement.x != 0) renderer.flipX = axisMovement.x > 0;
-            rb3D.MovePosition(rb3D.position + new Vector3(
-                axisMovement.x, 0, axisMovement.y)
+            if (axisMovement.x != 0) SetFlip(axisMovement.x);
+            rb3D.MovePosition(rb3D.position + new Vector3(axisMovement.x, 0, axisMovement.y)
                 * MovingSpeed * Time.deltaTime);
         }
+        //设置玩家朝向
+        void SetFlip(float axisX) => renderer.flipX = faceRight ? axisX < 0 : axisX > 0;
 
         public void SetInjured(bool isEmit)
         {
@@ -135,8 +137,14 @@ namespace Components
 
         public Spell CastSpell() => OnCastSpell.Invoke();
         public void GameItemInteraction(GameItemBase gameItem) => OnGameItemTrigger.Invoke(gameItem);
-        public void TryAttackTarget() => magicStaff.AttackTarget();
+        public void TryAttackTarget()
+        {
+            if (!magicStaff.AimTarget) return;
+            SetFlip(magicStaff.AimTarget.transform.position.x - transform.position.x);
+            magicStaff.AttackTarget();
+        }
         public void ResetAttackCD() => magicStaff.ResetCd();
+        public void Die() => SwitchState(new PlayerDeathState(this));
     }
     /// <summary>
     /// 玩家控制组件扩展，主要是获取玩家控制组件

@@ -26,7 +26,9 @@ namespace Components
                 return targets;
             }
         }
-
+        public GameObject AimTarget => targets.Where(t => t)
+            .OrderBy(t => Vector2.Distance(t.transform.position.ToXY(), transform.position.ToXY()))
+            .FirstOrDefault();
         public bool IsCdComplete=> attackComponent.IsCooldown;
         public void Init(IBattleUnit unit)
         {
@@ -54,11 +56,9 @@ namespace Components
         }
         public void AttackTarget()
         {
-            var target = targets.Where(t=>t)
-                .OrderBy(t => Vector2.Distance(t.transform.position.ToXY(), transform.position.ToXY()))
-                .FirstOrDefault();
-            if (target == null) return;
-            attackComponent.Attack(target);
+            if (!AimTarget) return;
+            attackComponent.Attack(AimTarget);
+            SetActive(false);
         }
         public void ResetCd() => attackComponent.RestartCD();
     }

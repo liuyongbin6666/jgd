@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Components;
+using fight_aspect;
 using GMVC.Conditions;
 using GMVC.Core;
 using GMVC.Utls;
@@ -55,7 +56,11 @@ namespace GameData
             Hp.Add(-damage);
             SendEvent(GameEvent.Battle_Spell_On_Player, spell.Damage); 
             SendEvent(GameEvent.Player_Hp_Update);
-            if(Player.IsDeath) SendEvent(GameEvent.Player_IsDeath);
+            if(Player.IsDeath)
+            {
+                PlayerControl.Die();
+                SendEvent(GameEvent.Player_IsDeath);
+            }
         }
 
         // 当游戏物品交互
@@ -224,14 +229,15 @@ namespace GameData
         [LabelText("等级")]public int Level;
         [LabelText("延迟")]public float Delay;
         [LabelText("击退")]public float force;
-
-        public Spell(Types type, int damage, int level, float force, float delay)
+        [LabelText("子弹")] public BulletTracking Tracking;
+        public Spell(Types type, int damage, int level, float force, float delay, BulletTracking tracking)
         {
             Type = type;
             Damage = damage;
             Level = level;
             this.force = force;
             Delay = delay;
+            Tracking = tracking;
         }
     }
 }

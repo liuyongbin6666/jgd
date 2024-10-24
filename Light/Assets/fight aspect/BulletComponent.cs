@@ -28,8 +28,7 @@ namespace fight_aspect
         bool KeepActive => Target || Time.deltaTime - startTime < duration;
         public bool IsBulletInit { get; private set; }
         public Vector3 ImpactDirection(Transform body) => (body.position - transform.position).normalized;
-        public void Set(IBattleUnit owner, GameObject target, 
-            BulletTracking bulletTracking, 
+        public void Set(IBattleUnit owner, GameObject target,
             float lasting,
             float speed = -1)
         {
@@ -37,7 +36,7 @@ namespace fight_aspect
             duration = lasting;
             Spell = owner.CastSpell();
             Target = target.transform;
-            BulletTracking = bulletTracking;
+            BulletTracking = Spell.Tracking;
             targetPosition = target.transform.position;
             currentPosition = owner.transform.position;
             transform.position = owner.transform.position;
