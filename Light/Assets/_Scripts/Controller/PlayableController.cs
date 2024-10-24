@@ -15,5 +15,10 @@ namespace Controller
             if (World.Status != GameWorld.GameStates.Playing) return;
             Player.Move(direction);
         }
+
+        public void CastSpell(int spellId)
+        {
+            Player.CastSpell(spellId);
+        }
     }
 }

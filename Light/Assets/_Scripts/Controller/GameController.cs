@@ -37,7 +37,6 @@ namespace Controller
         Player DefaultPlayer()
         {
             return new Player(new ConValue("血量", 100),
-                new ConValue("魔法", 100),
                 new ConValue("虫灯", 8, 8, 2));
         }
 

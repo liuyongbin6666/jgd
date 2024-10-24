@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using GameData;
+using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -26,6 +27,8 @@ namespace Components
 
         protected override void OnGameStart()
         {
+            Game.RegEvent(GameEvent.Game_Stage_Update,
+                _ => playerControlComponent = Game.World.Stage.Player.PlayerControl);
             fireflyPool = new ObjectPool<GameObject>(Firefly_Spawn, Firefly_Get, Firefly_Recycle, Destroy);
             StartCoroutine(UpdateFireflies());
         }

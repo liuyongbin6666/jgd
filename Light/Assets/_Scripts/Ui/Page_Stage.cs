@@ -22,6 +22,7 @@ namespace Ui
         View_Defeat view_defeat { get; }
         View_Joystick view_joystick { get; }
         View_lantern view_latern { get; }
+        View_Effect view_effect { get; }
         PlayableController PlayableController => Game.GetController<PlayableController>();
         GameController GameController => Game.GetController<GameController>();
         GameWorld World => Game.World;
@@ -40,9 +41,11 @@ namespace Ui
                 //GameController.SwitchPlayMode(GameStage.PlayModes.Explore);
                 view_storyPlayer.Hide();
             });
+
             view_win = new View_Win(v.Get<View>("view_win"),GameController.Game_NextStage);//todo 下一关事件
             view_defeat = new View_Defeat(v.Get<View>("view_defeat"),GameController.Game_End);//todo 返回page main事件
-            view_latern = new View_lantern(v.Get<View>("view_lantern"));
+            view_latern = new View_lantern(v.Get<View>("view_lantern"), PlayableController.CastSpell);
+            view_effect = new View_Effect(v.Get<View>("view_effect"));
 
             /**********事件注册**********/
             Game.RegEvent(GameEvent.Game_StateChanged, b =>
@@ -53,12 +56,66 @@ namespace Ui
                 view_top.UpdateLantern(Stage.Player.Lantern);
             });
             Game.RegEvent(GameEvent.Game_PlayMode_Update, _ => view_joystick.SetActive(IsExploring));
-            Game.RegEvent(GameEvent.Player_Lantern_Update, _ => view_top.UpdateLantern(Stage.Player.Lantern));
+            Game.RegEvent(GameEvent.Player_Lantern_Update, _ =>
+            {
+                view_top.UpdateLantern(Stage.Player.Lantern);
+                view_latern.SetLantern((float)Stage.Player.Firefly.ValueMaxRatio);
+                view_latern.SetHp((float)Stage.Player.Hp.ValueMaxRatio);
+            });
+            Game.RegEvent(GameEvent.Player_Hp_Update,_=>view_latern.SetHp((float)Stage.Player.Hp.ValueFixRatio));
+            Game.RegEvent(GameEvent.Player_Panic_Finalize, _ =>
+            {
+                view_latern.SetPanic(0);
+                view_latern.SetLantern(0);
+                view_defeat.Show();
+            });
+            Game.RegEvent(GameEvent.Player_Panic_Pulse, b =>
+            {
+                var remain = b.Get<int>(0);
+                var max = b.Get<int>(1);
+                view_latern.SetPanic(1f * remain / max);
+                view_effect.PlayPanic();
+            });
+            Game.RegEvent(GameEvent.Battle_Spell_Finish, b => view_latern.SpellRemoveAt(b.Get<int>(0)));
+            Game.RegEvent(GameEvent.Battle_Spell_Cast, b =>
+            {
+                var index = b.Get<int>(0);
+                var remain = b.Get<int>(1);
+                var max = b.Get<int>(2);
+                view_latern.SpellUpdate(index, 1f * remain / max);
+            });
             Game.RegEvent(GameEvent.Stage_StageTime_Update, _ => view_top.UpdateStageTime(Stage.Story.RemainSeconds));
             Game.RegEvent(GameEvent.Story_Lines_Send, b => view_storyPlayer.ShowStory(Stage.Story.StoryLines));
             Game.RegEvent(GameEvent.Story_Dialog_Send, b => view_npc.SetNpcTalk(Stage.Story.DialogLines.ToList()));
         }
 
+        class View_Effect : UiBase
+        {
+            Image image_panic { get; }
+
+            public View_Effect(IView v) : base(v)
+            {
+                image_panic = v.Get<Image>("image_panic");
+                image_panic.Display(false);
+            }
+            Coroutine Panic;
+
+            public void PlayPanic()
+            {
+                if (Panic != null) return;
+                Panic = StartCoroutine(PanicRoutine());
+
+                IEnumerator PanicRoutine()
+                {
+                    image_panic.Display(true);
+                    yield return DOTween.Sequence().Append(image_panic.DOFade(1, 0))
+                        .Append(image_panic.DOFade(0, 0.5f).SetEase(Ease.InBounce))
+                        .AppendCallback(() => { image_panic.Display(false); });
+                    Panic = null;
+                }
+            }
+
+        }
         class View_Top : UiBase
         {
             Element_TextValue element_textValue_lantern { get; }
@@ -107,7 +164,6 @@ namespace Ui
                 public void SetValue(object value) => text_value.text = value.ToString();
             }
         }
-
         class View_Npc : UiBase
         {
             Text text_npcTalk { get; }
@@ -135,7 +191,6 @@ namespace Ui
             }
 
         }
-
         class View_StoryPlayer : UiBase
         {
             GameObject obj_textList { get; }
@@ -179,48 +234,15 @@ namespace Ui
                 }
             }
         }
-
-        class View_lantern:UiBase
-        {
-            Button Button1 { get; }
-            Button Button2 { get; }
-            Button Button3 { get; }
-            Button Button4 { get; }//预留的按钮
-            View_energy view_energy { get; }
-
-            public View_lantern(IView v) :base(v)
-            {
-                view_energy =new View_energy(v.Get<View>("view_enegy"));
-                Button1 = v.Get<Button>("Button1");
-                Button1.onClick.AddListener(() => UpdateSlider(0f));
-                Button2 = v.Get<Button>("Button2");
-                Button2.onClick.AddListener(()=>UpdateSlider(0.5f));
-                Button3 = v.Get<Button>("Button3");
-                Button3.onClick.AddListener(()=>UpdateSlider(1f));
-                //Button4 = v.Get<Button>("Button4");
-                //Button4.onClick.AddListener(()=>{ });
-            }
-                 void UpdateSlider(float t) => view_energy.SetValue(t);
-            class View_energy :UiBase
-            {
-                Slider slider { get; }
-                public View_energy(IView v):base(v)
-                {
-                    slider = v.Get<Slider>("Slider");
-                }
-                public void SetValue(float t) => slider.value = t;
-            }
-        }
         class View_Win:UiBase
         {
-            private Button btn_next { get; }
+            Button btn_next { get; }
             public View_Win(IView v,UnityAction onNextAction) : base(v, false)
             {
                 btn_next = v.Get<Button>("btn_next");
                 btn_next.onClick.AddListener(onNextAction);
             }
         }
-
         class View_Defeat:UiBase
         {
             Button btn_return { get; }
@@ -230,7 +252,6 @@ namespace Ui
                 btn_return.onClick.AddListener(onReturnAction);
             }
         }
-
         class View_Joystick : UiBase
         {
             JoyStick.JoyStick joyStick { get; }
@@ -246,6 +267,89 @@ namespace Ui
             {
                 joyStick.ResetJoystick();
                 joyStick.Display(active);
+            }
+        }
+        class View_lantern:UiBase
+        {
+            View_Condition view_condition { get; }
+            ListView_Trans<Prefab_Spell> SpellList { get; }
+            event UnityAction<int> OnSpellAction;
+            public View_lantern(IView v,UnityAction<int> onSpellAction ,bool display = true) : base(v, display)
+            {
+                OnSpellAction = onSpellAction;
+                view_condition = new View_Condition(v.Get<View>("view_condition"));
+                SpellList = new ListView_Trans<Prefab_Spell>(v, "prefab_spell", "tran_layout");
+            }
+            public void SetLantern(float value) => view_condition.SetLantern(value);
+            public void SetHp(float value) => view_condition.SetHp(value);
+            public void SetPanic(float value) => view_condition.SetPanic(value);
+            public void SpellUpdate(int index, float remain) => SpellList.List[index].SetValue(remain);
+            public void SpellRemoveAt(int index)
+            {
+                var ui = SpellList.List[index];
+                SpellList.Remove(ui);
+                ui.Destroy();
+            }
+            public void SetSpell(int spells)
+            {
+                SpellList.ClearList(u=>u.Destroy());
+                for (int i = 0; i < spells; i++)
+                {
+                    var index = i;
+                    SpellList.Instance(v => new Prefab_Spell(v, () => OnSpellAction?.Invoke(index)));
+                }
+            }
+            class Prefab_Spell : UiBase
+            {
+                Slider slider_value { get; }
+                Button btn_click { get; }
+                Image image_bg { get; }
+                public Prefab_Spell(IView v,UnityAction onClickAction ,bool display = true) : base(v, display)
+                {
+                    slider_value = v.Get<Slider>("slider_value");
+                    btn_click = v.Get<Button>("btn_click");
+                    btn_click.onClick.AddListener(onClickAction);
+                    image_bg = v.Get<Image>("image_bg");
+                }
+                public void SetImage(Sprite sprite) => image_bg.sprite = sprite;
+                public void SetValue(float value) => slider_value.value = 1 - value;
+            }
+            class View_Condition : UiBase
+            {
+                Slider slider_lantern { get; }
+                View_Hp view_hp { get; }
+                public View_Condition(IView v, bool display = true) : base(v, display)
+                {
+                    slider_lantern = v.Get<Slider>("slider_lantern");
+                    view_hp = new View_Hp(v.Get<View>("view_hp"));
+                }
+                public void SetLantern(float value) => slider_lantern.value = value;
+                public void SetHp(float value)
+                {
+                    view_hp.SwitchPanic(false);
+                    view_hp.SetHp(value);
+                }
+                public void SetPanic(float value)
+                {
+                    view_hp.SwitchPanic(true);
+                    view_hp.SetPanic(value);
+                }
+                class View_Hp : UiBase
+                {
+                    Slider slider_panic { get; }
+                    Slider slider_hp { get; }
+                    public View_Hp(IView v, bool display = true) : base(v, display)
+                    {
+                        slider_panic = v.Get<Slider>("slider_panic");
+                        slider_hp = v.Get<Slider>("slider_hp");
+                    }
+                    public void SetHp(float value) => slider_hp.value = value;
+                    public void SetPanic(float value) => slider_panic.value = value;
+                    public void SwitchPanic(bool isPanic)
+                    {
+                        slider_hp.Display(!isPanic);
+                    }
+                }
             }
         }
     }

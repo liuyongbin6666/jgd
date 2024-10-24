@@ -33,7 +33,12 @@ namespace GameData
             Stage.Stage_Start();
             State_Set(GameStates.Playing);
         }
-        public void SetGameStage(PlayableUnit player, StageStory stageStory) => Stage = new GameStage(player, stageStory);
+        public void SetGameStage(PlayableUnit player, StageStory stageStory)
+        {
+            Stage = new GameStage(player, stageStory);
+            Game.SendEvent(GameEvent.Game_Stage_Update);
+        }
+
         public void NextGameStage() => StageIndex++;
     }
 
@@ -49,6 +54,7 @@ namespace GameData
         public const string Stage_StageTime_Over = "Stage_StageTime_Over";// 关卡时间结束
         public const string GameItem_Interaction = "GameItem_Interaction";// 游戏物品交互
         public const string Stage_StageTime_Update = "Stage_StageTime_Update";
+        public const string Game_Stage_Update = "Game_Stage_Update";// 游戏关卡更新
 
         //玩家
         public const string Player_Lantern_Update = "Player_Lantern_Update";// 玩家灯笼更新
@@ -73,6 +79,8 @@ namespace GameData
 
         //战斗
         public const string Battle_Spell_On_Player = "Battle_Spell_On_Player"; //战斗法术对玩家伤害
+        public const string Battle_Spell_Finish = "Battle_Spell_Finish"; //战斗法术消耗完毕
+        public const string Battle_Spell_Cast= "Battle_Spell_Cast";//战斗法术释放
 
         public const string Story_Npc_Update = "Story_Npc_Update";
     }

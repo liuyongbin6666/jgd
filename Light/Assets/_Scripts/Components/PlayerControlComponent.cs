@@ -35,7 +35,7 @@ namespace Components
         [SerializeField, LabelText("移动速度")] float moveSpeed = 5f;
         [SerializeField, LabelText("虫灯最大值")] int _maxLantern = 5;
         [SerializeField, LabelText("虫灯最小值")] int _minLantern = 1;
-
+        float MovingSpeed => moveSpeed * _movingRatio;
         [LabelText("移动摇杆")]
         public Vector2 axisMovement;
 
@@ -50,17 +50,18 @@ namespace Components
 
         IGameUnitState currentState;
 
-        public readonly UnityEvent OnLanternTimeout = new();
+        public readonly UnityEvent OnLanternPulse = new();
         public readonly UnityEvent OnPanicFinalize = new();
-        public readonly UnityEvent<int> OnPanicPulse = new();
+        public readonly UnityEvent<int,int> OnPanicPulse = new();
         public readonly UnityEvent<GameItemBase> OnGameItemTrigger = new();
         public readonly UnityEvent<Spell> OnSpellImpact = new();
+        float _movingRatio = 1f;
 
         public void Init()
         {
             this.Display(true);
             _lantern.Init();
-            _lantern.OnCountdownComplete.AddListener(OnLanternTimeout.Invoke);
+            _lantern.OnCountdownComplete.AddListener(OnLanternPulse.Invoke);
             _panicCom.OnPulseTrigger.AddListener(OnPanicPulse.Invoke);
             _panicCom.OnPulseComplete.AddListener(OnPanicFinalize.Invoke);
             magicStaff.Init(this);
@@ -91,12 +92,11 @@ namespace Components
         public void StopPanic() => StopAllCoroutines(); // 暂时这样停止，实际上会停止所有协程。
         public void Lantern_Update(int lantern)
         {
-            var hasVision = lantern <= _minLantern;//虫灯最小值
+            var minVision = lantern > _minLantern;//虫灯最小值
             var lanternLevel = Mathf.Clamp(lantern, 0, _maxLantern);
-            _lantern.SetVisionLevel(lanternLevel);
-            if (!hasVision) return;
-            // 如果存在视野
-            _lantern.StartCountdown();
+            _movingRatio = _lantern.SetVisionLevel(lanternLevel);
+            if (!minVision) return; // 视野已经最小了
+            _lantern.Restart();
             _panicCom.StopIfPanic();
         }
 

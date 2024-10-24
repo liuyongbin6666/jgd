@@ -10,7 +10,7 @@ namespace Components
     {
         [SerializeField,LabelText("恐慌心跳次数")]int _pulseTimes = 5;
         [SerializeField,LabelText("间隔")]float _interval = 1f;
-        public readonly UnityEvent<int> OnPulseTrigger = new();
+        public readonly UnityEvent<int,int> OnPulseTrigger = new();
         public readonly UnityEvent OnPulseComplete = new();
 
         public void StartPanic()
@@ -24,7 +24,7 @@ namespace Components
             var pulse = _pulseTimes;
             while (pulse > 0)
             {
-                OnPulseTrigger.Invoke(pulse);
+                OnPulseTrigger.Invoke(pulse, _pulseTimes);
                 yield return new WaitForSeconds(_interval);
                 pulse--;
             }

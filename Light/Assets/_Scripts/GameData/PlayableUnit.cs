@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Components;
 using GMVC.Conditions;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utls;
-using Object = UnityEngine.Object;
 
 namespace GameData
 {
@@ -21,16 +22,15 @@ namespace GameData
         public PlayerControlComponent PlayerControl { get; }
         public bool IsMoving => PlayerControl.IsMoving;
         Player Player { get; }
-        ConValue Hp => Player.Hp;
-        ConValue Mp => Player.Mp;
-        ConValue Firefly => Player.Firefly;
+        public ConValue Hp => Player.Hp;
+        public ConValue Firefly => Player.Firefly;
         public PlayableUnit(Player player,PlayerControlComponent playerControl)
         {
             Player = player;
             PlayerControl = playerControl;
             PlayerControl.Init();
             PlayerControl.Lantern_Update(Lantern);
-            PlayerControl.OnLanternTimeout.AddListener(OnLanternTimeout);
+            PlayerControl.OnLanternPulse.AddListener(()=>LanternUpdate(Lantern - 1));
             PlayerControl.OnPanicFinalize.AddListener(OnScaryFinalized);
             PlayerControl.OnPanicPulse.AddListener(OnPanicPulse);
             PlayerControl.OnGameItemTrigger.AddListener(OnGameItemInteractive);
@@ -58,22 +58,16 @@ namespace GameData
             SendEvent(GameEvent.GameItem_Interaction, gameItem.Type);// 游戏物品交互，发射了枚举入参为游戏物品类型
         }
         //当恐慌心跳, times = 剩余次数, 1为最后一次
-        void OnPanicPulse(int times)
+        void OnPanicPulse(int times,int max)
         {
             //Log(times);
-            SendEvent(GameEvent.Player_Panic_Pulse, times);
+            SendEvent(GameEvent.Player_Panic_Pulse, times, max);
         }
         //当恐慌结束
         void OnScaryFinalized()
         {
             Log();
             SendEvent(GameEvent.Player_Panic_Finalize);
-        }
-        //当灯笼减弱时间触发
-        void OnLanternTimeout()
-        {
-            LanternUpdate(Lantern - 1);
-            //Log(nameof(OnLanternTimeout)+$" : {lantern}");
         }
 
         public void AddLantern(int value) => LanternUpdate(Lantern + value);
@@ -85,25 +79,61 @@ namespace GameData
             {
                 PlayerControl.StartPanic();// 开始恐慌
             }
-            Log($"value = {value}");
+            //Log($"value = {value}");
             PlayerControl.Lantern_Update(Lantern);
             SendEvent(GameEvent.Player_Lantern_Update);
         }
         public void Move(Vector3 direction) => PlayerControl.axisMovement = direction.ToXY();
         public void Enable(bool enable) => PlayerControl.Display(enable);
+
+        public void CastSpell(int spellIndex)
+        {
+            Player.CastSpell(spellIndex,out bool isFinish,out var remain,out var max);
+            if (isFinish) SendEvent(GameEvent.Battle_Spell_Finish, spellIndex);
+            else SendEvent(GameEvent.Battle_Spell_Cast, spellIndex, remain, max);
+        }
     }
 
     public class Player
     {
         public ConValue Hp { get; }
-        public ConValue Mp { get; }
         public ConValue Firefly { get; }
+        List<Magic> Spells { get; } = new();
         public bool IsDeath => Hp.IsExhausted;
-        public Player(ConValue hp, ConValue mp, ConValue firefly)
+        public Player(ConValue hp, ConValue firefly)
         {
             Hp = hp;
-            Mp = mp;
             Firefly = firefly;
+        }
+        public void AddSpell(Spell spell, int times)
+        {
+            var magic = Spells.FirstOrDefault(s => s.Spell.Type == spell.Type);
+            if (magic == null) Spells.Add(new Magic(spell, times));
+            else
+            {
+                magic.AddTimes(times);
+            }
+        }
+        public void CastSpell(int spellIndex, out bool isFinish, out int remain, out int max)
+        {
+            var spell = Spells[spellIndex];
+            isFinish = spell.Cast();
+            if(isFinish) Spells.RemoveAt(spellIndex);
+            remain = spell.Times;
+            max = spell.Max;
+        }
+        class Magic
+        {
+            public Spell Spell { get; }
+            public int Max { get; }
+            public int Times { get; private set; }
+            public void AddTimes(int times) => Times += times;
+            public bool Cast() => --Times > 0;
+            public Magic(Spell spell, int times)
+            {
+                Spell = spell;
+                Max = Times = times;
+            }
         }
     }
     /// <summary>

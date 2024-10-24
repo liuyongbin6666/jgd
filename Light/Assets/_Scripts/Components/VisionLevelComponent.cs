@@ -60,9 +60,10 @@ namespace Components
                 });
             }
         }
-        [Button("设置灯光")]public void LoadLightLevel(int level, out bool isMaxLevel)
+        [Button("设置灯光")]public void LoadLightLevel(int level, out bool isMaxLevel,out float moveRatio)
         {
             var maxLevel = settings.Count;
+            moveRatio = 1;
             isMaxLevel = level == maxLevel;
             if (level < 0 || level > maxLevel)
             {
@@ -71,6 +72,7 @@ namespace Components
             }
             var index = Mathf.Clamp(level, 0, maxLevel - 1);
             var setting = settings[index];
+            moveRatio = MathF.Max(0, setting.movingRatio);
             var intensity = setting.intensity;
             var range = setting.range;
             _collider.transform.localScale
@@ -98,9 +100,10 @@ namespace Components
     [Serializable]
     public class LightSettings
     {
-        public float colliderSize; // 用于管理collider的大小 (x 或 z)
-        public float lightY; // 光源的高度y轴
-        public float intensity;    // 光源的强度
-        public float range;        // 光源的范围
+        [LabelText("碰撞器大小")]public float colliderSize; // 用于管理collider的大小 (x 或 z)
+        [LabelText("光源高度")]public float lightY; // 光源的高度y轴
+        [LabelText("光源强度")]public float intensity;    // 光源的强度
+        [LabelText("光源范围")]public float range;        // 光源的范围
+        [LabelText("移动倍率")]public float movingRatio = 1f; //移动倍率
     }
 }
