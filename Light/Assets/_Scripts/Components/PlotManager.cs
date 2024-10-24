@@ -56,7 +56,6 @@ namespace Components
             }
         }
         public void SendLines(StageStory.Lines type, string[] lines) => OnLinesEvent?.Invoke(type, lines);
-
         public void SetCurrentPlot(PlotComponentBase plot)
         {
             if (plot) currentMap[plot.story] = plot.plotName;
@@ -67,6 +66,15 @@ namespace Components
         {
             if (!currentMap.TryGetValue(plot.story, out var plotName)) return false;
             return plot.plotName == plotName;
+        }
+
+        public string GetCurrentPlot(StorySo story) => currentMap[story];
+        public PlotComponentBase[] GetNextPlots(StorySo story)
+        {
+            var plotName = currentMap[story];
+            var names = story.NextPlots(plotName);
+            var plots = data[story].Join(names, p => p.plotName, n => n, (p, n) => p).ToArray();
+            return plots;
         }
     }
 }

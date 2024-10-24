@@ -43,9 +43,9 @@ namespace Components
         float MovingSpeed => moveSpeed * _movingRatio;
         [LabelText("移动摇杆")]
         public Vector2 axisMovement;
-
+        public bool IsDeath => currentState is PlayerDeathState;
         public bool IsMoving => axisMovement != Vector2.zero || stopMoving;
-        public IEnumerable<GameObject> Targets => magicStaff.Targets;
+        public IEnumerable<IBattleUnit> Targets => magicStaff.Targets;
         public bool IsCdDone => magicStaff.IsCdComplete;
 
         [HideInInspector]
@@ -132,6 +132,7 @@ namespace Components
             mpb.SetFloat("_INJURED", isEmit ? 1f : 0f);
             renderer.SetPropertyBlock(mpb);
         }
+
         public void BulletImpact(BulletComponent bullet) =>
             SpellImpact(bullet.Spell, bullet.ImpactDirection(transform));
 
@@ -139,7 +140,7 @@ namespace Components
         public void GameItemInteraction(GameItemBase gameItem) => OnGameItemTrigger.Invoke(gameItem);
         public void TryAttackTarget()
         {
-            if (!magicStaff.AimTarget) return;
+            if (magicStaff.AimTarget == null) return;
             SetFlip(magicStaff.AimTarget.transform.position.x - transform.position.x);
             magicStaff.AttackTarget();
         }

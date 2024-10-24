@@ -1,4 +1,3 @@
-using GameData;
 using UnityEngine;
 
 namespace Components

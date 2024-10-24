@@ -13,6 +13,8 @@ namespace Components
     public abstract class PlotComponentBase : GameStartInitializer
     {
         public PlotManager PlotManager => Game.PlotManager;
+        public bool IsFinalized { get; private set; }
+
         [LabelText("故事")]public StorySo story;
         [LabelText("情节"),ValueDropdown(nameof(GetPlots)),OnValueChanged(nameof(ChangeName))]public string plotName;
         IEnumerable<string> GetPlots() => story?.GetPlotNames() ?? new []{ "请设置剧情" };
@@ -50,6 +52,7 @@ namespace Components
         public void Finalization()
         {
             OnFinalization();
+            IsFinalized = true;
             PlotManager.TriggerNext(this);
         }
         public void SendLines()

@@ -6,6 +6,7 @@ namespace GameData
     {
         [InspectorName("萤火虫")] Firefly,
         [InspectorName("魔法")] Spell,
+        [InspectorName("魂魄")] Soul,
     }
 
     public interface IGameItem

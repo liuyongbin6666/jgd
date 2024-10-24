@@ -23,7 +23,7 @@ namespace Components
         public void UpdateState()
         {
             // 如果有目标，切换到追逐状态
-            if (enemy.target != null)
+            if (enemy.Target != null)
             {
                 enemy.SwitchState(new EnemyChaseState(enemy));
             }
@@ -52,7 +52,7 @@ namespace Components
 
         public void UpdateState()
         {
-            if (enemy.target == null)
+            if (enemy.Target == null)
             {
                 enemy.SwitchState(new EnemyIdleState(enemy));
                 return;
@@ -64,11 +64,11 @@ namespace Components
             }
             else
             {
-                enemy.nav.SetDestination(enemy.target.position);
+                enemy.nav.SetDestination(enemy.Target.transform.position);
             }
 
             // 如果在攻击范围内，切换到攻击状态
-            var inRange = enemy.attackComponent.IsInRange(enemy.target);
+            var inRange = enemy.attackComponent.IsInRange(enemy.Target.transform);
             if (inRange)
             {
                 enemy.SwitchState(new EnemyAttackState(enemy));
@@ -101,12 +101,12 @@ namespace Components
 
         public void UpdateState()
         {
-            if (enemy.target == null || !enemy.attackComponent.IsCooldown)
+            if (enemy.Target == null || !enemy.attackComponent.IsCooldown)
             {
                 enemy.SwitchState(new EnemyIdleState(enemy));
                 return;
             }
-            if (!enemy.attackComponent.IsInRange(enemy.target))
+            if (!enemy.attackComponent.IsInRange(enemy.Target.transform))
             {
                 enemy.SwitchState(new EnemyChaseState(enemy));
                 return;
@@ -115,7 +115,7 @@ namespace Components
             if (!isAttacking)
             {
                 isAttacking = true;
-                enemy.attackComponent.Attack(enemy.target.gameObject);
+                enemy.attackComponent.Attack(enemy.Target);
             }
             if (attackDelay <= 0)
             {

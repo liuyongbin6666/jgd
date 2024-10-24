@@ -14,7 +14,7 @@ namespace Components
         [SerializeField] public Rigidbody rb3D;
         [SerializeField] Animator anim; // 添加 Animator 组件
         [SerializeField, LabelText("血量")] public int HP = 10;
-        public Transform target;
+        public IBattleUnit Target { get; private set; }
         [LabelText("强制不移动")] public bool StopMove; // 用于强制停止移动
         [LabelText("法术")] public Spell spell;
 
@@ -58,7 +58,7 @@ namespace Components
         protected override void OnPlayerTrackingEnter(PlayerControlComponent player)
         {
             if (!isInitialized) return;
-            target = player.transform;
+            Target = player;
             // 如果当前不是攻击或追逐状态，切换到追逐状态
             if (!(currentState is EnemyAttackState) && !(currentState is EnemyChaseState))
             {
@@ -77,6 +77,8 @@ namespace Components
 
         // 设置速度
         public void SetSpeed(float speed) => nav.speed = speed;
+
+        public bool IsDeath => HP <= 0;
 
         public void BulletImpact(BulletComponent bullet)
         {

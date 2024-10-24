@@ -1,4 +1,4 @@
-using DG.Tweening;
+ï»¿using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,7 +44,7 @@ public class CircleMoveComponent : MonoBehaviour
     {
         centerPoint = target;
     }
-    public void KeepCenter()//±£³Ö
+    public void KeepCenter()//ä¿æŒ
     {
         direct = (centerPoint.position-transform.position);
         direct.y = 0;
@@ -62,7 +62,7 @@ public class CircleMoveComponent : MonoBehaviour
             transform.position += direct * Time.deltaTime * speed;
         }
     }
-    public void Rotate(float s /*ÓÃÓÚµ÷ÕûĞı×ª·½Ïò,-1ÎªË³Ê±Õë£¬1ÎªÄæÊ±Õë*/)
+    public void Rotate(float s /*ç”¨äºè°ƒæ•´æ—‹è½¬æ–¹å‘,-1ä¸ºé¡ºæ—¶é’ˆï¼Œ1ä¸ºé€†æ—¶é’ˆ*/)
     {       
             angle +=s* w * Time.deltaTime;
             float x = centerPoint.position.x + r * Mathf.Cos(angle*((float)Math.PI/180));

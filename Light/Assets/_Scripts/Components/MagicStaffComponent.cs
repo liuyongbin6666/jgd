@@ -15,18 +15,21 @@ namespace Components
         [SerializeField,LabelText("内光")] ParticleSystem innerPar;
         [SerializeField,LabelText("散光")] ParticleSystem glow;
         [SerializeField] AttackComponent attackComponent;
-        List<GameObject> targets = new();
+        List<IBattleUnit> targets = new();
 
-        public IEnumerable<GameObject> Targets
+        public IEnumerable<IBattleUnit> Targets
         {
             get
             {
-                if (targets.Any(t => !t))
-                    targets = targets.Where(t => t).ToList();
+                if (targets.Any(t=> !t.gameObject || !IsAvailable(t)))//必须检查gamgObject，否则会报错
+                    targets = targets.Where(IsAvailable).ToList();
                 return targets;
             }
         }
-        public GameObject AimTarget => targets.Where(t => t)
+
+        static bool IsAvailable(IBattleUnit t) => t.gameObject && !t.IsDeath;
+
+        public IBattleUnit AimTarget => targets.Where(IsAvailable)
             .OrderBy(t => Vector2.Distance(t.transform.position.ToXY(), transform.position.ToXY()))
             .FirstOrDefault();
         public bool IsCdComplete=> attackComponent.IsCooldown;
@@ -40,13 +43,17 @@ namespace Components
         }
         void TargetLeave(Collider3DHandler handler)
         {
-            if (targets.Count ==0 || !targets.Contains(handler.root)) return;
-            targets.Remove(handler.root);
+            var battleUnit = handler.root.GetComponent<IBattleUnit>();
+            if (battleUnit == null) return;
+            if (targets.Count ==0 || !targets.Contains(battleUnit)) return;
+            targets.Remove(battleUnit);
         }
         void TargetSpotted(Collider3DHandler handler)
         {
-            if (targets.Contains(handler.root)) return;
-            targets.Add(handler.root);
+            var battleUnit = handler.root.GetComponent<IBattleUnit>();
+            if (battleUnit == null) return;
+            if (targets.Contains(battleUnit)) return;
+            targets.Add(battleUnit);
         }
         void CDComplete() => SetActive(true);
         [Button("开启")]public void SetActive(bool active)
@@ -56,7 +63,7 @@ namespace Components
         }
         public void AttackTarget()
         {
-            if (!AimTarget) return;
+            if (AimTarget == null) return;
             attackComponent.Attack(AimTarget);
             SetActive(false);
         }

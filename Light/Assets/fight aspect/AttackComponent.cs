@@ -11,6 +11,7 @@ namespace fight_aspect
 {
     public interface IBattleUnit
     {
+        bool IsDeath { get; }
         GameObject gameObject { get; }
         Transform transform { get; }
         //Spell Spell{ get; }
@@ -74,11 +75,11 @@ namespace fight_aspect
             targets.Remove(handler.root);
             OnTargetLeave.Invoke(handler);
         }
-        public bool Attack(GameObject target)
+        public bool Attack(IBattleUnit target)
         {
-            var canAttack = target && IsCooldown;
+            var canAttack = !target.IsDeath && IsCooldown;
             if(!canAttack) return false;
-            var bullet = bulletManager.Shoot(BattleUnit, target, bulletLasting);
+            var bullet = bulletManager.Shoot(BattleUnit, target.gameObject, bulletLasting);
             if (bullet) RestartCD();
             return bullet;
         }

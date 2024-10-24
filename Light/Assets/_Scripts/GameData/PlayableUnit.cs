@@ -4,7 +4,6 @@ using System.Linq;
 using Components;
 using fight_aspect;
 using GMVC.Conditions;
-using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -56,11 +55,13 @@ namespace GameData
             Hp.Add(-damage);
             SendEvent(GameEvent.Battle_Spell_On_Player, spell.Damage); 
             SendEvent(GameEvent.Player_Hp_Update);
-            if(Player.IsDeath)
-            {
-                PlayerControl.Die();
-                SendEvent(GameEvent.Player_IsDeath);
-            }
+            if(Player.IsDeath) SetDeath();
+        }
+
+        void SetDeath()
+        {
+            PlayerControl.Die();
+            SendEvent(GameEvent.Player_IsDeath);
         }
 
         // 当游戏物品交互
@@ -80,6 +81,7 @@ namespace GameData
         {
             Log();
             SendEvent(GameEvent.Player_Panic_Finalize);
+            SetDeath();
         }
 
         public void AddLantern(int value)
