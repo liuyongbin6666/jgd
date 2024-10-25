@@ -313,6 +313,7 @@ namespace Ui
                     var spell = spells[i];
                     var index = i;
                     var ui = SpellList.Instance(v => new Prefab_Spell(v, () => OnSpellAction?.Invoke(index)));
+                    ui.SetImage(Game.Config.SpellSo.GetSprite(spell.SpellName));
                     ui.SetValue(1);
                 }
             }

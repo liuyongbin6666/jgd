@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae53d1e148b174f42a89f38eb5d4e5c3, type: 3}
+  m_Name: "\u6280\u80FD\u914D\u7F6E"
+  m_EditorClassIdentifier: 
+  list:
+  - Sprite: {fileID: 0}
+    Spell:
+      SpellName: "\u666E\u901A"
+      Damage: 1
+      Speed: 3
+      Level: 1
+      Delay: 0.5
+      force: 1.5
+      Tracking: 0
+      RangeDamage: 0
+  - Sprite: {fileID: 21300000, guid: e3de7f6c59f00744d9d4a4056d09a8e7, type: 3}
+    Spell:
+      SpellName: "\u6C34\u7BAD"
+      Damage: 3
+      Speed: 6
+      Level: 1
+      Delay: 0
+      force: 3
+      Tracking: 0
+      RangeDamage: 0
+  - Sprite: {fileID: 21300000, guid: 9439eadc2c69b9646b7cf6f2be69aa14, type: 3}
+    Spell:
+      SpellName: "\u706B\u7403"
+      Damage: 2
+      Speed: 3
+      Level: 1
+      Delay: 1
+      force: 2
+      Tracking: 0
+      RangeDamage: 1
+  - Sprite: {fileID: 21300000, guid: 42eb82e2f70d07645b46aba8354bf598, type: 3}
+    Spell:
+      SpellName: "\u9B54\u653B"
+      Damage: 1
+      Speed: 3
+      Level: 1
+      Delay: 0
+      force: 5
+      Tracking: 0
+      RangeDamage: 0
+  - Sprite: {fileID: 21300000, guid: 27c7ff13c410d2b43984b02993453dc6, type: 3}
+    Spell:
+      SpellName: "\u96F7\u51FB"
+      Damage: 4
+      Speed: 7
+      Level: 1
+      Delay: 1
+      force: 2
+      Tracking: 0
+      RangeDamage: 0

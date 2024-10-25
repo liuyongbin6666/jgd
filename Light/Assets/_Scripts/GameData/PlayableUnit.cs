@@ -4,6 +4,7 @@ using System.Linq;
 using Components;
 using fight_aspect;
 using GMVC.Conditions;
+using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -103,7 +104,7 @@ namespace GameData
         Spell CastSpell()
         {
             //如果没有选择法术，就使用默认法术
-            if (SelectedSpellIndex < 0) return PlayerControl.Spell;
+            if (SelectedSpellIndex < 0) return Game.DefaultSpell;
             //特殊法术，需要发送事件
             var spellIndex = SelectedSpellIndex;
             Player.CastSpell(spellIndex, out bool isFinish, out var remain, out var max);
@@ -162,14 +163,18 @@ namespace GameData
             Hp = hp;
             Firefly = firefly;
         }
-        public void AddSpell(Spell spell, int times)
+        public void AddSpell(Spell spell, int times)//添加法术，自动选择
         {
-            var magic = Magics.FirstOrDefault(s => s.Spell.Type == spell.Type);
-            if (magic == null) Magics.Add(new Magic(spell, times));
-            else
+            for (var i = 0; i < Magics.Count; i++)
             {
-                magic.AddTimes(times);
+                var m = Magics[i];
+                if (m.Spell.SpellName != spell.SpellName) continue;
+                m.AddTimes(times);
+                _selectedSpellIndex = i;// 选择这个法术
+                return;
             }
+            _selectedSpellIndex = Magics.Count;
+            Magics.Add(new Magic(spell, times));
         }
 
         public bool IsSpellMax(int index)
@@ -220,26 +225,13 @@ namespace GameData
     /// </summary>
     [Serializable]public struct Spell
     {
-        public enum Types
-        {
-            [InspectorName("普通")]Normal,
-            [InspectorName("火")]Fire,
-            [InspectorName("冰")]Ice
-        }
-        [LabelText("类型")]public Types Type;
+        [LabelText("名字")]public string SpellName;
         [LabelText("伤害")]public int Damage;
+        [LabelText("速度")]public float Speed;
         [LabelText("等级")]public int Level;
         [LabelText("延迟")]public float Delay;
         [LabelText("击退")]public float force;
-        [LabelText("子弹")] public BulletTracking Tracking;
-        public Spell(Types type, int damage, int level, float force, float delay, BulletTracking tracking)
-        {
-            Type = type;
-            Damage = damage;
-            Level = level;
-            this.force = force;
-            Delay = delay;
-            Tracking = tracking;
-        }
+        [LabelText("子弹")]public BulletTracking Tracking;
+        [LabelText("范围伤害")]public bool RangeDamage;
     }
 }

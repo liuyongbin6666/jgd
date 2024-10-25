@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using GameData;
 using GMVC.Core;
+using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
@@ -26,6 +27,7 @@ namespace Components
 
         public void StartService(PlayerControlComponent player)
         {
+            prefab.Display(false);
             playerControlComponent = player;
             objectPool = new ObjectPool<T>(SpawnObject, GetObject, RecycleObject, Destroy);
             Co = StartCoroutine(UpdateObjects());

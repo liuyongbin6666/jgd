@@ -17,7 +17,7 @@ namespace Components
         {
             // 进入空闲状态的逻辑
             enemy.nav.isStopped = true;
-            enemy.UpdateAnimation("Idle");
+            enemy.PlayAnimation(IGameUnitState.Anims.Idle);
         }
 
         public void UpdateState()
@@ -47,7 +47,7 @@ namespace Components
         {
             // 进入追逐状态的逻辑
             enemy.nav.isStopped = false;
-            enemy.UpdateAnimation("Run");
+            enemy.PlayAnimation(IGameUnitState.Anims.Move);
         }
 
         public void UpdateState()
@@ -95,7 +95,7 @@ namespace Components
         {
             // 进入攻击状态的逻辑
             enemy.nav.isStopped = true;
-            enemy.UpdateAnimation("Attack");
+            enemy.PlayAnimation(IGameUnitState.Anims.Attack);
             isAttacking = false;
         }
 
@@ -137,7 +137,7 @@ namespace Components
         {
             // 进入死亡状态的逻辑
             enemy.nav.isStopped = true;
-            enemy.UpdateAnimation("Dead");
+            enemy.PlayAnimation(IGameUnitState.Anims.Death);
             enemy.StartCoroutine(DestroyAfterDelay());
         }
 

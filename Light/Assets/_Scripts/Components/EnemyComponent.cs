@@ -1,4 +1,7 @@
-﻿using fight_aspect;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Config;
+using fight_aspect;
 using GameData;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,9 +17,13 @@ namespace Components
         [SerializeField] public Rigidbody rb3D;
         [SerializeField] Animator anim; // 添加 Animator 组件
         [SerializeField, LabelText("血量")] public int HP = 10;
+        [ValueDropdown(nameof(GetSpells))]public string SpellName;
+        public SpellSo SpellSo;
+        IEnumerable<string> GetSpells()=>SpellSo.Spells.Select(s=>s.SpellName);
+        public Spell CastSpell() => SpellSo.GetSpell(SpellName).Value;
         public IBattleUnit Target { get; private set; }
         [LabelText("强制不移动")] public bool StopMove; // 用于强制停止移动
-        [LabelText("法术")] public Spell spell;
+       
 
         IGameUnitState currentState;
         bool isInitialized;
@@ -50,10 +57,11 @@ namespace Components
             currentState?.UpdateState();
         }
 
-        public void UpdateAnimation(string animName)
+        public void PlayAnimation(IGameUnitState.Anims animate)
         {
             // 播放指定名称的动画
-            anim.Play(animName);
+            anim.SetInteger(GameTag.AnimInt,(int)animate);
+            anim.SetTrigger(GameTag.AnimTrigger);
         }
         protected override void OnPlayerTrackingEnter(PlayerControlComponent player)
         {
@@ -92,7 +100,6 @@ namespace Components
             }
         }
 
-        public Spell CastSpell() => spell;
         public void ResetCD() => attackComponent.RestartCD();
     }
 }
