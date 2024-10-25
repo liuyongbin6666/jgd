@@ -38,7 +38,6 @@ namespace Components
         [LabelText("移动速度")]public float moveSpeed = 5f;
         [LabelText("虫灯最大值")]public int _maxLantern = 5;
         [LabelText("虫灯最小值")]public int _minLantern = 1;
-        [LabelText("法术")] public Spell Spell;
         [LabelText("玩家面朝右")]public bool faceRight;
         float MovingSpeed => moveSpeed * _movingRatio;
         [LabelText("移动摇杆")]
