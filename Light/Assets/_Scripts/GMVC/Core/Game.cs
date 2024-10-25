@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Components;
 using Config;
 using Controller;
@@ -38,6 +39,9 @@ namespace GMVC.Core
                 return _monoService;
             }
         }
+        public static FireflySpawner FireflySpawner { get; private set;}
+        public static EnemySpawner EnemySpawner { get; private set; }
+        public static Spell DefaultSpell { get; private set; }
         static Res _res;
 
         public static void Run(Action onGameStartAction, AudioComponent audioComponent,
@@ -50,6 +54,9 @@ namespace GMVC.Core
         {
             if (IsRunning) throw new NotImplementedException("Game is running!");
             IsRunning = true;
+            DefaultSpell = config.GameConfig.SpellSo.Spells.First();
+            FireflySpawner = config.FireflySpawner;
+            EnemySpawner = config.EnemySpawner;
             BulletManager = bulletManager;
             GameUnitTransform = config.GameUnitTransform;
             BulletManager.Init();
@@ -75,7 +82,10 @@ namespace GMVC.Core
                 ServiceContainer.Reg(new PlayableController());
             }
 
-            void RegEvents() { }
+            void RegEvents()
+            {
+
+            }
 
             IEnumerator StartAfterSec(float delay)
             {

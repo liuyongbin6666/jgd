@@ -11,7 +11,6 @@ namespace Config
     [CreateAssetMenu(fileName = "故事", menuName = "配置/故事")]
     public class StorySo : AutoNameSoBase
     {
-
         [OnValueChanged(nameof(ResetPlots))]public List<PlotSoBase> plots;
         void ResetPlots()
         {

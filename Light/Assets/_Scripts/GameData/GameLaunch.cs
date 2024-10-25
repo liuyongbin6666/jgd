@@ -17,15 +17,16 @@ namespace GameData
         public SensorManager SensorManager;
         public BulletManager BulletManager;
         public EnvironmentComponent EnvironmentComponent;
+
         void Start()
         {
-            Game.Run(GameStart, 
-                     AudioComponent, 
-                     Configure, 
-                     SensorManager, 
-                     PlotManager,
-                     BulletManager,
-                     EnvironmentComponent);
+            Game.Run(GameStart,
+                AudioComponent,
+                Configure,
+                SensorManager,
+                PlotManager,
+                BulletManager,
+                EnvironmentComponent);
         }
 
         // 游戏开始

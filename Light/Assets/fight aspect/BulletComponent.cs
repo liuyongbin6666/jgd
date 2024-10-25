@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Components;
+using Config;
 using DG.Tweening;
 using GameData;
 using GMVC.Utls;
@@ -12,29 +14,40 @@ namespace fight_aspect
 {
     public class BulletComponent : ColliderHandlerComponent
     {
+        [LabelText("技能配置")]public SpellSo SpellSo;
         [SerializeField,LabelText("子弹")] Bullet[] bullets;
+        public Collider3DHandler RangeAttackCollider;
         public Spell Spell { get; private set; }
         float distance;
         float currentDistance;
         Vector3 targetPosition;
         Vector3 currentPosition;
-        public float Speed = 2f;
+        float Speed = 2f;
         Vector3 direction;
         float startTime;
         float duration=2f;//生命周期
         BulletTracking BulletTracking;
-        public Transform Target;
+        [ReadOnly]public Transform Target;
         Bullet bulletCache;
+        readonly List<IBattleUnit> _rangeTargets = new();
         bool KeepActive => Target || Time.deltaTime - startTime < duration;
         public bool IsBulletInit { get; private set; }
         public Vector3 ImpactDirection(Transform body) => (body.position - transform.position).normalized;
+        IEnumerable<string> GetSpellNames() => SpellSo.Spells.Select(s=>s.SpellName);
+        IBattleUnit Caster { get; set; }
+        protected override void OnGameInit()
+        {
+            RangeAttackCollider.OnTriggerEnterEvent.AddListener(OnRangeRegister);
+            base.OnGameInit();
+        }
+
         public void Set(IBattleUnit owner, GameObject target,
-            float lasting,
-            float speed = -1)
+            float lasting)
         {
             SetTargetTag(target.tag);
             duration = lasting;
             Spell = owner.CastSpell();
+            Caster = owner;
             Target = target.transform;
             BulletTracking = Spell.Tracking;
             targetPosition = target.transform.position;
@@ -44,17 +57,19 @@ namespace fight_aspect
             distance = (targetPosition - currentPosition).magnitude;
             currentDistance = distance;
             startTime = Time.time;
-            if (speed > 0) Speed = speed;
-            ShowBullet(Spell.Type);
+            Speed = Spell.Speed;
+            ShowBullet(Spell.SpellName);
+            RangeAttackCollider.Display(Spell.RangeDamage);
             this.Display(true);
             IsBulletInit = true;
         }
 
-        void ShowBullet(Spell.Types type)
+
+        void ShowBullet(string spellName)
         {
-            bulletCache = bullets.FirstOrDefault(b => b.spellType == type);
+            bulletCache = bullets.FirstOrDefault(b => b.spellName == spellName);
             if(bulletCache==null)
-                Debug.LogError($"{nameof(ShowBullet)}:找不到子弹类型: {type}");
+                Debug.LogError($"{nameof(ShowBullet)}:找不到子弹类型: {spellName}");
             bulletCache.ShowBullet(true);
         }
 
@@ -68,6 +83,8 @@ namespace fight_aspect
             distance = 0;
             currentDistance = distance;
             startTime = Time.deltaTime;
+            Caster = null;
+            _rangeTargets.Clear();
             IsBulletInit = false;
             this.Display(false);
         }
@@ -129,9 +146,20 @@ namespace fight_aspect
         {
             if (Target && handler.root != Target.gameObject) // 如果已经有目标，且不是当前目标继续等待真正的目标
                 return;
-            var attackUnit = handler.root.GetComponent<IBattleUnit>();
-            attackUnit.BulletImpact(this);
+            var unit = handler.root.GetComponent<IBattleUnit>();
+            unit.BulletImpact(this);
+            foreach (var target in _rangeTargets) 
+                target.BulletImpact(this);
             StartExplosion();
+        }
+
+        void OnRangeRegister(Collider col)
+        {
+            var handler = col.GetComponent<Collider3DHandler>();
+            if(handler==null)return;
+            var unit = handler.root.GetComponent<IBattleUnit>();
+            if (unit == null || unit == Caster) return;
+            _rangeTargets.Add(unit);
         }
 
         void StartExplosion()
@@ -152,7 +180,7 @@ namespace fight_aspect
 
         [Serializable]class Bullet
         {
-            [LabelText("魔法类型")]public Spell.Types spellType;
+            [ValueDropdown("@((BulletComponent)$property.Tree.WeakTargets[0]).GetSpellNames()")] public string spellName;
             [LabelText("子弹"),SerializeField] GameObject bullet;
             [LabelText("爆炸"),SerializeField] GameObject explode;
 

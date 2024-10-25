@@ -28,8 +28,17 @@ namespace GameData
         {
             Story.StartTimer();
             Player.Enable(true);
+            Game.FireflySpawner.StartService(Player.PlayerControl);
+            Game.EnemySpawner.StartService(Player.PlayerControl);
             //SetMode(PlayModes.Explore);
             //Game.SendEvent(GameEvent.Story_Npc_Update, 0);
+        }
+        public void Stage_End()
+        {
+            Story.Reset();
+            Player.Enable(false);
+            Game.FireflySpawner.StopService();
+            Game.EnemySpawner.StopService();
         }
         //public void SetMode(PlayModes mode)
         //{
