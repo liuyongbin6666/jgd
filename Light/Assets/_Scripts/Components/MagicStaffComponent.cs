@@ -17,18 +17,8 @@ namespace Components
         public AttackComponent attackComponent;
         List<IBattleUnit> targets = new();
 
-        public IEnumerable<IBattleUnit> Targets
-        {
-            get
-            {
-                if (targets.Any(t=> !t.gameObject || !IsAvailable(t)))//必须检查gamgObject，否则会报错
-                    targets = targets.Where(IsAvailable).ToList();
-                return targets;
-            }
-        }
-
+        public IEnumerable<IBattleUnit> Targets => targets.Where(IsAvailable).ToList();
         static bool IsAvailable(IBattleUnit t) => t.gameObject && !t.IsDeath;
-
         public IBattleUnit AimTarget => targets.Where(IsAvailable)
             .OrderBy(t => Vector2.Distance(t.transform.position.ToXY(), transform.position.ToXY()))
             .FirstOrDefault();
@@ -52,8 +42,7 @@ namespace Components
         {
             var battleUnit = handler.root.GetComponent<IBattleUnit>();
             if (battleUnit == null) return;
-            if (targets.Contains(battleUnit)) return;
-            targets.Add(battleUnit);
+            targets = targets.Where(IsAvailable).Distinct().Concat(new []{battleUnit}).ToList();
         }
         void CDComplete() => SetActive(true);
         [Button("开启")]public void SetActive(bool active)
