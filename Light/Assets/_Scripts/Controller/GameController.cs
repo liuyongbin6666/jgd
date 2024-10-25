@@ -31,7 +31,7 @@ namespace Controller
         PlayableUnit InstancePlayer()
         {
             var player = DefaultPlayer();
-            var playerControl = Object.Instantiate(Config.PlayerPrefab, Config.PlayerPrefab.transform.parent);
+            var playerControl = Object.Instantiate(Config.PlayerPrefab, Game.GameUnitTransform);
             Config.PlayerCfgSo.Load(playerControl);
             return new PlayableUnit(player, playerControl);
         }

@@ -19,7 +19,7 @@ namespace GMVC.Core
         public static GameWorld World { get; } = new ();
         public static PlotManager PlotManager { get; private set; }
         public static SensorManager SensorManager { get; private set; }
-
+        public static Transform GameUnitTransform { get; private set; }
         public static T GetController<T>() where T : class, IController => ServiceContainer.Get<T>();
         public static UiBuilder UiBuilder { get; private set; }
         public static MessagingManager MessagingManager { get; } = new();
@@ -41,7 +41,7 @@ namespace GMVC.Core
         static Res _res;
 
         public static void Run(Action onGameStartAction, AudioComponent audioComponent,
-            GameConfig config,
+            GameConfigure config,
             SensorManager sensorManager,
             PlotManager plotManager,
             BulletManager bulletManager,
@@ -51,13 +51,14 @@ namespace GMVC.Core
             if (IsRunning) throw new NotImplementedException("Game is running!");
             IsRunning = true;
             BulletManager = bulletManager;
+            GameUnitTransform = config.GameUnitTransform;
             BulletManager.Init();
             SensorManager = sensorManager;
             PlotManager = plotManager;
-            PlotManager.Init(config.Stories);
+            PlotManager.Init(config.GameConfig.Stories);
             AudioComponent = audioComponent;
             AudioComponent.Init();
-            Config = config;
+            Config = config.GameConfig;
             Environment = environmentComponent;
             Environment.Init();
             MainThread = MonoService.gameObject.AddComponent<MainThreadDispatcher>();

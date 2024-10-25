@@ -21,7 +21,7 @@ namespace GameData
         {
             Game.Run(GameStart, 
                      AudioComponent, 
-                     Configure.GameConfig, 
+                     Configure, 
                      SensorManager, 
                      PlotManager,
                      BulletManager,
