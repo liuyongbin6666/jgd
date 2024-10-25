@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a50b120eb97b90b45a1f12e68dae0348, type: 3}
+  m_Name: "Leo\u4E3B\u89D2\u914D\u7F6E"
+  m_EditorClassIdentifier: 
+  moveSpeed: 1.5
+  lantern:
+    _maxLantern: 5
+    _minLantern: 1
+    _lastingPerFirefly: 12
+    lanternSettings:
+    - colliderSize: 2
+      lightY: 5.5
+      intensity: 0.5
+      range: 2
+      movingRatio: 0.8
+    - colliderSize: 4
+      lightY: 13.1725
+      intensity: 2.875
+      range: 3.525
+      movingRatio: 1
+    - colliderSize: 6
+      lightY: 20.845
+      intensity: 5.25
+      range: 5.05
+      movingRatio: 1.2
+    - colliderSize: 8
+      lightY: 28.517498
+      intensity: 7.625
+      range: 6.5750003
+      movingRatio: 1.35
+    - colliderSize: 10
+      lightY: 36.19
+      intensity: 10
+      range: 8.1
+      movingRatio: 1.5
+  panic:
+    _pulseTimes: 5
+    _interval: 2
+  attack:
+    cd: 0.5

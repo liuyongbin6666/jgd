@@ -1,13 +1,15 @@
 using System;
 using Components;
+using Sirenix.OdinInspector;
 
 namespace Config
 {
     [Serializable]public class GameConfig
     {
-        public PlayerControlComponent PlayerPrefab;
-        public StageTimeComponent StageTimeComponent;
+        [LabelText("玩家预设物")]public PlayerControlComponent PlayerPrefab;
+        [LabelText("玩家配置")]public PlayerCfgSo PlayerCfgSo;
+        [LabelText("故事")]public StorySo[] Stories;
+        [LabelText("关卡时间")]public StageTimeComponent StageTimeComponent;
         public StoryItemDataSO StoryItemDataSo;
-        public StorySo[] Stories;
     }
 }

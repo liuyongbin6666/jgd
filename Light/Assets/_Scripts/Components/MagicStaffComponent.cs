@@ -14,7 +14,7 @@ namespace Components
     {
         [SerializeField,LabelText("内光")] ParticleSystem innerPar;
         [SerializeField,LabelText("散光")] ParticleSystem glow;
-        [SerializeField] AttackComponent attackComponent;
+        public AttackComponent attackComponent;
         List<IBattleUnit> targets = new();
 
         public IEnumerable<IBattleUnit> Targets

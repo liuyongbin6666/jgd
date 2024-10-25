@@ -13,7 +13,7 @@ namespace Components
         [SerializeField] Light _pointLight;         // 关联的Point Light
         [SerializeField] LightSettings minSettings; // 最低值设置
         [SerializeField] LightSettings maxSettings; // 最高值设置
-        [SerializeField] List<LightSettings> settings; // 设置数组
+        [SerializeField]public List<LightSettings> settings; // 设置数组
         public List<GameObject> ObjInRange { get; private set; } = new();
 
         [Button("保存当前-Min")]void SetToMin() => minSettings = CurrentLightSetting();

@@ -24,7 +24,7 @@ namespace fight_aspect
     public class AttackComponent : ColliderHandlerComponent
     {
         public BulletManager bulletManager;
-        [SerializeField,LabelText("攻击CD")]float cd= 1f;
+        [LabelText("攻击CD")]public float cd= 1f;
         //[SerializeField,LabelText("请选择射击方式")] BulletTracking bulletTracking;
         [SerializeField, LabelText("子弹维持时长"),ReadOnly] float bulletLasting { get; } = 3f;
         //[SerializeField, LabelText("执行攻击")]public bool isAttack;

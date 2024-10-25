@@ -110,9 +110,14 @@ namespace Ui
                 IEnumerator PanicRoutine()
                 {
                     image_panic.Display(true);
-                    yield return DOTween.Sequence().Append(image_panic.DOFade(1, 0))
+                    var color = image_panic.color;
+                    yield return DOTween.Sequence()
                         .Append(image_panic.DOFade(0, 0.5f).SetEase(Ease.InBounce))
-                        .AppendCallback(() => { image_panic.Display(false); });
+                        .AppendCallback(() =>
+                        {
+                            image_panic.Display(false);
+                            image_panic.color = color;
+                        });
                     Panic = null;
                 }
             }

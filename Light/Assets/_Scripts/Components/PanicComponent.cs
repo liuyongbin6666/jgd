@@ -8,8 +8,8 @@ namespace Components
 {
     public class PanicComponent : MonoBehaviour
     {
-        [SerializeField,LabelText("恐慌心跳次数")]int _pulseTimes = 5;
-        [SerializeField,LabelText("间隔")]float _interval = 1f;
+        [LabelText("恐慌心跳次数")]public int _pulseTimes = 5;
+        [LabelText("间隔")]public float _interval = 1f;
         public readonly UnityEvent<int,int> OnPulseTrigger = new();
         public readonly UnityEvent OnPulseComplete = new();
 

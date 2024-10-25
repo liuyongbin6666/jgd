@@ -11,8 +11,8 @@ namespace Components
     /// </summary>
     public class LanternComponent : MonoBehaviour
     {
-        [SerializeField,LabelText("虫灯维持秒数")] float _lastingPerFirefly = 3f;
-        [SerializeField] VisionLevelComponent _visionLevel;
+        [LabelText("虫灯维持秒数")] public float _lastingPerFirefly = 3f;
+        public VisionLevelComponent _visionLevel;
         Coroutine lanternCoroutine;
         public UnityEvent OnCountdownComplete { get; } = new();
         public void Init()
