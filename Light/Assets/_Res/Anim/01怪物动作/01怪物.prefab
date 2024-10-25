@@ -110,12 +110,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3364516922016026156}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
-  m_LocalPosition: {x: 0.234, y: -0.124, z: 0.181}
-  m_LocalScale: {x: 0.1, y: 0.05, z: 1}
+  m_LocalRotation: {x: 0.25881913, y: -0, z: -0, w: 0.9659258}
+  m_LocalPosition: {x: 0.2340002, y: -0.12399993, z: 0.18100004}
+  m_LocalScale: {x: 0.1, y: 0.049999997, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1889407416153600500}
+  m_Father: {fileID: 5102138615843491744}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1501009310683003803
 SpriteRenderer:
@@ -169,6 +169,39 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &4108143647011062578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5102138615843491744}
+  m_Layer: 7
+  m_Name: "\u773C\u775B"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5102138615843491744
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4108143647011062578}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.034861658, z: -0.060382158, w: 0.9975664}
+  m_LocalPosition: {x: 0.016, y: 0.033, z: -0.019}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8701282661543507851}
+  - {fileID: 8915022449927676243}
+  m_Father: {fileID: 1889407416153600500}
+  m_LocalEulerAnglesHint: {x: -0.241, y: -3.988, z: -6.919}
 --- !u!1 &5259544863908221994
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,8 +235,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8915022449927676243}
-  - {fileID: 8701282661543507851}
+  - {fileID: 5102138615843491744}
   m_Father: {fileID: 4334189430014464382}
   m_LocalEulerAnglesHint: {x: 40, y: 0, z: 0}
 --- !u!114 &8560084437713016326
@@ -364,14 +396,9 @@ MonoBehaviour:
   rb3D: {fileID: 5883601503911688172}
   anim: {fileID: 4475385385643978589}
   HP: 10
+  SpellName: 
+  SpellSo: {fileID: 0}
   StopMove: 0
-  spell:
-    Type: 0
-    Damage: 1
-    Level: 1
-    Delay: 0
-    force: 3
-    Tracking: 0
 --- !u!114 &2489087329502297779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -480,12 +507,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8692093688242726726}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
-  m_LocalPosition: {x: 0.068, y: -0.124, z: 0.181}
-  m_LocalScale: {x: 0.1, y: 0.05, z: 1}
+  m_LocalRotation: {x: 0.25881913, y: -0, z: -0, w: 0.9659258}
+  m_LocalPosition: {x: 0.06799984, y: -0.12399993, z: 0.18100004}
+  m_LocalScale: {x: 0.1, y: 0.049999997, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1889407416153600500}
+  m_Father: {fileID: 5102138615843491744}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5217186163753439281
 SpriteRenderer:
