@@ -38,14 +38,14 @@ namespace Config
 
             public void Set(PlayerControlComponent com)
             {
-                lanternSettings = com._lantern._visionLevel.settings;
+                lanternSettings = com._lantern.LanternVisionLevel.settings;
                 _lastingPerFirefly = com._lantern._lastingPerFirefly;
                 _maxLantern = com._maxLantern;
                 _minLantern = com._minLantern;
             }
             public void Load(PlayerControlComponent com)
             {
-                com._lantern._visionLevel.settings = lanternSettings;
+                com._lantern.LanternVisionLevel.settings = lanternSettings;
                 com._lantern._lastingPerFirefly = _lastingPerFirefly;
                 com._maxLantern = _maxLantern;
                 com._minLantern = _minLantern;

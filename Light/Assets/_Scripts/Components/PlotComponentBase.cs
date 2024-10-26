@@ -12,11 +12,19 @@ namespace Components
 {
     public abstract class PlotComponentBase : GameStartInitializer
     {
+        public enum States
+        {
+            None,
+            Begin,
+            Finalize,
+        }
+
         public PlotManager PlotManager => Game.PlotManager;
-        public bool IsFinalized { get; private set; }
+        public States State { get; private set; }
 
         [LabelText("故事")]public StorySo story;
         [LabelText("情节"),ValueDropdown(nameof(GetPlots)),OnValueChanged(nameof(ChangeName))]public string plotName;
+        
         IEnumerable<string> GetPlots() => story?.GetPlotNames() ?? new []{ "请设置剧情" };
         void ChangeName() => name = "情节_" + plotName;
 
@@ -38,6 +46,7 @@ namespace Components
 
         public void Begin()
         {
+            State = States.Begin;
             OnBegin();
             PlotManager.SetCurrentPlot(this);
         }
@@ -52,7 +61,7 @@ namespace Components
         public void Finalization()
         {
             OnFinalization();
-            IsFinalized = true;
+            State = States.Finalize;
             PlotManager.TriggerNext(this);
         }
         public void SendLines()

@@ -51,7 +51,7 @@ public class SoulComponent : GameItemBase
                 currentAngle = targetAngle + angleOffset;
 
                 // 开始引导
-                while (!nextPlot.IsFinalized)
+                while (nextPlot.State != PlotComponentBase.States.Finalize)
                 {
                     OrbitTowardsTarget();
                     yield return null;
@@ -60,7 +60,7 @@ public class SoulComponent : GameItemBase
                 isGuiding = false;
             }
 
-            currentPlotName = nextPlot?.plotName;
+            currentPlotName = nextPlot?.plotName ?? string.Empty;
             yield return null;
         }
     }

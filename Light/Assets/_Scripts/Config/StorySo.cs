@@ -56,7 +56,7 @@ namespace Config
             var lines =plot?.lines ?? Array.Empty<string>();
             return (plot?.lineType ?? 0, lines);
         }
-        public bool IsStoryEnd(string plotName) => GetPlot(plotName).isStoryFinalize;
+        public bool IsStoryEnd(string plotName) => string.IsNullOrWhiteSpace(plotName) || GetPlot(plotName).isStoryFinalize;
         public string GetFirstPlot() => plots[0].Name;
     }
 }

@@ -12,7 +12,7 @@ namespace Components
     public class LanternComponent : MonoBehaviour
     {
         [LabelText("虫灯维持秒数")] public float _lastingPerFirefly = 3f;
-        public VisionLevelComponent _visionLevel;
+        public LanternVisionLevelComponent LanternVisionLevel;
         Coroutine lanternCoroutine;
         public UnityEvent OnCountdownComplete { get; } = new();
         public void Init()
@@ -30,7 +30,7 @@ namespace Components
         }
         public float SetVisionLevel(int level)
         {
-            _visionLevel.LoadLightLevel(level,out var isMaxLevel,out var moveRatio);
+            LanternVisionLevel.LoadLightLevel(level,out var isMaxLevel,out var moveRatio);
             if (isMaxLevel) Restart();
             return moveRatio;
         }

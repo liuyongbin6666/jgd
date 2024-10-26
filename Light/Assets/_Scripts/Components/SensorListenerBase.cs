@@ -40,6 +40,7 @@ namespace Components
         bool OnCondition()
         {
             if (!IsInit) return false;
+            if (this.IsUnityNull()) return false;
             if (!gameObject.activeSelf) return false; // 不可触发，跳过
             if (!IsTriggerable) return false; // 不可触发，跳过       
             if (!CheckCondition()) return false; //条件不满足，跳过

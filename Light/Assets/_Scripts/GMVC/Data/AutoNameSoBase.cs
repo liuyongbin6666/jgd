@@ -49,7 +49,7 @@ namespace GMVC.Data
 
     public abstract class AutoNameSoBase : ScriptableObject
     {
-        [ReadOnly] [SerializeField] ScriptableObject referenceSo;
+        [Sirenix.OdinInspector.ReadOnly] [SerializeField] ScriptableObject referenceSo;
 #if UNITY_EDITOR
         [ConditionalField(true, nameof(GetReference))] string _;
         protected bool GetReference()
@@ -79,7 +79,7 @@ namespace GMVC.Data
 
     public abstract class ReferenceSoBase : ScriptableObject
     {
-        [ReadOnly] [SerializeField] ScriptableObject referenceSo;
+        [Sirenix.OdinInspector.ReadOnly] [SerializeField] ScriptableObject referenceSo;
 
 #if UNITY_EDITOR
         [ConditionalField(true, nameof(GetReference))] string _;
