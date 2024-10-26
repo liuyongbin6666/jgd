@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Components;
+using Controller;
 using GameData;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,7 +15,6 @@ namespace fight_aspect
         bool IsDeath { get; }
         GameObject gameObject { get; }
         Transform transform { get; }
-        //Spell Spell{ get; }
         void BulletImpact(BulletComponent bullet);
         Spell CastSpell();
     }

@@ -20,7 +20,6 @@ namespace Components
         [SerializeField,LabelText("台词间隔秒")]float lineInterval = 1f;
         [LabelText("情节(自动)完成")]public bool IsFinalize;
         [SerializeField,LabelText("文本播放在")] TextMode mode;
-
         protected override void OnBegin()
         {
             StartCoroutine(BeginRoutine());

@@ -27,6 +27,7 @@ namespace Components
 
         public void StartService(PlayerControlComponent player)
         {
+            if (!gameObject.activeSelf) return;
             prefab.Display(false);
             playerControlComponent = player;
             objectPool = new ObjectPool<T>(SpawnObject, GetObject, RecycleObject, Destroy);

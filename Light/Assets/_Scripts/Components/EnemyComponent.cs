@@ -11,6 +11,11 @@ namespace Components
 {
     public class EnemyComponent : PlayerTrackingComponentBase, IBattleUnit
     {
+        enum EnemyTypes
+        {
+            [InspectorName("骷髅")]Skeleton
+        }
+        [SerializeField] EnemyTypes enemyType;
         [SerializeField] public NavMeshAgent nav;
         [SerializeField] public AttackComponent attackComponent;
         [SerializeField] public VisionActiveComponent VisionActive;
