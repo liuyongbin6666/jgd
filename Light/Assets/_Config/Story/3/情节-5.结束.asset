@@ -15,7 +15,7 @@ MonoBehaviour:
   referenceSo: {fileID: 11400000}
   _name: "5.\u7ED3\u675F"
   story: {fileID: 11400000, guid: 468dcb41363f47b40a1f2dc3f789142b, type: 2}
-  isStoryFinalize: 0
+  isStoryFinalize: 1
   autoBegin: 0
   lineType: 1
   lines:

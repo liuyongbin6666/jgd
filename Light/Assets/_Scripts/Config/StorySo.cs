@@ -57,6 +57,14 @@ namespace Config
             return (plot?.lineType ?? 0, lines);
         }
         public bool IsStoryEnd(string plotName) => string.IsNullOrWhiteSpace(plotName) || GetPlot(plotName).isStoryFinalize;
-        public string GetFirstPlot() => plots[0].Name;
+        public string GetFirstPlot()
+        {
+            var plot = plots.FirstOrDefault();
+            if (plot is null)
+            {
+                throw new NotImplementedException($"{name}:没有剧情");
+            }
+            return plot.Name;
+        }
     }
 }
