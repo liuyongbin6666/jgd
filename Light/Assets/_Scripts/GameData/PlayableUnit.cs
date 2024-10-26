@@ -53,10 +53,15 @@ namespace GameData
                 Debug.LogError($"伤害值异常! = {damage}");
                 return;
             }
-            Hp.Add(-damage);
+            Hp_Add(-damage);
             SendEvent(GameEvent.Battle_Spell_On_Player, spell.Damage); 
-            SendEvent(GameEvent.Player_Hp_Update);
             if(Player.IsDeath) SetDeath();
+        }
+
+        public void Hp_Add(int damage)
+        {
+            Hp.Add(damage);
+            SendEvent(GameEvent.Player_Hp_Update);
         }
 
         void SetDeath()
