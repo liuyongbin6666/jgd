@@ -65,7 +65,7 @@ namespace GameData
         public string[] DialogLines { get; private set; }
         
         int _totalSecs;
-        PlotComponentBase currentPlot;
+        //PlotComponentBase currentPlot;
         public StageStory(StageTimeComponent stageTimeComponent, int remainSeconds)
         {
             StageTimeComponent = stageTimeComponent;
@@ -73,17 +73,17 @@ namespace GameData
             _totalSecs = remainSeconds;
             RemainSeconds = remainSeconds;
             PlotManager.OnLinesEvent.AddListener(OnLine);
-            PlotManager.OnPlotBegin.AddListener(SetCurrentPlot);
+            //PlotManager.OnPlotBegin.AddListener(SetCurrentPlot);
         }
-        void SetCurrentPlot(PlotComponentBase? plot)
-        {
-            var lastPlot = currentPlot;
-            currentPlot = plot;
-            if (currentPlot)
-                SendEvent(GameEvent.Story_Plot_Begin);
-            else
-                SendEvent(GameEvent.Story_End, lastPlot.story.Name);
-        }
+        //void SetCurrentPlot(PlotComponentBase? plot)
+        //{
+        //    var lastPlot = currentPlot;
+        //    currentPlot = plot;
+        //    if (currentPlot)
+        //        SendEvent(GameEvent.Story_Plot_Begin);
+        //    else
+        //        SendEvent(GameEvent.Story_End, lastPlot.story.Name);
+        //}
         void OnLine(Lines lineType, string[] lines)
         {
             switch (lineType)
@@ -111,6 +111,6 @@ namespace GameData
             SendEvent(RemainSeconds > 0 ? GameEvent.Stage_StageTime_Update : GameEvent.Stage_StageTime_Over);
         }
 
-        public void Plot_Next() => PlotManager.TriggerNext(currentPlot);
+        //public void Plot_Next() => PlotManager.TriggerNext(currentPlot);
     }
 }

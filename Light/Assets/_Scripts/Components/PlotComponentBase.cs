@@ -21,6 +21,7 @@ namespace Components
 
         public PlotManager PlotManager => Game.PlotManager;
         public States State { get; private set; }
+        public bool IsStoryFinalized =>PlotManager.IsStoryFinalized(story);
 
         [LabelText("故事")]public StorySo story;
         [LabelText("情节"),ValueDropdown(nameof(GetPlots)),OnValueChanged(nameof(ChangeName))]public string plotName;
@@ -48,7 +49,7 @@ namespace Components
         {
             State = States.Begin;
             OnBegin();
-            PlotManager.SetCurrentPlot(this);
+            //PlotManager.SetCurrentPlot(this);
         }
         /// <summary>
         /// 开始情节，初始化并扩展控件逻辑

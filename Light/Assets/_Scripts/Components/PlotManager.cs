@@ -13,17 +13,17 @@ namespace Components
     /// </summary>
     public class PlotManager : MonoBehaviour
     {
-        Dictionary<StorySo, List<PlotComponentBase>> data = new();
+        readonly Dictionary<StorySo, List<PlotComponentBase>> data = new();
         public readonly UnityEvent<StageStory.Lines, string[]> OnLinesEvent = new();
-        public readonly UnityEvent<PlotComponentBase> OnPlotBegin = new();
-        Dictionary<StorySo, string> currentMap = new();
+        //public readonly UnityEvent<PlotComponentBase> OnPlotBegin = new();
+        Dictionary<StorySo, List<string>> currentMap = new();//当前情节,如果剧情结束是空的
 
         public void Init(StorySo[] stories)
         {
             foreach (var story in stories)
             {
                 data.Add(story,new List<PlotComponentBase>());
-                currentMap.Add(story,story.GetFirstPlot());
+                currentMap.Add(story,new List<string> { story.GetFirstPlot() });//第一个情节自动为当前情节
             }
         }
 
@@ -38,43 +38,54 @@ namespace Components
         }
         public void TriggerNext(PlotComponentBase com)
         {
-            if (!data.TryGetValue(com.story, out var list)) return;
-            var plotName = com.plotName;
-            var storyEnd = com.story.IsStoryEnd(plotName);
+            var story = com.story;
+            if (!data.TryGetValue(story, out var list)) return;
+            var currentFinish = com.plotName;
+            var storyEnd = story.IsStoryEnd(currentFinish);
             com.Display(false);
             if (storyEnd)
             {
-                SetCurrentPlot(null);
+                foreach (var plot in list) plot.Display(false);
+                currentMap[story].Clear();//剧情结束，清空当前情节
                 return;
             }
-            var nextPlots = com.story.NextPlots(plotName);
-            var plots = list.Join(nextPlots, p => p.plotName, n => n, (p, _) => p).ToArray();
-            foreach (var plot in plots)
+            //移除当前情节
+            currentMap[story].Remove(com.plotName);
+            //获取当前仍未结束的情节
+            var activePlots = GetActivePlots(story).ToList();
+            var nextPlotNames = story.NextPlots(currentFinish);//获取下一个情节
+            activePlots.AddRange(data[story].Join(nextPlotNames, p => p.plotName, n => n, (p, _) => p));//合并情节
+            currentMap[story] = activePlots.Select(p=>p.plotName).ToList();
+            foreach (var plot in activePlots)
             {
                 plot.Display(true);
                 plot.Begin();
             }
         }
-        public void SendLines(StageStory.Lines type, string[] lines) => OnLinesEvent?.Invoke(type, lines);
-        public void SetCurrentPlot(PlotComponentBase plot)
+
+        IEnumerable<PlotComponentBase> GetActivePlots(StorySo story)
         {
-            if (plot) currentMap[plot.story] = plot.plotName;
-            OnPlotBegin.Invoke(plot);
+            return currentMap[story]
+                .Join(data[story], n => n, c => c.plotName, (_, c) => c)
+                .Where(p => p.gameObject.activeSelf);
         }
+
+        public void SendLines(StageStory.Lines type, string[] lines) => OnLinesEvent?.Invoke(type, lines);
+        //public void SetCurrentPlot(PlotComponentBase plot)
+        //{
+        //    if (plot) currentMap[plot.story] = plot.plotName;
+        //    OnPlotBegin.Invoke(plot);
+        //}
 
         public bool IsCurrentPlot(PlotComponentBase plot)
         {
-            if (!currentMap.TryGetValue(plot.story, out var plotName)) return false;
-            return plot.plotName == plotName;
+            if (!currentMap.TryGetValue(plot.story, out var current)) return false;
+            return current.Contains(plot.plotName);
         }
+        public IEnumerable<PlotComponentBase> FindPlots(StorySo story, IEnumerable<string> names) =>
+            data[story].Join(names, p => p.plotName, n => n, (p, _) => p);
 
-        public string GetCurrentPlot(StorySo story) => currentMap[story];
-        public PlotComponentBase[] GetNextPlots(StorySo story)
-        {
-            var plotName = currentMap[story];
-            var names = story.NextPlots(plotName);
-            var plots = data[story].Join(names, p => p.plotName, n => n, (p, n) => p).ToArray();
-            return plots;
-        }
+        public IEnumerable<string> GetCurrentPlotNames(StorySo story) => currentMap[story];
+        public bool IsStoryFinalized(StorySo story)=> currentMap[story] is null;
     }
 }

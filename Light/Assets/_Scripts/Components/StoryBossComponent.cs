@@ -22,6 +22,7 @@ namespace Components
             {
                 if (!isActive) return;
                 if (PlayedLine) return;
+                if (plot.IsStoryFinalized) return;
                 PlayedLine = true;
                 plot.SendLines();
             }

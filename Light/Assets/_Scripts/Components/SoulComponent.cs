@@ -2,7 +2,9 @@ using Components;
 using GameData;
 using Sirenix.OdinInspector;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using Config;
 using UnityEngine;
 
 public class SoulComponent : GameItemBase
@@ -34,7 +36,7 @@ public class SoulComponent : GameItemBase
 
         while (!string.IsNullOrWhiteSpace(currentPlotName) || !story.IsStoryEnd(currentPlotName))
         {
-            nextPlots = PlotComponent.PlotManager.GetNextPlots(story);
+            nextPlots = GetNextPlots(story);
             var nextPlot = nextPlots.FirstOrDefault();
 
             if (nextPlot != null)
@@ -63,6 +65,14 @@ public class SoulComponent : GameItemBase
             currentPlotName = nextPlot?.plotName ?? string.Empty;
             yield return null;
         }
+    }
+
+    PlotComponentBase[] GetNextPlots(StorySo story)
+    {
+        var currents = PlotComponent.PlotManager.GetCurrentPlotNames(story);
+        var names = currents.SelectMany(story.NextPlots).ToList();
+        var possibleNext = PlotComponent.PlotManager.FindPlots(story, names);
+        return possibleNext.ToArray();
     }
 
     void OrbitTowardsTarget()
