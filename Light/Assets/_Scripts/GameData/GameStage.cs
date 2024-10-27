@@ -60,18 +60,14 @@ namespace GameData
         }
         public StageTimeComponent StageTimeComponent;
         public PlotManager PlotManager => Game.PlotManager;
-        public int RemainSeconds { get; private set; }
+        public int Seconds { get; private set; }
         public string[] StoryLines { get; private set; }
         public string[] DialogLines { get; private set; }
-        
-        int _totalSecs;
         //PlotComponentBase currentPlot;
-        public StageStory(StageTimeComponent stageTimeComponent, int remainSeconds)
+        public StageStory(StageTimeComponent stageTimeComponent)
         {
             StageTimeComponent = stageTimeComponent;
-            stageTimeComponent.OnPulseTrigger.AddListener(OnPulse);
-            _totalSecs = remainSeconds;
-            RemainSeconds = remainSeconds;
+            stageTimeComponent.OnSecond.AddListener(OnPulse);
             PlotManager.OnLinesEvent.AddListener(OnLine);
             //PlotManager.OnPlotBegin.AddListener(SetCurrentPlot);
         }
@@ -99,16 +95,16 @@ namespace GameData
                 default: throw new ArgumentOutOfRangeException(nameof(lineType), lineType, null);
             }
         }
-        public void StartTimer() => StageTimeComponent.StartCountdown();
+        public void StartTimer() => StageTimeComponent.StartService(true);
         public void Reset()
         {
-            StageTimeComponent.StopCountdown();
-            RemainSeconds = _totalSecs;
+            StageTimeComponent.StopService();
+            Seconds = 0;
         }
-        void OnPulse(int arg0)
+        void OnPulse()
         {
-            RemainSeconds--;
-            SendEvent(RemainSeconds > 0 ? GameEvent.Stage_StageTime_Update : GameEvent.Stage_StageTime_Over);
+            Seconds++;
+            SendEvent(Seconds > 0 ? GameEvent.Stage_StageTime_Update : GameEvent.Stage_StageTime_Over);
         }
 
         //public void Plot_Next() => PlotManager.TriggerNext(currentPlot);

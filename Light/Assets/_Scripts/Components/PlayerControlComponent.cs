@@ -63,11 +63,11 @@ namespace Components
         public void Init()
         {
             this.Display(true);
-            _lantern.Init();
             _lantern.OnCountdownComplete.AddListener(OnLanternPulse.Invoke);
             _panicCom.OnPulseTrigger.AddListener(OnPanicPulse.Invoke);
             _panicCom.OnPulseComplete.AddListener(OnPanicFinalize.Invoke);
             magicStaff.Init(this);
+            _lantern.StartLantern();
 
             // 初始化状态为 Idle
             SwitchState(new PlayerIdleState(this));
@@ -92,7 +92,7 @@ namespace Components
             OnSpellImpact.Invoke(spell);
         }
         public void SetSpeed(float speed) => moveSpeed = speed;
-        public void StopPanic() => StopAllCoroutines(); // 暂时这样停止，实际上会停止所有协程。
+        public void StopPanic() => _panicCom.StopIfPanic(); 
         public void Lantern_Update(int lantern)
         {
             var minVision = lantern > _minLantern;//虫灯最小值
@@ -100,7 +100,7 @@ namespace Components
             _movingRatio = _lantern.SetVisionLevel(lanternLevel);
             if (!minVision) return; // 视野已经最小了
             _lantern.Restart();
-            _panicCom.StopIfPanic();
+            StopPanic();
         }
 
         public void StartPanic() => _panicCom.StartPanic();
@@ -144,7 +144,13 @@ namespace Components
             magicStaff.AttackTarget();
         }
         public void ResetAttackCD() => magicStaff.ResetCd();
-        public void Die() => SwitchState(new PlayerDeathState(this));
+        public void Die()
+        {
+            StopPanic();
+            SetSpeed(0);
+            _lantern.StopLantern();
+            SwitchState(new PlayerDeathState(this));
+        }
     }
     /// <summary>
     /// 玩家控制组件扩展，主要是获取玩家控制组件

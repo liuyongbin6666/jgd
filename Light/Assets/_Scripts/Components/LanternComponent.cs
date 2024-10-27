@@ -15,7 +15,7 @@ namespace Components
         public LanternVisionLevelComponent LanternVisionLevel;
         Coroutine lanternCoroutine;
         public UnityEvent OnCountdownComplete { get; } = new();
-        public void Init()
+        public void StartLantern()
         {
             lanternCoroutine = StartCoroutine(StartCountdown());
         }
@@ -37,9 +37,14 @@ namespace Components
         
         public void Restart()
         {
+            StopLantern();
+            lanternCoroutine = StartCoroutine(StartCountdown());
+        }
+
+        public void StopLantern()
+        {
             if (lanternCoroutine != null)
                 StopCoroutine(lanternCoroutine);
-            lanternCoroutine = StartCoroutine(StartCountdown());
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Controller
             Config.PlayerPrefab.Display(false);
             var player = InstancePlayer();
             World.Start();
-            World.SetGameStage(player, new StageStory(Config.StageTimeComponent, 180));
+            World.SetGameStage(player, new StageStory(Config.StageTimeComponent));
             World.StartGameStage();
             Debug.Log("游戏执行中！");
         }
@@ -43,7 +43,7 @@ namespace Controller
         public void Game_NextStage()
         {
             World.NextGameStage();
-            World.SetGameStage(InstancePlayer(), new StageStory(Config.StageTimeComponent, 180));
+            World.SetGameStage(InstancePlayer(), new StageStory(Config.StageTimeComponent));
             World.StartGameStage();
         }
     }

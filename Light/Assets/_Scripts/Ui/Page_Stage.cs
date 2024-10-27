@@ -48,12 +48,14 @@ namespace Ui
             view_effect = new View_Effect(v.Get<View>("view_effect"));
 
             /**********事件注册**********/
-            Game.RegEvent(GameEvent.Game_StateChanged, b =>
+            Game.RegEvent(GameEvent.Game_StateChanged, _ =>
             {
                 view_joystick.SetActive(IsPlaying && IsExploring);
                 Display(IsPlaying);
                 if (!IsPlaying) return;
                 view_top.UpdateLantern(Stage.Player.Lantern);
+                view_latern.SetLantern((float)Stage.Player.Firefly.ValueMaxRatio);
+                view_latern.SetHp((float)Stage.Player.Hp.ValueMaxRatio);
             });
             Game.RegEvent(GameEvent.Game_PlayMode_Update, _ => view_joystick.SetActive(IsExploring));
             Game.RegEvent(GameEvent.Player_Lantern_Update, _ =>
@@ -78,7 +80,7 @@ namespace Ui
             });
             Game.RegEvent(GameEvent.Player_Spell_Add, _ => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
             Game.RegEvent(GameEvent.Battle_Spell_Update, b => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
-            Game.RegEvent(GameEvent.Stage_StageTime_Update, _ => view_top.UpdateStageTime(Stage.Story.RemainSeconds));
+            Game.RegEvent(GameEvent.Stage_StageTime_Update, _ => view_top.UpdateStageTime(Stage.Story.Seconds));
             Game.RegEvent(GameEvent.Story_Lines_Send, b => view_storyPlayer.ShowStory(Stage.Story.StoryLines));
             Game.RegEvent(GameEvent.Story_Dialog_Send, b => view_npc.SetNpcTalk(Stage.Story.DialogLines.ToList()));
         }
