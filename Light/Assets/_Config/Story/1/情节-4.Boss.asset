@@ -19,6 +19,7 @@ MonoBehaviour:
   autoBegin: 0
   lineType: 1
   lines:
-  - "\u522B\u5BB3\u6015\uFF0C\u6211\u4F1A\u4FDD\u62A4\u4F60\u3002"
+  - "\u522B\u5BB3\u6015\uFF0C\u6211\u4F1A\u4FDD\u62A4\u4F60\u4EEC\u3002"
   nextPlots:
   - "5.\u65E0\u624B\u96F7\u7ED3\u5C401"
+  closePlots: []
