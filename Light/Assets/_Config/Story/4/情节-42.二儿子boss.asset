@@ -17,9 +17,12 @@ MonoBehaviour:
   story: {fileID: 11400000, guid: 2c57f7a8107f2e74dbe5cbba89f58df4, type: 2}
   isStoryFinalize: 0
   autoBegin: 0
-  lineType: 0
+  lineType: 1
   lines:
   - "\u606D\u559C\u4F60\uFF0C\u4F60\u505A\u4E86\u4E00\u4E2A\u9519\u8BEF\u7684\u5224\u65AD\u3002"
+  endingCode: 0
   nextPlots:
   - "43.\u5C0F\u513F\u5B50boss"
-  closePlots: []
+  closePlots:
+  - "6.\u5C0F\u513F\u5B50"
+  - "41.\u5927\u513F\u5B50boss"
