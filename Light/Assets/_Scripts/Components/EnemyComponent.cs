@@ -3,6 +3,7 @@ using System.Linq;
 using Config;
 using fight_aspect;
 using GameData;
+using GMVC.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
@@ -40,7 +41,7 @@ namespace Components
         {
             if (isInitialized) return;
             isInitialized = true;
-            attackComponent.Init(this);
+            attackComponent.Init(this, Game.BulletManager);
             //VisionActive.OnActiveEvent.AddListener(OnPlayerTriggerActive);
             nav.updateRotation = false;
             nav.enabled = true;

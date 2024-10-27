@@ -60,15 +60,6 @@ namespace Components
             var activePlots = GetActivePlots(story).ToList();
             var nextPlotNames = story.NextPlots(currentFinish);//获取下一个情节
             var nextPlots = GetFromData(story, nextPlotNames);
-            //获取需要禁用的情节
-            var disableList = GetFromData(story,
-                nextPlots.SelectMany(p => story.GetDisablePlots(p.plotName)).Distinct());
-            //禁用情节
-            foreach (var disable in disableList)
-            {
-                disable.Active(false);
-                activePlots.Remove(disable);
-            }
             activePlots.AddRange(nextPlots);//合并情节
             //string.Join(',',activePlots.Select(p=>p.plotName)).Log(this);
             currentMap[story] = activePlots.Select(p=>p.plotName).ToList();
@@ -76,6 +67,20 @@ namespace Components
             {
                 plot.Active(true);
                 plot.Begin();
+            }
+        }
+
+        public void OnInteractPlot(PlotComponentBase plot)
+        {
+            var story = plot.story;
+            DisablePlots(story.GetDisablePlots(plot.plotName));
+
+            void DisablePlots(IEnumerable<string> disablePlots)
+            {
+                //获取需要禁用的情节
+                var disableList = GetFromData(plot.story, disablePlots);
+                //禁用情节
+                foreach (var disable in disableList) disable.Active(false);
             }
         }
 

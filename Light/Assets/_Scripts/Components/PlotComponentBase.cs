@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Config;
+using EnhancedHierarchy;
 using GameData;
 using GMVC.Core;
 using GMVC.Utls;
@@ -20,6 +21,14 @@ namespace Components
             Begin,
             Finalize,
         }
+        protected enum TextMode
+        {
+            [InspectorName("情节开启")] Begin,
+            [InspectorName("情节交互")] Interaction,
+            [InspectorName("情节完成")] Finalize,
+            [InspectorName("不自动播放")] None,
+        }
+        [SerializeField, LabelText("文本播放在")] protected TextMode mode;
 
         public PlotManager PlotManager => Game.PlotManager;
         public States State { get; private set; }
@@ -46,31 +55,41 @@ namespace Components
                 }
             }
         }
-
+        protected abstract bool DisableLines { get; }
+        /// <summary>
+        /// 只可以开启一次
+        /// </summary>
         public void Begin()
         {
+            if (State != States.None) return;
             State = States.Begin;
+            if (!DisableLines && mode == TextMode.Begin) SendLines();
             OnBegin();
-            //PlotManager.SetCurrentPlot(this);
         }
         /// <summary>
         /// 开始情节，初始化并扩展控件逻辑
         /// </summary>
         protected abstract void OnBegin();
 
-        /// <summary>
-        /// 结束情节，并触发下一个情节
-        /// </summary>
-        public void Finalization()
+        public void Interaction()
         {
+            if (State != States.Begin) return;
+            PlotManager.OnInteractPlot(this);
+            if (!DisableLines && mode == TextMode.Interaction) SendLines();
+            Finalization();
+        }
+        void Finalization()
+        {
+            if (State != States.Begin) return;
             OnFinalization();
             State = States.Finalize;
+            if (!DisableLines && mode == TextMode.Finalize) SendLines();
             PlotManager.TriggerNext(this);
         }
-        public void SendLines()
+
+        protected void SendLines()
         {
             var (type, lines) = story.GetLines(plotName);
-            $"{plotName}--文本播放！".Log(this);
             PlotManager.SendLines(type, lines);
         }
         /// <summary>

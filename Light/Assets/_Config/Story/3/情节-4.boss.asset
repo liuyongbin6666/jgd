@@ -21,6 +21,8 @@ MonoBehaviour:
   lines:
   - "\u90A3\u5BB6\u4F19\u7684\u786E\u8BE5\u6B7B\uFF01"
   - "\u4F46\u4F60\u51ED\u4EC0\u4E48\u8BF4\u662F\u6211\u5E72\u7684\uFF0C\u4F60\u6709\u4EC0\u4E48\u8BC1\u636E\uFF1F"
+  endingCode: 0
   nextPlots:
   - "5.\u7ED3\u679C1"
-  closePlots: []
+  closePlots:
+  - "41.\u5200-\u51F6\u5668"

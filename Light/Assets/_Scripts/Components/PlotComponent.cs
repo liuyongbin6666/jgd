@@ -12,17 +12,10 @@ namespace Components
     /// </summary>
     public class PlotComponent : PlotComponentBase
     {
-        enum TextMode
-        {
-            [InspectorName("情节开启")]Begin,
-            [InspectorName("情节完成")]Finalize,
-            [InspectorName("不自动播放")] None
-        }
-        [SerializeField,LabelText("开始触发")]readonly UnityEvent onTrigger;
-        [SerializeField,LabelText("台词间隔秒")]float lineInterval = 1f;
         [LabelText("情节(自动)完成")]public bool IsFinalize;
-        [SerializeField,LabelText("文本播放在")] TextMode mode;
         [SerializeField,LabelText("完结奖励")]List<GameObject> Rewards;
+        protected override bool DisableLines => false;
+
         protected override void OnBegin()
         {
             StartCoroutine(BeginRoutine());
@@ -30,16 +23,14 @@ namespace Components
 
             IEnumerator BeginRoutine()
             {
-                onTrigger?.Invoke();
                 yield return null;
-                if (mode == TextMode.Begin) SendLines();
                 yield return new WaitUntil(() => IsFinalize);
-                Finalization();
+                if (State == States.Begin) Interaction();
             }
         }
+
         protected override void OnFinalization()
         {
-            if(mode == TextMode.Finalize)SendLines();
             foreach (var reward in Rewards) 
                 reward.Display(true);
         }

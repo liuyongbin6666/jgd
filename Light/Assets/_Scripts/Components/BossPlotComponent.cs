@@ -8,21 +8,28 @@ namespace Components
     /// <summary>
     /// Boss的情节控件
     /// </summary>
-    public class BossPlotComponent : PlotComponent
+    public class BossPlotComponent : PlotComponentBase
     {
         [LabelText("Boss控件")]public StoryBossComponent Boss;
-        [LabelText("Boss同步情节禁用")]public bool DisableWhenPlotInActive;
+        protected override bool DisableLines => true;
+
         protected override void OnBegin()
         {
-            base.OnBegin();
+            if (mode == TextMode.Interaction) Boss.OnSeekEvent.AddListener(SendLines);
             Boss.StoryStart(this);
+            if(mode == TextMode.Begin) SendLines();
+        }
+
+        protected override void OnFinalization()
+        {
+            if (mode == TextMode.Finalize) SendLines();
         }
 
         public override void Active(bool active)
         {
             base.Active(active);
-            if (DisableWhenPlotInActive && !active && !Boss.IsUnityNull() && !Boss.Enemy.IsUnityNull())
-                 Boss.Enemy.Display(false);
+            if (!Boss.IsUnityNull() && !Boss.Enemy.IsUnityNull()) 
+                Boss.Enemy.Display(active);
         }
     }
 }

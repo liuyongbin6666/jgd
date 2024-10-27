@@ -21,7 +21,7 @@ MonoBehaviour:
   lines:
   - "\u8BE5\u63A5\u53D7\u5BA1\u5224\u7684\u662F\u6570\u5B66\u5BB6\u624D\u5BF9\uFF01"
   - "\u6211\u53EA\u662F\u4E0A\u5E1D\u6D3E\u6765\u7684\u884C\u5211\u8005\u3002"
+  endingCode: 0
   nextPlots:
   - "61.\u7ED3\u679C2"
-  closePlots:
-  - 4.boss
+  closePlots: []

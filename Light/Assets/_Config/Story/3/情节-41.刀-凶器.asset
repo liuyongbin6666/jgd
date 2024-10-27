@@ -20,6 +20,8 @@ MonoBehaviour:
   lineType: 1
   lines:
   - "\u8FD9\u628A\u7834\u5200\u6839\u672C\u503C\u4E0D\u4E86\u591A\u5C11\u94B1\uFF0C\u5C60\u592B\u5854\u91CC\u4F11\u60F3\u8D56\u8D26\uFF01"
+  endingCode: 0
   nextPlots:
   - 51.boss
-  closePlots: []
+  closePlots:
+  - 4.boss

@@ -8,6 +8,7 @@ namespace GameData
         [InspectorName("魔法")] Spell,
         [InspectorName("魂魄")] Soul,
         [InspectorName("血药水")] Portion_HP,
+        [InspectorName("故事道具")] StoryItem,
     }
 
     public interface IGameItem

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using fight_aspect;
+using GMVC.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utls;
@@ -41,7 +42,7 @@ namespace Components
         public bool IsCdComplete=> attackComponent.IsCooldown;
         public void Init(IBattleUnit unit)
         {
-            attackComponent.Init(unit);
+            attackComponent.Init(unit, Game.BulletManager);
             attackComponent.OnCdComplete.AddListener(CDComplete);
             attackComponent.OnTargetSpotted.AddListener(TargetSpotted);
             attackComponent.OnTargetLeave.AddListener(TargetLeave);

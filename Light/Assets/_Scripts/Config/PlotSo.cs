@@ -16,7 +16,7 @@ namespace Config
              DrawDropdownForListElements = false,
              ExcludeExistingValuesInList = true),
          HideIf(nameof(isStoryFinalize), optionalValue: true),
-         LabelText("禁用情节(开启时)")]
+         LabelText("禁用情节")]
         public string[] closePlots;
         public override string[] NextPlots() => nextPlots;
         public override string[] DisablePlots() => closePlots;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Components;
 using Controller;
@@ -22,7 +23,7 @@ namespace fight_aspect
     /// </summary>
     public class AttackComponent : ColliderHandlerComponent
     {
-        public BulletManager bulletManager;
+        public BulletManager _bulletManager;
         [LabelText("攻击CD")]public float cd= 1f;
         //[SerializeField,LabelText("请选择射击方式")] BulletTracking bulletTracking;
         [SerializeField, LabelText("子弹维持时长"),ReadOnly] float bulletLasting { get; } = 3f;
@@ -36,10 +37,11 @@ namespace fight_aspect
         IBattleUnit BattleUnit { get; set; }
         bool IsInit { get; set; }
         public bool IsCooldown { get; private set; }
-        public void Init(IBattleUnit unit)
+        public void Init(IBattleUnit unit,BulletManager bulletManager)
         {
             BattleUnit = unit;
             IsInit = true;
+            _bulletManager = bulletManager;
         }
         public bool IsInRange(Transform tran) => targets.Contains(tran.gameObject);
         /// <summary>
@@ -78,7 +80,7 @@ namespace fight_aspect
         {
             var canAttack = !target.IsDeath && IsCooldown;
             if(!canAttack) return false;
-            var bullet = bulletManager.Shoot(BattleUnit, target.transform, bulletLasting);
+            var bullet = _bulletManager.Shoot(BattleUnit, target.transform, bulletLasting);
             if (bullet) RestartCD();
             return bullet;
         }
