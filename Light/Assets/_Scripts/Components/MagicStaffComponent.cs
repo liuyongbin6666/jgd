@@ -24,7 +24,7 @@ namespace Components
             try
             {
                 if (t.IsUnityNull()) return false;
-                return  t.gameObject&& !t.IsDeath;
+                return  t.transform&& !t.IsDeath;
             }
             catch (Exception e)
             {

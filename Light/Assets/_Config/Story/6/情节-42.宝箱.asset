@@ -19,7 +19,8 @@ MonoBehaviour:
   autoBegin: 0
   lineType: 0
   lines:
-  - "\u5B9D\u7BB1"
+  - "\u8FD9\u662F\u53EA\u4E00\u4E2A\u7A7A\u7BB1\u5B50\u3002"
+  - "\u4F46\u6211\u5374\u77E5\u9053\u8FD9\u4E2A\u7BB1\u5B50\u7684\u4E3B\u4EBA\uFF0C\u6B63\u662F\u76D7\u5723\u5510\u514B\u591A\u3002"
   nextPlots:
   - 5.boss
   closePlots: []

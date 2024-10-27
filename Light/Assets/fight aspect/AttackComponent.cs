@@ -13,7 +13,6 @@ namespace fight_aspect
     public interface IBattleUnit
     {
         bool IsDeath { get; }
-        GameObject gameObject { get; }
         Transform transform { get; }
         void BulletImpact(BulletComponent bullet);
         Spell CastSpell();
@@ -79,7 +78,7 @@ namespace fight_aspect
         {
             var canAttack = !target.IsDeath && IsCooldown;
             if(!canAttack) return false;
-            var bullet = bulletManager.Shoot(BattleUnit, target.gameObject, bulletLasting);
+            var bullet = bulletManager.Shoot(BattleUnit, target.transform, bulletLasting);
             if (bullet) RestartCD();
             return bullet;
         }
