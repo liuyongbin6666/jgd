@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31daef8934550cb42afc812f0c0a10a7, type: 3}
+  m_Name: "\u60C5\u8282-6.\u91D1\u5E01"
+  m_EditorClassIdentifier: 
+  referenceSo: {fileID: 11400000}
+  _name: "6.\u91D1\u5E01"
+  story: {fileID: 11400000, guid: 628e9890976304a46baa7781ae47e9dc, type: 2}
+  isStoryFinalize: 0
+  autoBegin: 0
+  lineType: 0
+  lines:
+  - "\u54C8\u54C8\uFF01\u771F\u6709\u91D1\u5E01\uFF0C\u4F60\u522B\u78B0\u5B83\u5C5E\u4E8E\u662F\u6211\u7684\uFF01\uFF01\uFF01\uFF01"
+  nextPlots:
+  - 7.boss
+  closePlots: []

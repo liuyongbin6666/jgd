@@ -66,5 +66,7 @@ namespace Config
             }
             return plot.Name;
         }
+
+        public string[] GetDisablePlots(string plotName) => GetPlot(plotName).DisablePlots();
     }
 }

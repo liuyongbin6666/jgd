@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Config;
 using GameData;
 using GMVC.Core;
+using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utls;
@@ -76,5 +77,6 @@ namespace Components
         /// </summary>
         protected abstract void OnFinalization();
         public bool IsCurrentState() => PlotManager.IsCurrentPlot(this);
+        public virtual void Active(bool active) => this.Display(active);
     }
 }

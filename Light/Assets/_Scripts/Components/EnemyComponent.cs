@@ -6,6 +6,7 @@ using GameData;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 namespace Components
 {
@@ -28,7 +29,7 @@ namespace Components
         public Spell CastSpell() => SpellSo.GetSpell(SpellName).Value;
         public IBattleUnit Target { get; private set; }
         [LabelText("强制不移动")] public bool StopMove; // 用于强制停止移动
-       
+        public readonly UnityEvent OnDeathEvent = new();
 
         IGameUnitState currentState;
         bool isInitialized;
@@ -99,10 +100,9 @@ namespace Components
             var direction = bullet.ImpactDirection(transform);
             rb3D.AddForce(direction * sp.force, ForceMode.Impulse);
             HP -= bullet.Spell.Damage;
-            if (HP <= 0)
-            {
-                SwitchState(new EnemyDeadState(this));
-            }
+            if (HP > 0) return;
+            SwitchState(new EnemyDeadState(this));
+            OnDeathEvent.Invoke();
         }
 
         public void ResetCD() => attackComponent.RestartCD();

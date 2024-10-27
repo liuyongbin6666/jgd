@@ -21,4 +21,5 @@ MonoBehaviour:
   lines:
   - "\u4E00\u5B9A\u8981\u627E\u5230\u51F6\u624B\uFF0C\u5426\u5219\u6211\u6B7B\u4E0D\u7791\u76EE\uFF01"
   nextPlots:
-  - 4.boss
+  - "4.\u4E09\u90091"
+  closePlots: []

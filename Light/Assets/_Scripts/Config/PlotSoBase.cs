@@ -18,6 +18,7 @@ namespace Config
         [LabelText("文本类型")] public StageStory.Lines lineType;
         [TextArea,LabelText("台词")] public string[] lines;
         public abstract string[] NextPlots();
+        public abstract string[] DisablePlots();
         void RegStory() => story?.RegPlot(this);
         public void RemoveStory() => story = null;
         // 你可以在这里添加更多的配置项，例如触发条件的参数

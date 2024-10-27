@@ -5,6 +5,7 @@ using GameData;
 using GMVC.Utls;
 using UnityEngine;
 using UnityEngine.Events;
+using Utls;
 
 namespace Components
 {
@@ -34,7 +35,7 @@ namespace Components
         }
         public void UnRegComponent(PlotComponentBase plot)
         {
-            if (data.ContainsKey(plot.story)) data[plot.story].Remove(plot);
+            if (data.TryGetValue(plot.story, out var com)) com.Remove(plot);
         }
         public void TriggerNext(PlotComponentBase com)
         {
@@ -42,10 +43,10 @@ namespace Components
             if (!data.TryGetValue(story, out var list)) return;
             var currentFinish = com.plotName;
             var storyEnd = story.IsStoryEnd(currentFinish);
-            com.Display(false);
+            com.Active(false);
             if (storyEnd)
             {
-                foreach (var plot in list) plot.Display(false);
+                foreach (var plot in list) plot.Active(false);
                 currentMap[story].Clear();//剧情结束，清空当前情节
                 return;
             }
@@ -54,14 +55,28 @@ namespace Components
             //获取当前仍未结束的情节
             var activePlots = GetActivePlots(story).ToList();
             var nextPlotNames = story.NextPlots(currentFinish);//获取下一个情节
-            activePlots.AddRange(data[story].Join(nextPlotNames, p => p.plotName, n => n, (p, _) => p));//合并情节
+            var nextPlots = GetFromData(story, nextPlotNames);
+            //获取需要禁用的情节
+            var disableList = GetFromData(story,
+                nextPlots.SelectMany(p => story.GetDisablePlots(p.plotName)).Distinct());
+            //禁用情节
+            foreach (var disable in disableList)
+            {
+                disable.Active(false);
+                activePlots.Remove(disable);
+            }
+            activePlots.AddRange(nextPlots);//合并情节
+            //string.Join(',',activePlots.Select(p=>p.plotName)).Log(this);
             currentMap[story] = activePlots.Select(p=>p.plotName).ToList();
             foreach (var plot in activePlots)
             {
-                plot.Display(true);
+                plot.Active(true);
                 plot.Begin();
             }
         }
+
+        PlotComponentBase[] GetFromData(StorySo story, IEnumerable<string> nextPlotNames) =>
+            data[story].Join(nextPlotNames, p => p.plotName, n => n, (p, _) => p).ToArray();
 
         IEnumerable<PlotComponentBase> GetActivePlots(StorySo story)
         {

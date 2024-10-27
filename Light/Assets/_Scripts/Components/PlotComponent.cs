@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,6 +22,7 @@ namespace Components
         [SerializeField,LabelText("台词间隔秒")]float lineInterval = 1f;
         [LabelText("情节(自动)完成")]public bool IsFinalize;
         [SerializeField,LabelText("文本播放在")] TextMode mode;
+        [SerializeField,LabelText("完结奖励")]List<GameObject> Rewards;
         protected override void OnBegin()
         {
             StartCoroutine(BeginRoutine());
@@ -37,6 +40,8 @@ namespace Components
         protected override void OnFinalization()
         {
             if(mode == TextMode.Finalize)SendLines();
+            foreach (var reward in Rewards) 
+                reward.Display(true);
         }
     }
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31daef8934550cb42afc812f0c0a10a7, type: 3}
+  m_Name: "\u60C5\u8282-61.\u7ED3\u5C402"
+  m_EditorClassIdentifier: 
+  referenceSo: {fileID: 11400000}
+  _name: "61.\u7ED3\u5C402"
+  story: {fileID: 11400000, guid: 07f1b33f36f3da64b90306d212a18ca6, type: 2}
+  isStoryFinalize: 1
+  autoBegin: 0
+  lineType: 1
+  lines:
+  - "\u7ED3\u5C402"
+  nextPlots: []

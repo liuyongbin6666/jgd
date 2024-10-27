@@ -21,4 +21,5 @@ MonoBehaviour:
   lines:
   - "\u8BE5\u63A5\u53D7\u5BA1\u5224\u7684\u662F\u6570\u5B66\u5BB6\u624D\u5BF9\uFF01"
   nextPlots:
-  - "5.\u7ED3\u675F"
+  - "5.\u7ED3\u679C1"
+  closePlots: []
