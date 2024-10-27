@@ -17,6 +17,7 @@ namespace Config
         [LabelText("自动开启")]public bool autoBegin;
         [LabelText("文本类型")] public StageStory.Lines lineType;
         [TextArea,LabelText("台词")] public string[] lines;
+        [ShowIf(nameof(isStoryFinalize)),LabelText("结局标记，0:一般是好结局,魂魄会升天")]public int endingCode;
         public abstract string[] NextPlots();
         public abstract string[] DisablePlots();
         void RegStory() => story?.RegPlot(this);

@@ -68,5 +68,13 @@ namespace Config
         }
 
         public string[] GetDisablePlots(string plotName) => GetPlot(plotName).DisablePlots();
+
+        public int GetEndingCode(string plotName)
+        {
+            var plot = GetPlot(plotName);
+            if (!plot.isStoryFinalize)
+                throw new NotImplementedException($"{name}.{nameof(GetEndingCode)}:当前情节非结束！{plotName}");
+            return plot.endingCode;
+        }
     }
 }

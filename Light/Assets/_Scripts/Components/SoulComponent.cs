@@ -1,31 +1,54 @@
 using Components;
+using Config;
 using GameData;
 using Sirenix.OdinInspector;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using Config;
 using UnityEngine;
+using DG.Tweening;
+using GMVC.Utls;
 
 public class SoulComponent : GameItemBase
 {
     [LabelText("故事")] public PlotComponentBase PlotComponent;
-    [ReadOnly]public Transform playerTransform;
-    [ReadOnly]public Transform targetPlotTransform; // 下一个故事点的 Transform
-    [LabelText("环绕半径")]public float orbitRadius = 2f; // 环绕半径
-    [LabelText("环绕速度/秒")]public float orbitSpeed = 30f; // 环绕速度（角速度，度/秒）
-    [LabelText("环绕角度随机范围")]public float angleOffsetRange = 30f; // 环绕角度的随机偏移范围
-    [LabelText("朝向目标方向的偏向程度"),Range(0.5f,1)]public float directionBias = 0.9f; // 朝向目标方向的偏向程度（0-1）
+    public Renderer Renderer;
+    [ReadOnly] public Transform playerTransform;
+    [ReadOnly] public Transform targetPlotTransform; // 当前目标情节的 Transform
+    [LabelText("环绕半径")] public float orbitRadius = 2f; // 环绕半径
+    [LabelText("环绕速度/秒")] public float orbitSpeed = 30f; // 环绕速度（角速度，度/秒）
+    [LabelText("环绕角度随机范围")] public float angleOffsetRange = 30f; // 环绕角度的随机偏移范围
+    [LabelText("朝向目标方向的偏向程度"), Range(0.5f, 1)] public float directionBias = 0.9f; // 朝向目标方向的偏向程度（0-1）
+    public bool InteractionDisable;
 
     public override GameItemType Type => GameItemType.Soul;
 
     float currentAngle;
     bool isGuiding = false;
+    string overridePlotName = null; // 用于存储外部指定的情节名称
+    [ReadOnly] public PlotComponentBase guidePlot; // 当前引导的情节
+
+    bool isAscending = false;
 
     public override void Invoke(PlayableUnit player)
     {
+        if (InteractionDisable) return;
+        InteractionDisable = true;
+        PlotComponent.RegOnNextGuideChange(GuideChange);
+        PlotComponent.RegStoryEnd(StoryEnding);
         playerTransform = player.PlayerControl.transform;
         StartCoroutine(StoryGuide());
+    }
+
+    void StoryEnding(StorySo story,int endingCode)
+    {
+        if (story != PlotComponent.story) return;
+        var isBadEnding = endingCode != 0;
+        if (isBadEnding)
+        {
+            this.Display(false);
+            return;
+        }
+        AscendToHeaven();
     }
 
     IEnumerator StoryGuide()
@@ -36,15 +59,26 @@ public class SoulComponent : GameItemBase
 
         while (!string.IsNullOrWhiteSpace(currentPlotName) || !story.IsStoryEnd(currentPlotName))
         {
-            nextPlots = GetNextPlots(story);
-            var nextPlot = nextPlots.FirstOrDefault();
-
-            if (nextPlot != null)
+            // 检查是否有外部指定的情节
+            if (!string.IsNullOrEmpty(overridePlotName))
             {
-                targetPlotTransform = nextPlot.transform;
+                // 使用指定的情节作为目标
+                guidePlot = PlotComponent.PlotManager.FindPlotByName(story, overridePlotName);
+                overridePlotName = null; // 重置变量
+            }
+            else
+            {
+                // 获取下一个情节
+                nextPlots = GetNextPlots(story);
+                guidePlot = nextPlots.FirstOrDefault();
+            }
+
+            if (guidePlot != null)
+            {
+                targetPlotTransform = guidePlot.transform;
                 isGuiding = true;
 
-                // 计算灵魂导游与玩家和目标位置的初始角度
+                // 计算初始角度
                 var toTarget = targetPlotTransform.position - playerTransform.position;
                 var targetAngle = Mathf.Atan2(toTarget.z, toTarget.x) * Mathf.Rad2Deg;
 
@@ -53,18 +87,35 @@ public class SoulComponent : GameItemBase
                 currentAngle = targetAngle + angleOffset;
 
                 // 开始引导
-                while (nextPlot.State != PlotComponentBase.States.Finalize)
+                while (guidePlot is not { State:PlotComponentBase.States.Finalize })
                 {
+                    // 检查是否有新的外部指定情节
+                    if (!string.IsNullOrEmpty(overridePlotName))
+                    {
+                        // 退出当前引导，重新开始循环以更新目标
+                        break;
+                    }
+
                     OrbitTowardsTarget();
                     yield return null;
                 }
 
                 isGuiding = false;
+
+                // 更新当前情节名称
+                currentPlotName = guidePlot.plotName;
+            }
+            else
+            {
+                // 没有找到下一个情节，跳出循环
+                break;
             }
 
-            currentPlotName = nextPlot?.plotName ?? string.Empty;
             yield return null;
         }
+
+        // 在引导流程结束后，触发升天效果
+        AscendToHeaven();
     }
 
     PlotComponentBase[] GetNextPlots(StorySo story)
@@ -77,10 +128,13 @@ public class SoulComponent : GameItemBase
 
     void OrbitTowardsTarget()
     {
+        if (playerTransform == null || targetPlotTransform == null || isAscending)
+            return;
+
         // 更新角度，使灵魂导游围绕玩家旋转，并逐渐朝向目标方向
         var targetAngle = GetAngleToTarget();
-        currentAngle = Mathf.LerpAngle(currentAngle, targetAngle, directionBias * Time.deltaTime);//逐渐将 currentAngle 插值到 targetAngle，控制灵魂导游朝向目标方向的速度。
-        currentAngle += orbitSpeed * Time.deltaTime; //添加环绕的角速度，使灵魂导游绕着玩家旋转。
+        currentAngle = Mathf.LerpAngle(currentAngle, targetAngle, directionBias * Time.deltaTime);
+        currentAngle += orbitSpeed * Time.deltaTime;
         currentAngle %= 360f; // 确保角度在 0-360 度之间
 
         // 计算灵魂导游在圆周上的位置
@@ -92,14 +146,69 @@ public class SoulComponent : GameItemBase
         // 设置灵魂导游的位置
         transform.position = orbitPosition;
     }
-    // 计算玩家到目标位置的角度。
+
+    // 计算玩家到目标位置的角度
     float GetAngleToTarget()
     {
-        if (targetPlotTransform == null)
+        if (targetPlotTransform == null || playerTransform == null)
             return currentAngle;
 
         var toTarget = targetPlotTransform.position - playerTransform.position;
         var angle = Mathf.Atan2(toTarget.z, toTarget.x) * Mathf.Rad2Deg;
         return angle;
+    }
+
+    // 设置新的目标情节
+    void GuideChange(string plotName) => overridePlotName = plotName;
+
+    // 停止引导
+    public void StopGuiding()
+    {
+        overridePlotName = null;
+        isGuiding = false;
+        targetPlotTransform = null;
+        guidePlot = null;
+    }
+
+    // 添加魂魄升天的功能
+    void AscendToHeaven()
+    {
+        if (isAscending) return; // 防止重复调用
+        isAscending = true;
+
+        // 停止引导
+        StopGuiding();
+
+        // 设置升天动画持续时间
+        var duration = 4f;
+
+        // 上升的距离
+        var ascentHeight = 3f;
+
+        // 上升动画
+        transform.DOMoveY(transform.position.y + ascentHeight, duration).SetEase(Ease.OutCubic);
+
+        // 淡出动画
+        if (Renderer)
+        {
+            // 获取初始 Alpha 值
+            var initialAlpha = Renderer.material.GetFloat("_Alpha");
+            // 开始渐变动画
+            DOTween.To(() => initialAlpha, x => {
+                initialAlpha = x;
+                Renderer.material.SetFloat("_Alpha", initialAlpha);
+            }, 0f, duration).OnComplete(() => {
+                // 动画完成后，销毁对象
+                this.Display(false);
+            });
+        }
+        else
+        {
+            // 如果未找到材质，直接在动画完成后销毁对象
+            DOVirtual.DelayedCall(duration, () => {
+                Destroy(gameObject);
+                this.Display(false);
+            });
+        }
     }
 }

@@ -7,6 +7,7 @@ using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 using Utls;
 
 namespace Components
@@ -78,5 +79,11 @@ namespace Components
         protected abstract void OnFinalization();
         public bool IsCurrentState() => PlotManager.IsCurrentPlot(this);
         public virtual void Active(bool active) => this.Display(active);
+
+        public void RegOnNextGuideChange(UnityAction<string> targetPlot) =>
+            PlotManager.OnOverrideGuide.AddListener(targetPlot);
+
+        public void RegStoryEnd(UnityAction<StorySo, int> storyEnding) =>
+            PlotManager.OnStoryEnd.AddListener(storyEnding);
     }
 }

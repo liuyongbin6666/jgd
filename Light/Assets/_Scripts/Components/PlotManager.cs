@@ -16,9 +16,11 @@ namespace Components
     {
         readonly Dictionary<StorySo, List<PlotComponentBase>> data = new();
         public readonly UnityEvent<StageStory.Lines, string[]> OnLinesEvent = new();
+
+        public readonly UnityEvent<StorySo,int> OnStoryEnd = new();
         //public readonly UnityEvent<PlotComponentBase> OnPlotBegin = new();
         Dictionary<StorySo, List<string>> currentMap = new();//当前情节,如果剧情结束是空的
-
+        public readonly UnityEvent<string> OnOverrideGuide = new();
         public void Init(StorySo[] stories)
         {
             foreach (var story in stories)
@@ -46,8 +48,10 @@ namespace Components
             com.Active(false);
             if (storyEnd)
             {
+                var code = story.GetEndingCode(currentFinish);
                 foreach (var plot in list) plot.Active(false);
                 currentMap[story].Clear();//剧情结束，清空当前情节
+                OnStoryEnd.Invoke(story, code);
                 return;
             }
             //移除当前情节
@@ -75,8 +79,8 @@ namespace Components
             }
         }
 
-        PlotComponentBase[] GetFromData(StorySo story, IEnumerable<string> nextPlotNames) =>
-            data[story].Join(nextPlotNames, p => p.plotName, n => n, (p, _) => p).ToArray();
+        PlotComponentBase[] GetFromData(StorySo story, IEnumerable<string> plotNames) =>
+            data[story].Join(plotNames, p => p.plotName, n => n, (p, _) => p).ToArray();
 
         IEnumerable<PlotComponentBase> GetActivePlots(StorySo story)
         {
@@ -102,5 +106,10 @@ namespace Components
 
         public IEnumerable<string> GetCurrentPlotNames(StorySo story) => currentMap[story];
         public bool IsStoryFinalized(StorySo story)=> currentMap[story] is null;
+
+        public PlotComponentBase FindPlotByName(StorySo story, string plotName) =>
+            GetFromData(story, new[] { plotName }).FirstOrDefault();
+
+        public void OverrideGuide(string plotName) => OnOverrideGuide.Invoke(plotName);
     }
 }
