@@ -3,6 +3,7 @@ using GameData;
 using GMVC.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utls;
 
 namespace Components
 {
@@ -16,7 +17,13 @@ namespace Components
         protected override SensorSoBase SensorSo => sensorSo;
         protected override SensorManager SensorManager => Game.SensorManager;
         bool IsPlayerReaching { get; set; }
-        protected override void OnSensorInit() => handler.RegEnter(CheckIfPlayer);
+        protected override void OnSensorInit()
+        {
+            if(handler.IsUnityNull())
+                "Handler is null".Log(this);
+            handler.RegEnter(CheckIfPlayer);
+        }
+
         void CheckIfPlayer(GameObject obj) =>
             IsPlayerReaching = plotComponent.IsCurrentState() && obj.CompareTag(GameTag.Player);
 
