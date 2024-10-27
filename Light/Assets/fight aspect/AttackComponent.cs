@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Components;
 using Controller;
 using GameData;
+using GMVC.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,7 +24,7 @@ namespace fight_aspect
     /// </summary>
     public class AttackComponent : ColliderHandlerComponent
     {
-        public BulletManager _bulletManager;
+        public BulletManager _bulletManager => Game.BulletManager;
         [LabelText("攻击CD")]public float cd= 1f;
         //[SerializeField,LabelText("请选择射击方式")] BulletTracking bulletTracking;
         [SerializeField, LabelText("子弹维持时长"),ReadOnly] float bulletLasting { get; } = 3f;
@@ -37,11 +38,10 @@ namespace fight_aspect
         IBattleUnit BattleUnit { get; set; }
         bool IsInit { get; set; }
         public bool IsCooldown { get; private set; }
-        public void Init(IBattleUnit unit,BulletManager bulletManager)
+        public void Init(IBattleUnit unit)
         {
             BattleUnit = unit;
             IsInit = true;
-            _bulletManager = bulletManager;
         }
         public bool IsInRange(Transform tran) => targets.Contains(tran.gameObject);
         /// <summary>

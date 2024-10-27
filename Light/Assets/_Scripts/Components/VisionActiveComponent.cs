@@ -8,7 +8,7 @@ namespace Components
     /// </summary>
     [RequireComponent(typeof(Collider))]public class VisionActiveComponent : MonoBehaviour
     {
-        [SerializeField] SpriteRenderer renderer;
+        public SpriteRenderer renderer;
         public readonly UnityEvent<bool> OnActiveEvent = new();
         // 用于设置材质中布尔值的方法
         public void SetActive(bool value)

@@ -42,7 +42,7 @@ namespace Components
         public bool IsCdComplete=> attackComponent.IsCooldown;
         public void Init(IBattleUnit unit)
         {
-            attackComponent.Init(unit, Game.BulletManager);
+            attackComponent.Init(unit);
             attackComponent.OnCdComplete.AddListener(CDComplete);
             attackComponent.OnTargetSpotted.AddListener(TargetSpotted);
             attackComponent.OnTargetLeave.AddListener(TargetLeave);

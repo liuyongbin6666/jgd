@@ -8,6 +8,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using Utls;
 
 namespace Components
 {
@@ -21,6 +22,8 @@ namespace Components
         [SerializeField] public NavMeshAgent nav;
         [SerializeField] public AttackComponent attackComponent;
         [SerializeField] public VisionActiveComponent VisionActive;
+        [SerializeField] public Transform eye_L;
+        [SerializeField] public Transform eye_R;
         [SerializeField] public Rigidbody rb3D;
         [SerializeField] Animator anim; // 添加 Animator 组件
         [SerializeField, LabelText("血量")] public int HP = 10;
@@ -41,7 +44,7 @@ namespace Components
         {
             if (isInitialized) return;
             isInitialized = true;
-            attackComponent.Init(this, Game.BulletManager);
+            attackComponent.Init(this);
             //VisionActive.OnActiveEvent.AddListener(OnPlayerTriggerActive);
             nav.updateRotation = false;
             nav.enabled = true;
@@ -88,6 +91,13 @@ namespace Components
             //    target = null;
             //    SwitchState(new EnemyIdleState(this));
             //}
+        }
+
+        public void TryAttack()
+        {
+            if (Target.IsUnityNull() || Target == null || !attackComponent.IsCooldown) return;
+            if (!attackComponent.IsInRange(Target.transform)) return;
+            attackComponent.Attack(Target);
         }
 
         // 设置速度

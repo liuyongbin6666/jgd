@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using GMVC.Utls;
 using UnityEngine;
 using Utls;
 
@@ -64,6 +65,10 @@ namespace Components
             }
             else
             {
+                var flipX = enemy.Target.transform.position.x < enemy.transform.position.x;
+                enemy.eye_R.Display(!flipX);
+                enemy.eye_L.Display(flipX);
+                enemy.VisionActive.renderer.flipX = flipX;
                 enemy.nav.SetDestination(enemy.Target.transform.position);
             }
 
@@ -95,7 +100,6 @@ namespace Components
         {
             // 进入攻击状态的逻辑
             enemy.nav.isStopped = true;
-            enemy.PlayAnimation(IGameUnitState.Anims.Attack);
             isAttacking = false;
         }
 
@@ -115,7 +119,8 @@ namespace Components
             if (!isAttacking)
             {
                 isAttacking = true;
-                enemy.attackComponent.Attack(enemy.Target);
+                enemy.PlayAnimation(IGameUnitState.Anims.Attack);
+                //enemy.attackComponent.Attack(enemy.Target);
             }
             if (attackDelay <= 0)
             {
