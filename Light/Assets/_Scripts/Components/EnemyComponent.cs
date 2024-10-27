@@ -92,7 +92,7 @@ namespace Components
         // 设置速度
         public void SetSpeed(float speed) => nav.speed = speed;
 
-        public bool IsDeath => HP <= 0;
+        public bool IsDeath => HP <= 0 && gameObject.activeSelf;
 
         public void BulletImpact(BulletComponent bullet)
         {

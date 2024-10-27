@@ -80,7 +80,6 @@ namespace GameData
 
         //战斗
         public const string Battle_Spell_On_Player = "Battle_Spell_On_Player"; //战斗法术对玩家伤害
-        public const string Battle_Spell_Finish = "Battle_Spell_Finish"; //战斗法术消耗完毕
         public const string Battle_Spell_Update= "Battle_Spell_Update";//战斗法术释放
         public const string Battle_Skeleton_Death = "Battle_Skeleton_Death"; // 战斗单位死亡
 

@@ -28,7 +28,7 @@ namespace GameData
         Player Player { get; }
         public ConValue Hp => Player.Hp;
         public ConValue Firefly => Player.Firefly;
-        public List<Spell> Spells => Player.Spells;
+        public List<Magic> Magics => Player.Magics;
         public int SelectedSpellIndex => Player.SpellIndex;
 
         public PlayableUnit(Player player,PlayerControlComponent playerControl)
@@ -105,17 +105,16 @@ namespace GameData
 
         public void Move(Vector3 direction) => PlayerControl.axisMovement = direction.ToXY();
         public void Enable(bool enable) => PlayerControl.Display(enable);
-
         Spell CastSpell()
         {
             //如果没有选择法术，就使用默认法术
             if (SelectedSpellIndex < 0) return Game.DefaultSpell;
             //特殊法术，需要发送事件
             var spellIndex = SelectedSpellIndex;
-            Player.CastSpell(spellIndex, out bool isFinish, out var remain, out var max);
-            if (isFinish) SendEvent(GameEvent.Battle_Spell_Finish, spellIndex);
-            else SendEvent(GameEvent.Battle_Spell_Update, spellIndex, remain, max);
-            return Player.CurrentSpell;
+            Log($"法术索引 = {spellIndex}");
+            var spell = Player.CastSpell(spellIndex);
+            SendEvent(GameEvent.Battle_Spell_Update);
+            return spell;
         }
 
         public void AddSpell(Spell spell, int times)
@@ -138,7 +137,7 @@ namespace GameData
     {
         public ConValue Hp { get; }
         public ConValue Firefly { get; }
-        List<Magic> Magics { get; } = new();
+        public List<Magic> Magics { get; } = new();
         /// <summary>
         /// -1 = 没有法术
         /// </summary>
@@ -146,22 +145,17 @@ namespace GameData
         int _selectedSpellIndex;
         int CurrentSpellIndex()
         {
-            for (var i = 0; i < Magics.Count; i++)// 选择第一个有次数的法术
+            _selectedSpellIndex = Mathf.Clamp(_selectedSpellIndex, -1, Magics.Count - 1);
+            if(Magics.All(m=>m.Times <=0)) _selectedSpellIndex = -1;
+            else if (_selectedSpellIndex < 0 || Magics[_selectedSpellIndex].Times <= 0)
             {
-                var magic = Magics[i];
-                if (_selectedSpellIndex < 0 && magic.Times > 0)
-                {
-                    _selectedSpellIndex = i;
-                    return _selectedSpellIndex;
-                }
-                if (_selectedSpellIndex == i && magic.Times > 0) return _selectedSpellIndex;
+                var magic = Magics.Select((m, index) => new { index, m }).FirstOrDefault(m => m.m.Times > 0);
+                _selectedSpellIndex = magic?.index ?? -1;
             }
-            _selectedSpellIndex = -1;
             return _selectedSpellIndex;
         }
         public List<Spell> Spells => Magics.Where(m => m.Times > 0).Select(s => s.Spell).ToList();
         public bool IsDeath => Hp.IsExhausted;
-        public Spell CurrentSpell => Magics[_selectedSpellIndex].Spell;
 
         public Player(ConValue hp, ConValue firefly)
         {
@@ -193,38 +187,40 @@ namespace GameData
             Magics[index].SetMax();
             return (Magics[index].Times, Magics[index].Max);
         }
-        public void CastSpell(int spellIndex, out bool isFinish, out int remain, out int max)
+        public Spell CastSpell(int spellIndex)
         {
-            var spell = Magics[spellIndex];
-            isFinish = spell.Cast();
-            remain = spell.Times;
-            max = spell.Max;
+            var magic = Magics[spellIndex];
+            magic.Cast();
+            return magic.Spell;
         }
         public void SelectSpell(int index) => _selectedSpellIndex = index;
 
-        class Magic
-        {
-            public Spell Spell { get; }
-            public int Max { get; }
-            public int Times { get; private set; }
-            public void AddTimes(int times) => Times += times;
-            public bool Cast()
-            {
-                --Times;
-                Times = Math.Max(0, Times);
-                //返回是否消耗完
-                return Times <= 0;
-            }
+    }
+    public class Magic
+    {
+        public Spell Spell { get; }
+        public int Max { get; }
+        public int Times { get; private set; }
+        public void AddTimes(int times) => Times += times;
 
-            public Magic(Spell spell, int times)
-            {
-                Spell = spell;
-                Max = Times = times;
-            }
-            public void SetMax() => Times = Max;
+        public bool Cast()
+        {
+            --Times;
+            Times = Math.Max(0, Times);
+            //返回是否消耗完
+            return Times <= 0;
         }
 
+        public Magic(Spell spell, int times)
+        {
+            Spell = spell;
+            Max = Times = times;
+        }
+
+        public void SetMax() => Times = Max;
+        public override string ToString() => $"{Spell.SpellName} = {Times}";
     }
+
     /// <summary>
     /// 法术
     /// </summary>

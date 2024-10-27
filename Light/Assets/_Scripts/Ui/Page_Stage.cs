@@ -76,16 +76,8 @@ namespace Ui
                 view_latern.SetPanic(1f * remain / max);
                 view_effect.PlayPanic();
             });
-            Game.RegEvent(GameEvent.Player_Spell_Add, _ => view_latern.SetSpell(Stage.Player.Spells));
-            Game.RegEvent(GameEvent.Battle_Spell_Finish, b => view_latern.SpellRemoveAt(b.Get<int>(0)));
-            Game.RegEvent(GameEvent.Battle_Spell_Update, b =>
-            {
-                var index = b.Get<int>(0);
-                var remain = b.Get<int>(1);
-                var max = b.Get<int>(2);
-                view_latern.SpellUpdate(index, 1f * remain / max);
-                view_latern.SetSelected(Stage.Player.SelectedSpellIndex);
-            });
+            Game.RegEvent(GameEvent.Player_Spell_Add, _ => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
+            Game.RegEvent(GameEvent.Battle_Spell_Update, b => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
             Game.RegEvent(GameEvent.Stage_StageTime_Update, _ => view_top.UpdateStageTime(Stage.Story.RemainSeconds));
             Game.RegEvent(GameEvent.Story_Lines_Send, b => view_storyPlayer.ShowStory(Stage.Story.StoryLines));
             Game.RegEvent(GameEvent.Story_Dialog_Send, b => view_npc.SetNpcTalk(Stage.Story.DialogLines.ToList()));
@@ -290,14 +282,7 @@ namespace Ui
             public void SetLantern(float value) => view_condition.SetLantern(value);
             public void SetHp(float value) => view_condition.SetHp(value);
             public void SetPanic(float value) => view_condition.SetPanic(value);
-            public void SpellUpdate(int index, float remain) => SpellList.List[index].SetValue(remain);
-            public void SpellRemoveAt(int index)
-            {
-                var ui = SpellList.List[index];
-                SpellList.Remove(ui);
-                ui.Destroy();
-            }
-            public void SetSelected(int index)
+            void SetSelected(int index)
             {
                 for (var i = 0; i < SpellList.List.Count; i++)
                 {
@@ -305,17 +290,20 @@ namespace Ui
                     ui.SetSelected(index == i);
                 }
             }
-            public void SetSpell(List<Spell> spells)
+            public void SetSpell(List<Magic> magics,int selected)
             {
                 SpellList.ClearList(u=>u.Destroy());
-                for (int i = 0; i < spells.Count; i++)
+                for (int i = 0; i < magics.Count; i++)
                 {
-                    var spell = spells[i];
+                    var magic = magics[i];
+                    if (magic.Times <= 0) continue;
+                    var spell = magic.Spell;
                     var index = i;
                     var ui = SpellList.Instance(v => new Prefab_Spell(v, () => OnSpellAction?.Invoke(index)));
                     ui.SetImage(Game.Config.SpellSo.GetSprite(spell.SpellName));
-                    ui.SetValue(1);
+                    ui.SetValue(1f * magic.Times / magic.Max);
                 }
+                SetSelected(selected);
             }
             class Prefab_Spell : UiBase
             {
