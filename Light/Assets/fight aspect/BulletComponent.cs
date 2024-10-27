@@ -41,7 +41,7 @@ namespace fight_aspect
             base.OnGameInit();
         }
 
-        public void Set(IBattleUnit owner, GameObject target,
+        public void Set(IBattleUnit owner, Transform target,
             float lasting)
         {
             SetTargetTag(target.tag);
@@ -147,8 +147,9 @@ namespace fight_aspect
             if (Target && handler.root != Target.gameObject) // 如果已经有目标，且不是当前目标继续等待真正的目标
                 return;
             var unit = handler.root.GetComponent<IBattleUnit>();
-            unit.BulletImpact(this);
-            foreach (var target in _rangeTargets) 
+            //unit.BulletImpact(this);
+            var units = _rangeTargets.Concat(new[] { unit }).Distinct().ToArray();
+            foreach (var target in units) 
                 target.BulletImpact(this);
             StartExplosion();
         }

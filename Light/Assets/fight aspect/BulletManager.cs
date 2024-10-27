@@ -35,7 +35,7 @@ namespace fight_aspect
             return bullet;
         }
         #endregion
-        public BulletComponent Shoot(IBattleUnit owner, GameObject target, float lasting)
+        public BulletComponent Shoot(IBattleUnit owner, Transform target, float lasting)
         {
             if (owner == null || !target) return null;
             var bullet = pool.Get();

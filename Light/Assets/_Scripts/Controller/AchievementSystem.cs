@@ -41,7 +41,10 @@ namespace Controller
         {
             SkeletonDeathCount++;
             if(SkeletonDeathCount==_skeletonDeathCountReach)
+            {
                 OnSkeletonDeathCountReach?.Invoke(SkeletonDeathCount);
+                $"成就：当前骷髅记录！ {_skeletonDeathCountReach}!".Log(this);
+            }
         }
     }
 }
