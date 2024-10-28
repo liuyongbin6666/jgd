@@ -48,7 +48,7 @@ namespace Config
 
         PlotSoBase GetPlot(string plotName)
         {
-            var plot = plots.FirstOrDefault(p => p.Name == plotName);
+            var plot = plots.FirstOrDefault(p => p.Name.Equals(plotName));
             if (!plot) throw new NotImplementedException($"{name}:找不到剧情：{plotName}");
             return plot;
         }

@@ -49,8 +49,8 @@ namespace GMVC.Data
 
     public abstract class AutoNameSoBase : ScriptableObject
     {
-        [Sirenix.OdinInspector.ReadOnly] [SerializeField] ScriptableObject referenceSo;
 #if UNITY_EDITOR
+        [Sirenix.OdinInspector.ReadOnly] [SerializeField] ScriptableObject referenceSo;
         [ConditionalField(true, nameof(GetReference))] string _;
         protected bool GetReference()
         {
@@ -68,23 +68,20 @@ namespace GMVC.Data
             }
         }
 #endif
-        protected virtual string Prefix { get; }
-        protected virtual string Suffix { get; }
+        protected virtual string Prefix { get; } = string.Empty;
+        protected virtual string Suffix { get; } = string.Empty;
 #if UNITY_EDITOR
-        public virtual string Name => _name;
-        [SerializeField,OnValueChanged(nameof(GetReference))] protected string _name;
-#else
-        public virtual string Name { get; }
+        [OnValueChanged(nameof(GetReference))] 
 #endif
-
+        [SerializeField] protected string _name;
+        public virtual string Name => _name;
         protected virtual string GetName() => (Prefix ?? "") + Name + (Suffix ?? "");
     }
 
     public abstract class ReferenceSoBase : ScriptableObject
     {
-        [Sirenix.OdinInspector.ReadOnly] [SerializeField] ScriptableObject referenceSo;
-
 #if UNITY_EDITOR
+        [Sirenix.OdinInspector.ReadOnly] [SerializeField] ScriptableObject referenceSo;
         [ConditionalField(true, nameof(GetReference))] string _;
         protected void GetReference()
         {

@@ -35,7 +35,8 @@ namespace Components
         protected virtual void OnGameInit() { }
         void Collider3DExit(Collider col)
         {
-            if (_targetTag == UnTagged)
+            if (string.IsNullOrWhiteSpace(_targetTag)|| _targetTag.Equals(UnTagged))// throw new NullReferenceException(name + "-标签为空：" + _targetTag);
+            //if (_targetTag.Equals(UnTagged))
             {
                 OnCollider3DExit(col);
                 return;
@@ -44,7 +45,8 @@ namespace Components
         }
         void Collider3DEnter(Collider col)
         {
-            if (_targetTag == UnTagged)
+            if (string.IsNullOrWhiteSpace(_targetTag)|| _targetTag.Equals(UnTagged))// throw new NullReferenceException(name + "-标签为空：" + _targetTag);
+            //if (_targetTag.Equals(UnTagged))
             {
                 OnCollider3DEnter(col);
                 return;

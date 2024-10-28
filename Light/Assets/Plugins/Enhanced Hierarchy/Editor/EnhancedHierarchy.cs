@@ -22,12 +22,21 @@ namespace EnhancedHierarchy {
                 Utility.EnableFPSCounter();
                 Utility.ForceUpdateHierarchyEveryFrame();
             }
-
+            // 注册回调函数，在运行游戏之前执行
+            EditorApplication.playModeStateChanged += ClearSelection;
             EditorApplication.hierarchyWindowItemOnGUI += SetItemInformation;
             EditorApplication.hierarchyWindowItemOnGUI += OnItemGUI;
             EditorApplication.RepaintHierarchyWindow();
         }
-
+        private static void ClearSelection(PlayModeStateChange state)
+        {
+            // 如果即将进入运行模式，则清除选择
+            if (state == PlayModeStateChange.ExitingEditMode)
+            {
+                Selection.activeObject = null;
+                Debug.Log("Clear hierarchy to prevent bugs.");
+            }
+        }
         private static void OnItemGUI(int id, Rect rect) {
             if (!Preferences.Enabled)
                 return;
