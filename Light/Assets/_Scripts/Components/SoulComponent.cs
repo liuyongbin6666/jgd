@@ -1,11 +1,12 @@
 using Components;
-using Config;
 using GameData;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Linq;
+using Config;
 using UnityEngine;
 using DG.Tweening;
+using GMVC.Core;
 using GMVC.Utls;
 
 public class SoulComponent : GameItemBase
@@ -28,19 +29,42 @@ public class SoulComponent : GameItemBase
     [ReadOnly] public PlotComponentBase guidePlot; // 当前引导的情节
 
     bool isAscending = false;
+    bool isPaused = false; // 指示组件是否暂停
+    bool isActive = true; // 指示组件是否激活
+    protected override void OnGameInit()
+    {
+        base.OnGameInit();
+        PlotComponent.OnActiveEvent.AddListener(Activate);
+    }
 
     public override void Invoke(PlayableUnit player)
     {
-        if (!PlotComponent.gameObject.activeSelf) return;
+        if (!isActive)
+        {
+            // 如果组件未激活，向玩家提供反馈
+            OnInactiveInteraction();
+            return;
+        }
+
         if (InteractionDisable) return;
         InteractionDisable = true;
+
+        // 如果组件已暂停，向玩家提供反馈
+        if (isPaused)
+        {
+            OnPausedInteraction();
+            InteractionDisable = false;
+            return;
+        }
+
+        // 正常的交互逻辑
         PlotComponent.RegOnNextGuideChange(GuideChange);
         PlotComponent.RegStoryEnd(StoryEnding);
         playerTransform = player.PlayerControl.transform;
         StartCoroutine(StoryGuide());
     }
 
-    void StoryEnding(StorySo story,int endingCode)
+    void StoryEnding(StorySo story, int endingCode)
     {
         if (story != PlotComponent.story) return;
         var isBadEnding = endingCode != 0;
@@ -60,6 +84,12 @@ public class SoulComponent : GameItemBase
 
         while (!string.IsNullOrWhiteSpace(currentPlotName) || !story.IsStoryEnd(currentPlotName))
         {
+            if (isPaused)
+            {
+                yield return null;
+                continue;
+            }
+
             // 检查是否有外部指定的情节
             if (!string.IsNullOrEmpty(overridePlotName))
             {
@@ -88,8 +118,14 @@ public class SoulComponent : GameItemBase
                 currentAngle = targetAngle + angleOffset;
 
                 // 开始引导
-                while (guidePlot is not { State:PlotComponentBase.States.Finalize })
+                while (guidePlot is not { State: PlotComponentBase.States.Finalize })
                 {
+                    if (isPaused)
+                    {
+                        yield return null;
+                        continue;
+                    }
+
                     // 检查是否有新的外部指定情节
                     if (!string.IsNullOrEmpty(overridePlotName))
                     {
@@ -129,7 +165,7 @@ public class SoulComponent : GameItemBase
 
     void OrbitTowardsTarget()
     {
-        if (playerTransform == null || targetPlotTransform == null || isAscending)
+        if (playerTransform == null || targetPlotTransform == null || isAscending || isPaused)
             return;
 
         // 更新角度，使灵魂导游围绕玩家旋转，并逐渐朝向目标方向
@@ -199,17 +235,36 @@ public class SoulComponent : GameItemBase
                 initialAlpha = x;
                 Renderer.material.SetFloat("_Alpha", initialAlpha);
             }, 0f, duration).OnComplete(() => {
-                // 动画完成后，销毁对象
+                // 动画完成后，隐藏对象
                 this.Display(false);
             });
         }
         else
         {
-            // 如果未找到材质，直接在动画完成后销毁对象
+            // 如果未找到材质，直接在动画完成后隐藏对象
             DOVirtual.DelayedCall(duration, () => {
-                Destroy(gameObject);
                 this.Display(false);
             });
         }
+    }
+
+    // 暂停引导功能
+    public void Pause(bool pause) => isPaused = pause;
+
+    // 启用组件
+    public void Activate(bool active) => isActive = active;
+
+    // 当组件未激活时的交互
+    void OnInactiveInteraction()
+    {
+        // 向玩家提供反馈，例如显示一条消息
+        Game.SendEvent(GameEvent.Story_Soul_Inactive, PlotComponent.story.DisableMessage);
+        Debug.Log("你需要先完成其他故事，才能与这个魂魄互动。");
+    }
+
+    // 当组件暂停时的交互
+    void OnPausedInteraction()
+    {
+        //Debug.Log("这个魂魄目前处于休眠状态，请先完成其他故事。");
     }
 }

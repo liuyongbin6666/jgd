@@ -67,7 +67,8 @@ namespace GameData
         void SetDeath()
         {
             PlayerControl.Die();
-            SendEvent(GameEvent.Player_IsDeath);
+            //SendEvent(GameEvent.Player_IsDeath);
+            Game.World.Stage.Stage_End(false);
         }
 
         // 当游戏物品交互
@@ -86,7 +87,7 @@ namespace GameData
         void OnScaryFinalized()
         {
             Log();
-            SendEvent(GameEvent.Player_Panic_Finalize);
+            //SendEvent(GameEvent.Player_Panic_Finalize);
             SetDeath();
         }
 

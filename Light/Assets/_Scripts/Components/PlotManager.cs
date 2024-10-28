@@ -19,15 +19,17 @@ namespace Components
         public readonly UnityEvent<StageStory.Lines, string[]> OnLinesEvent = new();
 
         public readonly UnityEvent<StorySo,int> OnStoryEnd = new();
+        public readonly UnityEvent<PlotComponentBase> OnPlotBegin = new();
         //public readonly UnityEvent<PlotComponentBase> OnPlotBegin = new();
         Dictionary<StorySo, List<string>> currentMap = new();//当前情节,如果剧情结束是空的
         public readonly UnityEvent<string> OnOverrideGuide = new();
+        public IEnumerable<StorySo> Stories => data.Keys;
         public void Init(StorySo[] stories)
         {
             foreach (var story in stories)
             {
                 data.Add(story,new List<PlotComponentBase>());
-                currentMap.Add(story,new List<string> { story.GetFirstPlot() });//第一个情节自动为当前情节
+                currentMap.Add(story,new List<string> { story.GetFirstPlotName() });//第一个情节自动为当前情节
             }
         }
 
@@ -79,7 +81,7 @@ namespace Components
                 if(current == story)continue;
                 foreach (var plot in list)
                 {
-                    if (plot.plotName != story.GetFirstPlot()) continue;
+                    if (plot.plotName != story.GetFirstPlotName()) continue;
                     plot.Active(active);
                     break;
                 }
@@ -126,11 +128,20 @@ namespace Components
             data[story].Join(names, p => p.plotName, n => n, (p, _) => p);
 
         public IEnumerable<string> GetCurrentPlotNames(StorySo story) => currentMap[story];
-        public bool IsStoryFinalized(StorySo story)=> currentMap[story] is null;
+        public bool IsStoryFinalized(StorySo story)=> currentMap[story].Count == 0;
 
         public PlotComponentBase FindPlotByName(StorySo story, string plotName) =>
             GetFromData(story, new[] { plotName }).FirstOrDefault();
 
         public void OverrideGuide(string plotName) => OnOverrideGuide.Invoke(plotName);
+
+        public void Begin(PlotComponentBase plot) => OnPlotBegin.Invoke(plot);
+
+        public void SetActiveStory(StorySo story,bool active)
+        {
+            var firstPlot = story.GetFirstPlotName();
+            var plot = FindPlotByName(story, firstPlot);
+            plot?.Active(active);
+        }
     }
 }

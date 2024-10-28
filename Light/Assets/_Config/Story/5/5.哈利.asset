@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   referenceSo: {fileID: 11400000}
   _name: "5.\u54C8\u5229"
+  DisableMessage: "\u54C8\u5229\uFF1A\u545C\u545C..."
   plots:
   - {fileID: 11400000, guid: 7ca3aed2b013d9a4ebac87829e086a69, type: 2}
   - {fileID: 11400000, guid: 268ab3380fc88b647a62d4f02b1e7fef, type: 2}

@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
 using Components;
+using Config;
 using GMVC.Core;
 using UnityEngine;
+using Utls;
 
 namespace GameData
 {
@@ -33,12 +36,13 @@ namespace GameData
             //SetMode(PlayModes.Explore);
             //Game.SendEvent(GameEvent.Story_Npc_Update, 0);
         }
-        public void Stage_End()
+        public void Stage_End(bool complete)
         {
-            Story.Reset();
+            Story.StopTimer();
             Player.Enable(false);
             Game.FireflySpawner.StopService();
             Game.EnemySpawner.StopService();
+            SendEvent(GameEvent.Stage_End, complete);
         }
         //public void SetMode(PlayModes mode)
         //{
@@ -63,23 +67,38 @@ namespace GameData
         public int Seconds { get; private set; }
         public string[] StoryLines { get; private set; }
         public string[] DialogLines { get; private set; }
-        //PlotComponentBase currentPlot;
+        
         public StageStory(StageTimeComponent stageTimeComponent)
         {
             StageTimeComponent = stageTimeComponent;
             stageTimeComponent.OnSecond.AddListener(OnPulse);
             PlotManager.OnLinesEvent.AddListener(OnLine);
+            PlotManager.OnPlotBegin.AddListener(OnPlotBegin);
+            PlotManager.OnStoryEnd.AddListener(OnStoryEnd);
             //PlotManager.OnPlotBegin.AddListener(SetCurrentPlot);
         }
-        //void SetCurrentPlot(PlotComponentBase? plot)
-        //{
-        //    var lastPlot = currentPlot;
-        //    currentPlot = plot;
-        //    if (currentPlot)
-        //        SendEvent(GameEvent.Story_Plot_Begin);
-        //    else
-        //        SendEvent(GameEvent.Story_End, lastPlot.story.Name);
-        //}
+
+        void OnStoryEnd(StorySo endStory, int arg1)
+        {
+            var otherActiveStories = PlotManager.Stories.Where(s => s != endStory && !PlotManager.IsStoryFinalized(s)).ToList();
+            $"End: {endStory.Name}, List = {string.Join(',', PlotManager.Stories.Select(s => s.Name))},\n reactive : {string.Join(',', otherActiveStories.Select(s => s.Name))}"
+                .Log(PlotManager);
+            foreach (var otherStorySo in otherActiveStories)
+                PlotManager.SetActiveStory(otherStorySo, true);
+            if (otherActiveStories.Count > 0) return;
+            Game.World.Stage.Stage_End(true);
+        }
+
+        void OnPlotBegin(PlotComponentBase plot)
+        {
+            if(plot.story.GetFirstPlotName() != plot.plotName)return;
+            $"Begin: {plot.story.Name}, disable = {string.Join(',', PlotManager.Stories.Select(s => s.Name))}"
+                .Log(PlotManager);
+            foreach (var otherStorySo in PlotManager.Stories.Where(s => s != plot.story))
+                PlotManager.SetActiveStory(otherStorySo, false);
+        }
+
+
         void OnLine(Lines lineType, string[] lines)
         {
             switch (lineType)
@@ -96,17 +115,12 @@ namespace GameData
             }
         }
         public void StartTimer() => StageTimeComponent.StartService(true);
-        public void Reset()
-        {
-            StageTimeComponent.StopService();
-            Seconds = 0;
-        }
+        public void StopTimer() => StageTimeComponent.StopService();
         void OnPulse()
         {
             Seconds++;
             SendEvent(Seconds > 0 ? GameEvent.Stage_StageTime_Update : GameEvent.Stage_StageTime_Over);
         }
 
-        //public void Plot_Next() => PlotManager.TriggerNext(currentPlot);
     }
 }

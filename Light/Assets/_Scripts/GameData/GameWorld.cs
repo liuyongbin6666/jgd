@@ -54,13 +54,14 @@ namespace GameData
         public const string Stage_StageTime_Over = "Stage_StageTime_Over";// 关卡时间结束
         public const string GameItem_Interaction = "GameItem_Interaction";// 游戏物品交互
         public const string Stage_StageTime_Update = "Stage_StageTime_Update";
+        public const string Stage_End= "Stage_End";// 关卡结束
         public const string Game_Stage_Update = "Game_Stage_Update";// 游戏关卡更新
 
         //玩家
         public const string Player_Lantern_Update = "Player_Lantern_Update";// 玩家灯笼更新
         public const string Player_Panic_Pulse = "Player_Panic_Pulse";//恐慌心跳
-        public const string Player_Panic_Finalize = "Player_Panic_Finalize";//恐慌心跳结束触发
-        public const string Player_IsDeath = "Player_IsDeath";//玩家死亡
+        //public const string Player_Panic_Finalize = "Player_Panic_Finalize";//恐慌心跳结束触发
+        //public const string Player_IsDeath = "Player_IsDeath";//玩家死亡
         public const string Player_Hp_Update = "Player_Hp_Update";//玩家血量更新
         public const string Player_Spell_Add = "Player_Spell_Add";//玩家法术添加
 
@@ -77,12 +78,12 @@ namespace GameData
         public const string Story_Dialog_Send = "Story_Dialog_Send"; // 游戏故事对话发送
         public const string Story_Plot_Begin = "Story_Plot_Begin"; // 游戏情节开始
         public const string Story_End = "Story_End"; // 游戏故事结束
+        public const string Story_Soul_Inactive = "Story_Soul_Inactive";// npc未激活信息
 
         //战斗
         public const string Battle_Spell_On_Player = "Battle_Spell_On_Player"; //战斗法术对玩家伤害
         public const string Battle_Spell_Update= "Battle_Spell_Update";//战斗法术释放
         public const string Battle_Skeleton_Death = "Battle_Skeleton_Death"; // 战斗单位死亡
 
-        public const string Story_Npc_Update = "Story_Npc_Update";
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace Ui
         View_Joystick view_joystick { get; }
         View_lantern view_latern { get; }
         View_Effect view_effect { get; }
+        View_GameComplete view_gameComplete { get; }
         PlayableController PlayableController => Game.GetController<PlayableController>();
         GameController GameController => Game.GetController<GameController>();
         GameWorld World => Game.World;
@@ -46,6 +48,7 @@ namespace Ui
             view_defeat = new View_Defeat(v.Get<View>("view_defeat"),GameController.Game_End);//todo 返回page main事件
             view_latern = new View_lantern(v.Get<View>("view_lantern"), PlayableController.ChargeSpell);
             view_effect = new View_Effect(v.Get<View>("view_effect"));
+            view_gameComplete = new View_GameComplete(v.Get<View>("view_gameComplete"), GameController.Game_End);
 
             /**********事件注册**********/
             Game.RegEvent(GameEvent.Game_StateChanged, _ =>
@@ -65,11 +68,20 @@ namespace Ui
                 view_latern.SetHp((float)Stage.Player.Hp.ValueMaxRatio);
             });
             Game.RegEvent(GameEvent.Player_Hp_Update,_=>view_latern.SetHp((float)Stage.Player.Hp.ValueFixRatio));
-            Game.RegEvent(GameEvent.Player_Panic_Finalize, _ =>
+            Game.RegEvent(GameEvent.Stage_End, b =>
             {
+                var complete = b.Get<bool>(0);
                 view_latern.SetPanic(0);
                 view_latern.SetLantern(0);
-                view_defeat.Show();
+                if(!complete)
+                {
+                    view_defeat.Show();
+                }
+                else
+                {
+                    var ts = TimeSpan.FromSeconds(Stage.Story.Seconds);
+                    view_gameComplete.SetTime((int)ts.TotalMinutes, ts.Seconds);
+                }
             });
             Game.RegEvent(GameEvent.Player_Panic_Pulse, b =>
             {
@@ -82,6 +94,7 @@ namespace Ui
             Game.RegEvent(GameEvent.Battle_Spell_Update, b => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
             Game.RegEvent(GameEvent.Stage_StageTime_Update, _ => view_top.UpdateStageTime(Stage.Story.Seconds));
             Game.RegEvent(GameEvent.Story_Lines_Send, b => view_storyPlayer.ShowStory(Stage.Story.StoryLines));
+            Game.RegEvent(GameEvent.Story_Soul_Inactive, b => view_npc.SetNpcTalk(new List<string> { b.Get<string>(0) }));
             Game.RegEvent(GameEvent.Story_Dialog_Send, b => view_npc.SetNpcTalk(Stage.Story.DialogLines.ToList()));
         }
 
@@ -360,6 +373,39 @@ namespace Ui
                     {
                         slider_hp.Display(!isPanic);
                     }
+                }
+            }
+        }
+
+        class View_GameComplete : UiBase
+        {
+            View_Time view_time { get; }
+            Button btn_close { get; }
+            public View_GameComplete(IView v, UnityAction onCloseAction) : base(v, false)
+            {
+                view_time = new View_Time(v.Get<View>("view_time"));
+                btn_close = v.Get<Button>("btn_close");
+                btn_close.onClick.AddListener(onCloseAction);
+            }
+            public void SetTime(int min, int secs)
+            {
+                view_time.Set(min, secs);
+                Show();
+            }
+
+            class View_Time : UiBase
+            {
+                Text text_min { get; }
+                Text text_secs { get; }
+                public View_Time(IView v, bool display = true) : base(v, display)
+                {
+                    text_min = v.Get<Text>("text_min");
+                    text_secs = v.Get<Text>("text_secs");
+                }
+                public void Set(int min, int secs)
+                {
+                    text_min.text = min.ToString();
+                    text_secs.text = secs.ToString();
                 }
             }
         }

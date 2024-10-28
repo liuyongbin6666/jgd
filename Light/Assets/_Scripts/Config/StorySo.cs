@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GameData;
 using GMVC.Data;
+using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -11,7 +12,9 @@ namespace Config
     [CreateAssetMenu(fileName = "故事", menuName = "配置/故事")]
     public class StorySo : AutoNameSoBase
     {
+        [LabelText("未激活信息"),TextArea]public string DisableMessage;
         [OnValueChanged(nameof(ResetPlots))]public List<PlotSoBase> plots;
+
         void ResetPlots()
         {
             foreach (var plot in plots) plot.story = this;
@@ -57,7 +60,7 @@ namespace Config
             return (plot?.lineType ?? 0, lines);
         }
         public bool IsStoryEnd(string plotName) => string.IsNullOrWhiteSpace(plotName) || GetPlot(plotName).isStoryFinalize;
-        public string GetFirstPlot()
+        public string GetFirstPlotName()
         {
             var plot = plots.FirstOrDefault();
             if (plot is null)

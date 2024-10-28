@@ -36,7 +36,7 @@ namespace Components
 
         [LabelText("故事")]public StorySo story;
         [LabelText("情节"),ValueDropdown(nameof(GetPlots)),OnValueChanged(nameof(ChangeName))]public string plotName;
-        
+        public readonly UnityEvent<bool> OnActiveEvent = new();
         IEnumerable<string> GetPlots() => story?.GetPlotNames() ?? new []{ "请设置剧情" };
         void ChangeName() => name = "情节_" + plotName;
 
@@ -63,6 +63,7 @@ namespace Components
         public void Begin()
         {
             if (State != States.None) return;
+            PlotManager.Begin(this);
             State = States.Begin;
             if (!DisableLines && mode == TextMode.Begin) SendLines();
             OnBegin();
@@ -98,7 +99,11 @@ namespace Components
         /// </summary>
         protected abstract void OnFinalization();
         public bool IsCurrentState() => PlotManager.IsCurrentPlot(this);
-        public virtual void Active(bool active) => this.Display(active);
+        public virtual void Active(bool active)
+        {
+            this.Display(active);
+            OnActiveEvent?.Invoke(active);
+        }
 
         public void RegOnNextGuideChange(UnityAction<string> targetPlot) =>
             PlotManager.OnOverrideGuide.AddListener(targetPlot);
