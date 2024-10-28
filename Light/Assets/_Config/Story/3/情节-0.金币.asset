@@ -19,7 +19,7 @@ MonoBehaviour:
   autoBegin: 0
   lineType: 1
   lines:
-  - "0.\u91D1\u5E01"
+  - "\u4E00\u679A\u6CBE\u7740\u8840\u8FF9\u7684\u91D1\u5E01\u3002"
   endingCode: 0
   nextPlots:
   - "1.npc\u8BF4\u8BDD"

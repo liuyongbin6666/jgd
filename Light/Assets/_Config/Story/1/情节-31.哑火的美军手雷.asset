@@ -19,6 +19,8 @@ MonoBehaviour:
   autoBegin: 0
   lineType: 1
   lines:
-  - "\u56DE\u53BB\u5893\u7891"
+  - "\u4E00\u679A\u54D1\u706B\u7684\u7F8E\u519B\u624B\u96F7\u3002"
+  endingCode: 0
   nextPlots:
   - "41.\u5893\u7891"
+  closePlots: []
