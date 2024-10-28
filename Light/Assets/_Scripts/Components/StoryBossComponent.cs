@@ -3,6 +3,7 @@ using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using Utls;
 
 namespace Components
 {
@@ -16,6 +17,11 @@ namespace Components
         //注意这个触发器是Boss初始调用的，千万别在触发器设置成完成，否这方法会变成完成才触发
         public void StoryStart(PlotComponentBase plot)
         {
+            if(!Enemy || Enemy.IsUnityNull())
+            {
+                OnDeathAction();//todo: 这是容错，因为有可能玩家已经把怪物打死了！！
+                return;
+            }
             Enemy.Display(true);
             Enemy.OnDeathEvent.AddListener(OnDeathAction);
             Enemy.VisionActive.OnActiveEvent.AddListener(OnSeekAction);
