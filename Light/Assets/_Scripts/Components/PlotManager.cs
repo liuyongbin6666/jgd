@@ -3,6 +3,7 @@ using System.Linq;
 using Config;
 using GameData;
 using GMVC.Utls;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using Utls;
@@ -42,6 +43,7 @@ namespace Components
         public void TriggerNext(PlotComponentBase com)
         {
             var story = com.story;
+            //DisableOtherStories(story);
             if (!data.TryGetValue(story, out var list)) return;
             var currentFinish = com.plotName;
             var storyEnd = story.IsStoryEnd(currentFinish);
@@ -67,6 +69,20 @@ namespace Components
             {
                 plot.Active(true);
                 plot.Begin();
+            }
+        }
+
+        [Button]void ActiveOtherStories(StorySo current,bool active)
+        {
+            foreach (var (story,list) in data)
+            {
+                if(current == story)continue;
+                foreach (var plot in list)
+                {
+                    if (plot.plotName != story.GetFirstPlot()) continue;
+                    plot.Active(active);
+                    break;
+                }
             }
         }
 

@@ -66,8 +66,6 @@ namespace Components
             else
             {
                 var flipX = enemy.Target.transform.position.x < enemy.transform.position.x;
-                enemy.eye_R.Display(!flipX);
-                enemy.eye_L.Display(flipX);
                 enemy.VisionActive.renderer.flipX = flipX;
                 enemy.nav.SetDestination(enemy.Target.transform.position);
             }

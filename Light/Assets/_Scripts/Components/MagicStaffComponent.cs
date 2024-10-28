@@ -20,21 +20,12 @@ namespace Components
         List<IBattleUnit> targets = new();
 
         public IEnumerable<IBattleUnit> Targets => targets.Where(IsAvailable).ToList();
+
         static bool IsAvailable(IBattleUnit t)
         {
-            try
-            {
-                if (t.IsUnityNull()) return false;
-                return  t.transform&& !t.IsDeath;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            if (t.IsUnityNull()) return false;
+            return t.transform && t.transform.gameObject.activeSelf && !t.IsDeath;
         }
-
-        
 
         public IBattleUnit AimTarget => targets.Where(IsAvailable)
             .OrderBy(t => Vector2.Distance(t.transform.position.ToXY(), transform.position.ToXY()))

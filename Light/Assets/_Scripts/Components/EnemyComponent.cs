@@ -3,7 +3,7 @@ using System.Linq;
 using Config;
 using fight_aspect;
 using GameData;
-using GMVC.Core;
+using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
@@ -45,13 +45,21 @@ namespace Components
             if (isInitialized) return;
             isInitialized = true;
             attackComponent.Init(this);
-            //VisionActive.OnActiveEvent.AddListener(OnPlayerTriggerActive);
+            VisionActive.OnActiveEvent.AddListener(OnPlayerTriggerActive);
             nav.updateRotation = false;
             nav.enabled = true;
             // 设置初始状态为 EnemyIdleState
             SwitchState(new EnemyIdleState(this));
             ResetCD();
         }
+
+        void OnPlayerTriggerActive(bool active)
+        {
+            var eyeDisplay = !active;
+            if(eye_L) eye_L.Display(eyeDisplay);
+            if(eye_R) eye_R.Display(eyeDisplay);
+        }
+
         //void OnPlayerTriggerActive()//当玩家视野触发激活时
         //{ 
         //}

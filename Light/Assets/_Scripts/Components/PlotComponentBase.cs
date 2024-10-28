@@ -56,6 +56,7 @@ namespace Components
             }
         }
         protected abstract bool DisableLines { get; }
+
         /// <summary>
         /// 只可以开启一次
         /// </summary>

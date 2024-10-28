@@ -31,6 +31,7 @@ public class SoulComponent : GameItemBase
 
     public override void Invoke(PlayableUnit player)
     {
+        if (!PlotComponent.gameObject.activeSelf) return;
         if (InteractionDisable) return;
         InteractionDisable = true;
         PlotComponent.RegOnNextGuideChange(GuideChange);
