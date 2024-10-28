@@ -36,6 +36,7 @@ namespace Components
 
         public void StopService()
         {
+            if (Co == null) return;
             StopCoroutine(Co);
             Co = null;
             // 回收所有活动的对象

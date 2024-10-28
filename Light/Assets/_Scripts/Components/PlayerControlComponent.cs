@@ -26,6 +26,9 @@ namespace Components
 
     public class PlayerControlComponent : MonoBehaviour, IBattleUnit
     {
+#if UNITY_EDITOR
+        [LabelText("测试，已经必杀")]public bool _testKill;
+#endif
         [SerializeField] GameLaunch gameLaunch;
         //[SerializeField] BulletHandler bulletHandler;
         [SerializeField] Rigidbody rb3D;
@@ -135,7 +138,24 @@ namespace Components
         public void BulletImpact(BulletComponent bullet) =>
             SpellImpact(bullet.Spell, bullet.ImpactDirection(transform));
 
-        public Spell CastSpell() => OnCastSpell.Invoke();
+        public Spell CastSpell()
+        {
+#if UNITY_EDITOR
+            if (_testKill)
+            {
+                return new Spell
+                {
+                    force = 6,
+                    Damage = 10000,
+                    Delay = 0,
+                    Speed = 10,
+                    SpellName = "普通",
+                };
+            }
+#endif
+            return OnCastSpell.Invoke();
+        }
+
         public void GameItemInteraction(GameItemBase gameItem) => OnGameItemTrigger.Invoke(gameItem);
         public void TryAttackTarget()
         {
