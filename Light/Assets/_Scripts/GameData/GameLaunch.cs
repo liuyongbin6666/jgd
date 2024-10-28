@@ -48,8 +48,8 @@ namespace GameData
     {
 #if UNITY_EDITOR
         [SerializeField,LabelText("自动初始化-测试用")] protected bool autoInitInEditorOnly;
-        bool isGameStart;
 #endif
+        bool isGameStart;
         void Start()
         {
 #if UNITY_EDITOR

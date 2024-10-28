@@ -70,11 +70,14 @@ namespace GMVC.Data
 #endif
         protected virtual string Prefix { get; }
         protected virtual string Suffix { get; }
-
+#if UNITY_EDITOR
         public virtual string Name => _name;
         [SerializeField,OnValueChanged(nameof(GetReference))] protected string _name;
+#else
+        public virtual string Name { get; }
+#endif
 
-        protected virtual string GetName() => (Prefix ?? "") + _name + (Suffix ?? "");
+        protected virtual string GetName() => (Prefix ?? "") + Name + (Suffix ?? "");
     }
 
     public abstract class ReferenceSoBase : ScriptableObject
