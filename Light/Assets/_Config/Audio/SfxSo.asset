@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: SfxSo
   m_EditorClassIdentifier: 
   clips:
+  - {fileID: 8300000, guid: 1bcab95ea6db7d64c991017fa98dc6a2, type: 3}
   - {fileID: 8300000, guid: bb9e76193bbb74748977d116db00fcd9, type: 3}
+  - {fileID: 8300000, guid: 9f74ef9d8f1417f4fbefa94a8d6e5244, type: 3}
+  - {fileID: 8300000, guid: 92d42ccd7e8afde439dec636cf362ac9, type: 3}
   - {fileID: 8300000, guid: c16525988bdd4694a8cd051b3ac3bb6d, type: 3}
   - {fileID: 8300000, guid: c6bc599556d8ebf4bbe51dc0ae5eda9b, type: 3}
   - {fileID: 8300000, guid: 1c25a1f28dda0044c838a2fa2f760e22, type: 3}
@@ -34,3 +37,5 @@ MonoBehaviour:
   - {fileID: 8300000, guid: adaae89f71170b244975d98064880cdb, type: 3}
   - {fileID: 8300000, guid: e124715df5067d14e816e8fc9d02d7ed, type: 3}
   - {fileID: 8300000, guid: d0d3a433241698e4b905001901837a5b, type: 3}
+  - {fileID: 8300000, guid: 62c709e691aaaf543bfcacd4c2cb946b, type: 3}
+  - {fileID: 8300000, guid: 21e87d07a7f9a0c4cac3e4408a0ceb56, type: 3}

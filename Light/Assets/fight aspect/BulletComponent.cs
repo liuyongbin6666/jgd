@@ -5,6 +5,7 @@ using Components;
 using Config;
 using DG.Tweening;
 using GameData;
+using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -165,6 +166,7 @@ namespace fight_aspect
 
         void StartExplosion()
         {
+            Game.MessagingManager.Send(GameEvent.Battle_Bullet_Explode);
             DOTween.Sequence().AppendCallback(() =>
                 {
                     bulletCache.ShowBullet(false);

@@ -1,5 +1,6 @@
 using System;
 using GameData;
+using GMVC.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utls;
@@ -15,9 +16,10 @@ namespace Components
         [SerializeField] Firefly[] _fireflies;
         public int Count => _fireflies.Length;
         public override GameItemType Type => GameItemType.Firefly;
+        
         public void RandomSet()
         {
-            var f = _fireflies.RandomPick();
+            var f = _fireflies.WeightPick();
             foreach (var firefly in _fireflies)
             {
                 firefly._obj.SetActive(f == firefly);

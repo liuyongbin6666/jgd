@@ -60,7 +60,7 @@ namespace Components
                 });
             }
         }
-        [Button("设置灯光")]public void LoadLightLevel(int level, out bool isMaxLevel,out float moveRatio)
+        [Button("读取灯光")]public void LoadLightLevel(int level, out bool isMaxLevel,out float moveRatio)
         {
             var maxLevel = settings.Count;
             moveRatio = 1;
@@ -70,7 +70,8 @@ namespace Components
                 Debug.LogError($"等级超出范围 1~{maxLevel}！",this);
                 return;
             }
-            var index = Mathf.Clamp(level, 0, maxLevel - 1);
+
+            var index = Mathf.Clamp(level - 1, 0, maxLevel - 1);
             var setting = settings[index];
             moveRatio = MathF.Max(0, setting.movingRatio);
             var intensity = setting.intensity;

@@ -33,6 +33,7 @@ namespace GameData
             Player.Enable(true);
             Game.FireflySpawner.StartService(Player.PlayerControl);
             Game.EnemySpawner.StartService(Player.PlayerControl);
+            Game.ObjectActiveManager.StartService(Player.PlayerControl);
             //SetMode(PlayModes.Explore);
             //Game.SendEvent(GameEvent.Story_Npc_Update, 0);
         }
@@ -42,7 +43,8 @@ namespace GameData
             Player.Enable(false);
             Game.FireflySpawner.StopService();
             Game.EnemySpawner.StopService();
-            SendEvent(GameEvent.Stage_End, complete);
+            Game.ObjectActiveManager.StopService();
+            SendEvent(complete ? GameEvent.Stage_Complete : GameEvent.Stage_Lose);
         }
         //public void SetMode(PlayModes mode)
         //{
@@ -81,10 +83,11 @@ namespace GameData
         void OnStoryEnd(StorySo endStory, int arg1)
         {
             var otherActiveStories = PlotManager.Stories.Where(s => s != endStory && !PlotManager.IsStoryFinalized(s)).ToList();
-            $"End: {endStory.Name}, List = {string.Join(',', PlotManager.Stories.Select(s => s.Name))},\n reactive : {string.Join(',', otherActiveStories.Select(s => s.Name))}"
-                .Log(PlotManager);
+            //$"End: {endStory.Name}, List = {string.Join(',', PlotManager.Stories.Select(s => s.Name))},\n reactive : {string.Join(',', otherActiveStories.Select(s => s.Name))}"
+            //    .Log(PlotManager);
             foreach (var otherStorySo in otherActiveStories)
                 PlotManager.SetActiveStory(otherStorySo, true);
+            SendEvent(GameEvent.Story_End);
             if (otherActiveStories.Count > 0) return;
             Game.World.Stage.Stage_End(true);
         }
@@ -92,10 +95,11 @@ namespace GameData
         void OnPlotBegin(PlotComponentBase plot)
         {
             if(plot.story.GetFirstPlotName() != plot.plotName)return;
-            $"Begin: {plot.story.Name}, disable = {string.Join(',', PlotManager.Stories.Select(s => s.Name))}"
-                .Log(PlotManager);
+            //$"Begin: {plot.story.Name}, disable = {string.Join(',', PlotManager.Stories.Select(s => s.Name))}"
+            //    .Log(PlotManager);
             foreach (var otherStorySo in PlotManager.Stories.Where(s => s != plot.story))
                 PlotManager.SetActiveStory(otherStorySo, false);
+            SendEvent(GameEvent.Story_Begin);
         }
 
 
@@ -119,7 +123,7 @@ namespace GameData
         void OnPulse()
         {
             Seconds++;
-            SendEvent(Seconds > 0 ? GameEvent.Stage_StageTime_Update : GameEvent.Stage_StageTime_Over);
+            SendEvent(GameEvent.Stage_StageTime_Update);
         }
 
     }

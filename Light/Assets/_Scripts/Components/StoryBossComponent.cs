@@ -1,4 +1,6 @@
 using System;
+using GameData;
+using GMVC.Core;
 using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -9,7 +11,7 @@ namespace Components
 {
     public class StoryBossComponent : MonoBehaviour
     {
-        public bool IsDeath => Enemy == null;
+        public bool IsDeath => Enemy == null || Enemy.IsUnityNull() || Enemy.IsDeath;
         [LabelText("Boss控件")] public EnemyComponent Enemy;
         [LabelText("打败奖励")] public GameObject[] Rewards;
         public readonly UnityEvent OnSeekEvent = new();
@@ -31,6 +33,7 @@ namespace Components
                 if (!isActive) return;
                 if (plot.IsStoryFinalized) return;
                 OnSeekEvent.Invoke();
+                Game.MessagingManager.Send(GameEvent.Story_Boss_Battle);
             }
         }
 
@@ -40,6 +43,7 @@ namespace Components
             {
                 go.transform.position = Enemy.transform.position;
                 go.Display(true);
+                Game.MessagingManager.Send(GameEvent.Story_Boss_Death);
             }
         }
     }

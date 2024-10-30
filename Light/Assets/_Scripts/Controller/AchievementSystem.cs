@@ -29,11 +29,7 @@ namespace Controller
         public event UnityAction<int> OnSkeletonDeathCountReach;
         void Init()
         {
-            Game.RegEvent(GameEvent.Game_StateChanged, _ =>
-            {
-                if(Game.World.Status == GameWorld.GameStates.Playing)
-                    ResetSkeletonDeathCount();
-            });
+            Game.RegEvent(GameEvent.Game_Playing, _ => ResetSkeletonDeathCount());
             Game.RegEvent(GameEvent.Battle_Skeleton_Death, OnSkeletonDeath);
         }
         void ResetSkeletonDeathCount() => SkeletonDeathCount = 0;

@@ -8,6 +8,7 @@ using GameData;
 using GMVC.Core;
 using GMVC.Utls;
 using GMVC.Views;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -33,7 +34,7 @@ namespace Ui
         bool IsPlaying => State == GameWorld.GameStates.Playing;
         bool IsExploring => Stage is { Mode: GameStage.PlayModes.Explore };
         public Page_Stage(IView v) :
-            base(v)
+            base(v,false)
         {
             view_top = new View_Top(v.Get<View>("view_top"));
             view_joystick = new View_Joystick(v.Get<View>("view_joystick"), PlayableController.Move);
@@ -51,37 +52,33 @@ namespace Ui
             view_gameComplete = new View_GameComplete(v.Get<View>("view_gameComplete"), GameController.Game_End);
 
             /**********事件注册**********/
-            Game.RegEvent(GameEvent.Game_StateChanged, _ =>
+            Game.RegEvent(GameEvent.Game_Playing, _ =>
             {
                 view_joystick.SetActive(IsPlaying && IsExploring);
                 Display(IsPlaying);
                 if (!IsPlaying) return;
-                view_top.UpdateLantern(Stage.Player.Lantern);
-                view_latern.SetLantern((float)Stage.Player.Firefly.ValueMaxRatio);
+                view_latern.SetLantern(Stage.Player.Lantern, (float)Stage.Player.Firefly.ValueMaxRatio);
                 view_latern.SetHp((float)Stage.Player.Hp.ValueMaxRatio);
             });
             Game.RegEvent(GameEvent.Game_PlayMode_Update, _ => view_joystick.SetActive(IsExploring));
             Game.RegEvent(GameEvent.Player_Lantern_Update, _ =>
             {
-                view_top.UpdateLantern(Stage.Player.Lantern);
-                view_latern.SetLantern((float)Stage.Player.Firefly.ValueMaxRatio);
+                view_latern.SetLantern(Stage.Player.Lantern, (float)Stage.Player.Firefly.ValueMaxRatio);
                 view_latern.SetHp((float)Stage.Player.Hp.ValueMaxRatio);
             });
             Game.RegEvent(GameEvent.Player_Hp_Update,_=>view_latern.SetHp((float)Stage.Player.Hp.ValueFixRatio));
-            Game.RegEvent(GameEvent.Stage_End, b =>
+            Game.RegEvent(GameEvent.Stage_Lose, b =>
             {
-                var complete = b.Get<bool>(0);
                 view_latern.SetPanic(0);
-                view_latern.SetLantern(0);
-                if(!complete)
-                {
-                    view_defeat.Show();
-                }
-                else
-                {
-                    var ts = TimeSpan.FromSeconds(Stage.Story.Seconds);
-                    view_gameComplete.SetTime((int)ts.TotalMinutes, ts.Seconds);
-                }
+                view_latern.SetLantern(0, 0);
+                view_defeat.Show();
+            });
+            Game.RegEvent(GameEvent.Stage_Complete, b =>
+            {
+                view_latern.SetPanic(0);
+                view_latern.SetLantern(0, 0);
+                var ts = TimeSpan.FromSeconds(Stage.Story.Seconds);
+                view_gameComplete.SetTime((int)ts.TotalMinutes, ts.Seconds);
             });
             Game.RegEvent(GameEvent.Player_Panic_Pulse, b =>
             {
@@ -91,7 +88,7 @@ namespace Ui
                 view_effect.PlayPanic();
             });
             Game.RegEvent(GameEvent.Player_Spell_Add, _ => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
-            Game.RegEvent(GameEvent.Battle_Spell_Update, b => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
+            Game.RegEvent(GameEvent.Spell_Charge, b => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
             Game.RegEvent(GameEvent.Stage_StageTime_Update, _ => view_top.UpdateStageTime(Stage.Story.Seconds));
             Game.RegEvent(GameEvent.Story_Lines_Send, b => view_storyPlayer.ShowStory(Stage.Story.StoryLines));
             Game.RegEvent(GameEvent.Story_Soul_Inactive, b => view_npc.SetNpcTalk(new List<string> { b.Get<string>(0) }));
@@ -132,50 +129,36 @@ namespace Ui
         }
         class View_Top : UiBase
         {
-            Element_TextValue element_textValue_lantern { get; }
-            Text text_minutes { get; }
-            Text text_seconds { get; }
-            Text text_f { get; }
+            TMP_Text tmp_minutes { get; }
+            TMP_Text tmp_seconds { get; }
+            //Text text_f { get; }
 
             public View_Top(IView v) : base(v)
             {
-                element_textValue_lantern = new Element_TextValue(v.Get<View>("element_textValue_lantern"));
-                element_textValue_lantern.SetValue(0);
-
-                text_minutes = v.Get<Text>("text_minutes");
-                text_seconds = v.Get<Text>("text_seconds");
-                text_f = v.Get<Text>("text_f");
+                tmp_minutes = v.Get<TMP_Text>("tmp_minutes");
+                tmp_seconds = v.Get<TMP_Text>("tmp_seconds");
+                //text_f = v.Get<Text>("text_f");
             }
 
             public void UpdateStageTime(int totalSeconds)
             {
                 var minutes = totalSeconds / 60; // 计算分钟数
-                text_minutes.text = minutes.ToString();
+                tmp_minutes.text = minutes.ToString();
                 var seconds = totalSeconds % 60; // 计算剩余的秒数
-                text_seconds.text = seconds.ToString();
+                tmp_seconds.text = seconds.ToString();
 
-                if (totalSeconds <= 30)
-                {
-                    text_minutes.color = Color.red;
-                    text_seconds.color = Color.red;
-                    text_f.color = Color.red;
-                }
-                else
-                {
-                    text_minutes.color = Color.yellow;
-                    text_seconds.color = Color.yellow;
-                    text_f.color = Color.yellow;
-                }
-            }
-            public void UpdateLantern(int value) => element_textValue_lantern.SetValue(value);
-            class Element_TextValue : UiBase
-            {
-                Text text_value { get; }
-                public Element_TextValue(IView v) : base(v)
-                {
-                    text_value = v.Get<Text>("text_value");
-                }
-                public void SetValue(object value) => text_value.text = value.ToString();
+                //if (totalSeconds <= 30)
+                //{
+                //    tmp_minutes.color = Color.red;
+                //    tmp_seconds.color = Color.red;
+                //    text_f.color = Color.red;
+                //}
+                //else
+                //{
+                //    tmp_minutes.color = Color.yellow;
+                //    tmp_seconds.color = Color.yellow;
+                //    text_f.color = Color.yellow;
+                //}
             }
         }
         class View_Npc : UiBase
@@ -294,7 +277,8 @@ namespace Ui
                 view_condition = new View_Condition(v.Get<View>("view_condition"));
                 SpellList = new ListView_Trans<Prefab_Spell>(v, "prefab_spell", "tran_layout");
             }
-            public void SetLantern(float value) => view_condition.SetLantern(value);
+            public void SetLantern(int lantern,float value) => view_condition.SetLantern(lantern, value);
+
             public void SetHp(float value) => view_condition.SetHp(value);
             public void SetPanic(float value) => view_condition.SetPanic(value);
             void SetSelected(int index)
@@ -338,43 +322,74 @@ namespace Ui
                 public void SetValue(float value) => slider_value.value = 1 - value;
                 public void SetSelected(bool selected) => img_selected.Display(selected);
             }
+
             class View_Condition : UiBase
             {
                 Slider slider_lantern { get; }
                 View_Hp view_hp { get; }
+                Element_TextValue element_textValue_lantern { get; }
+
                 public View_Condition(IView v, bool display = true) : base(v, display)
                 {
                     slider_lantern = v.Get<Slider>("slider_lantern");
+                    element_textValue_lantern = new Element_TextValue(v.Get<View>("element_textValue_lantern"));
+                    element_textValue_lantern.SetValue(0);
                     view_hp = new View_Hp(v.Get<View>("view_hp"));
                 }
-                public void SetLantern(float value) => slider_lantern.value = value;
+
+                public void SetLantern(int lantern,float value)
+                {
+                    slider_lantern.value = value;
+                    element_textValue_lantern.SetValue(lantern);
+                }
+
                 public void SetHp(float value)
                 {
                     view_hp.SwitchPanic(false);
                     view_hp.SetHp(value);
                 }
+
                 public void SetPanic(float value)
                 {
                     view_hp.SwitchPanic(true);
                     view_hp.SetPanic(value);
                 }
+
                 class View_Hp : UiBase
                 {
                     Slider slider_panic { get; }
                     Slider slider_hp { get; }
+
                     public View_Hp(IView v, bool display = true) : base(v, display)
                     {
                         slider_panic = v.Get<Slider>("slider_panic");
                         slider_hp = v.Get<Slider>("slider_hp");
+                        slider_panic.Display(false);
                     }
+
                     public void SetHp(float value) => slider_hp.value = value;
                     public void SetPanic(float value) => slider_panic.value = value;
+
                     public void SwitchPanic(bool isPanic)
                     {
                         slider_hp.Display(!isPanic);
+                        slider_panic.Display(isPanic);
                     }
                 }
+
+                class Element_TextValue : UiBase
+                {
+                    TMP_Text tmp_value { get; }
+
+                    public Element_TextValue(IView v) : base(v)
+                    {
+                        tmp_value = v.Get<TMP_Text>("tmp_value");
+                    }
+
+                    public void SetValue(object value) => tmp_value.text = value.ToString();
+                }
             }
+
         }
 
         class View_GameComplete : UiBase

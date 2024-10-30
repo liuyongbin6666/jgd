@@ -19,30 +19,30 @@ MonoBehaviour:
     _lastingPerFirefly: 12
     lanternSettings:
     - colliderSize: 2
-      lightY: 5.5
-      intensity: 0.5
+      lightY: 7
+      intensity: 3
       range: 2
-      movingRatio: 0.8
+      movingRatio: 1
     - colliderSize: 4
-      lightY: 13.1725
-      intensity: 2.875
+      lightY: 15.25
+      intensity: 12.25
       range: 3.525
       movingRatio: 1
     - colliderSize: 6
-      lightY: 20.845
-      intensity: 5.25
+      lightY: 23.5
+      intensity: 21.5
       range: 5.05
-      movingRatio: 1.2
+      movingRatio: 1
     - colliderSize: 8
-      lightY: 28.517498
-      intensity: 7.625
+      lightY: 31.75
+      intensity: 30.75
       range: 6.5750003
-      movingRatio: 1.35
+      movingRatio: 1
     - colliderSize: 10
-      lightY: 36.19
-      intensity: 10
+      lightY: 40
+      intensity: 40
       range: 8.1
-      movingRatio: 1.5
+      movingRatio: 1
   panic:
     _pulseTimes: 5
     _interval: 2

@@ -13,12 +13,12 @@ namespace Ui
         GameController GameController => Game.GetController<GameController>();
         public Page_Main(IView v, bool display = true) : base(v, display)
         {
-            view_startStage = new View_StartStage(v.Get<View>("view_startStage"),GameController.Game_StartStage);
-            Game.RegEvent(GameEvent.Game_StateChanged, _ =>
+            view_startStage = new View_StartStage(v.Get<View>("view_startStage"), () =>
             {
-                var isMain = Game.World.Status == GameWorld.GameStates.Start;
-                Display(isMain);
+                GameController.Game_StartStage();
+                Display(false);
             });
+            Game.RegEvent(GameEvent.Game_Start, _ => Display(true));
         }
 
         class View_StartStage:UiBase

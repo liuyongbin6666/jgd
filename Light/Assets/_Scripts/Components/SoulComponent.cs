@@ -56,12 +56,13 @@ public class SoulComponent : GameItemBase
             InteractionDisable = false;
             return;
         }
-
+        
         // 正常的交互逻辑
         PlotComponent.RegOnNextGuideChange(GuideChange);
         PlotComponent.RegStoryEnd(StoryEnding);
         playerTransform = player.PlayerControl.transform;
         StartCoroutine(StoryGuide());
+        Game.SendEvent(GameEvent.Story_Soul_Interactive);
     }
 
     void StoryEnding(StorySo story, int endingCode)
@@ -196,7 +197,7 @@ public class SoulComponent : GameItemBase
     }
 
     // 设置新的目标情节
-    void GuideChange(string plotName) => overridePlotName = plotName;
+    public void GuideChange(string plotName) => overridePlotName = plotName;
 
     // 停止引导
     public void StopGuiding()
@@ -259,7 +260,6 @@ public class SoulComponent : GameItemBase
     {
         // 向玩家提供反馈，例如显示一条消息
         Game.SendEvent(GameEvent.Story_Soul_Inactive, PlotComponent.story.DisableMessage);
-        Debug.Log("你需要先完成其他故事，才能与这个魂魄互动。");
     }
 
     // 当组件暂停时的交互

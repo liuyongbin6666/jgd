@@ -1,5 +1,6 @@
 using Controller;
 using GMVC.Core;
+using GMVC.Utls;
 using GMVC.Views;
 
 namespace Ui
@@ -21,6 +22,7 @@ namespace Ui
             PageMain = new Page_Main(page_main);
             PageStage = new Page_Stage(page_stage);
             //PageGameOver = new Page_GameOver(page_gameOver);
+            this.Display(true);
         }
     }
 }

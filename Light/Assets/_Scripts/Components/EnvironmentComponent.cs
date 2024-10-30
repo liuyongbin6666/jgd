@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using GameData;
 using GMVC.Core;
@@ -23,19 +24,70 @@ namespace Components
         [SerializeField, LabelText("闪电随机范围值")] MinMaxFloat _lightningRange;
         [SerializeField, LabelText("闪电时的光强度")] float lightningIntensity = 0.15f;
         [SerializeField, LabelText("闪电持续时间")] float lightningInterval = 0.15f;
-        [SerializeField] GameObject rain;
+        [SerializeField] RainingSet rainSet;
+        public FollowComponent rain;
         float _duration = 3;
 
         public void Init()
         {
             OnCountdownComplete.AddListener(Lightning);
             RandomDuration();
+            Game.RegEvent(GameEvent.Game_Playing,StartService);
+            Game.RegEvent(GameEvent.Game_End,StopService);
+        }
+        void StopService(DataBag obj) => StopAllCoroutines();
+
+        void StartService(DataBag obj)
+        {
             StartCountdown(true);
+            StartCoroutine(Raining());
         }
 
-        public void Rain(bool enable)
+        IEnumerator Raining()
+        {
+            var maxRainingSecs = rainSet.maxRainingSecs;
+            var minRainingSecs = rainSet.minRainingSecs;// 最低下雨时间
+            var minClearSecs = rainSet.minClearSecs;// 最低停止下雨时间
+
+            while (true)
+            {
+                // 开始下雨
+                Rain(Game.World.Stage.Player.PlayerControl, true);
+                yield return StartCoroutine(WaitWithRandomTime(minRainingSecs, maxRainingSecs));
+
+                // 停止下雨
+                Rain(Game.World.Stage.Player.PlayerControl, false);
+                yield return StartCoroutine(WaitWithRandomTime(minClearSecs, maxRainingSecs));
+            }
+        }
+
+        /// <summary>
+        /// 等待随机时间，确保时间在最小值和最大值之间
+        /// </summary>
+        IEnumerator WaitWithRandomTime(float minTime, float maxTime)
+        {
+            var elapsedTime = 0f;
+            var totalWaitTime = Random.Range(minTime, maxTime);
+
+            while (elapsedTime < totalWaitTime)
+            {
+                yield return new WaitForSeconds(1);
+                elapsedTime++;
+
+                // 随着时间推移增加随机性，模拟降雨/晴天的自然结束
+                var randomChance = Random.Range(0, elapsedTime + 1);
+                var maxThreshold = Random.Range(0, (totalWaitTime / 2) + 1);
+
+                if (randomChance > maxThreshold && elapsedTime >= minTime)
+                    break;
+            }
+        }
+
+
+        public void Rain(PlayerControlComponent player,bool enable)
         {
             rain.Display(enable);
+            rain.SetFollow(player.transform);
             Game.SendEvent(GameEvent.Env_Rain_Update, enable);
         }
 
@@ -77,5 +129,13 @@ namespace Components
 
         void SetIntensity(float intensity) => directionalLight.intensity = intensity;
         float GetLightIntensity() => directionalLight.intensity;
+
+        [Serializable]
+        class RainingSet
+        {
+            public float maxRainingSecs = 30f;
+            public float minRainingSecs = 5f;  // 最低下雨时间
+            public float minClearSecs = 5f;    // 最低停止下雨时间
+        }
     }
 }

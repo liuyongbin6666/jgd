@@ -2,6 +2,7 @@ using Components;
 using Config;
 using fight_aspect;
 using GMVC.Core;
+using GMVC.Utls;
 using Sirenix.OdinInspector;
 using Ui;
 using UnityEngine;
@@ -17,22 +18,27 @@ namespace GameData
         public SensorManager SensorManager;
         public BulletManager BulletManager;
         public EnvironmentComponent EnvironmentComponent;
-
+        public ObjectActiveManager ObjectActiveManager;
+        public Camera MainCamera;
+        void Awake() => MainCamera.Display(false);
         void Start()
         {
+            UiManager.Display(false);
             Game.Run(GameStart,
                 AudioComponent,
                 Configure,
                 SensorManager,
                 PlotManager,
                 BulletManager,
-                EnvironmentComponent);
+                EnvironmentComponent,
+                ObjectActiveManager);
         }
 
         // 游戏开始
         void GameStart()
         {
             UiManager.Init();
+            MainCamera.Display(true);
             var initializers = Resources.FindObjectsOfTypeAll<GameStartInitializer>();
             foreach (var initializer in initializers) initializer.GameStart();
         }

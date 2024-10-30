@@ -156,8 +156,8 @@ namespace Components
 
         IEnumerator DestroyAfterDelay()
         {
-            yield return new WaitForSeconds(1f); // 等待2秒后销毁
-            Object.Destroy(enemy.gameObject);
+            yield return new WaitForSeconds(1f); //一秒后关闭
+            enemy.Display(false);
         }
     }
 

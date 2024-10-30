@@ -66,7 +66,6 @@ namespace fight_aspect
             if (!IsInit) return;
             if (targets.Contains(handler.root)) return;
             if(string.IsNullOrWhiteSpace(handler.root.tag))return;
-            if (!handler.root.CompareTag(GameTag.Player) && !handler.root.CompareTag(GameTag.Enemy)) return;
             targets.Add(handler.root);
             OnTargetSpotted.Invoke(handler);
         }
@@ -76,7 +75,6 @@ namespace fight_aspect
             if (!IsInit) return;
             if (!targets.Contains(handler.root)) return;
             if (string.IsNullOrWhiteSpace(handler.root.tag)) return;
-            if (!handler.root.CompareTag(GameTag.Player) && !handler.root.CompareTag(GameTag.Enemy)) return;
             targets.Remove(handler.root);
             OnTargetLeave.Invoke(handler);
         }

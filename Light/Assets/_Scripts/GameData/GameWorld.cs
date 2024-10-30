@@ -17,21 +17,21 @@ namespace GameData
         public void Start()
         {
             State_Set(GameStates.Start);
+            Game.SendEvent(GameEvent.Game_Start);
         }
         public void End()
         {
             State_Set(GameStates.End);
+            Game.SendEvent(GameEvent.Game_End);
         }
 
-        void State_Set(GameStates state)
-        {
-            Status = state;
-            Game.SendEvent(GameEvent.Game_StateChanged, state);
-        }
+        void State_Set(GameStates state) => Status = state;
+
         public void StartGameStage()
         {
             Stage.Stage_Start();
             State_Set(GameStates.Playing);
+            Game.SendEvent(GameEvent.Game_Playing);
         }
         public void SetGameStage(PlayableUnit player, StageStory stageStory)
         {
@@ -51,10 +51,10 @@ namespace GameData
     }
     public class GameEvent
     {
-        public const string Stage_StageTime_Over = "Stage_StageTime_Over";// 关卡时间结束
         public const string GameItem_Interaction = "GameItem_Interaction";// 游戏物品交互
         public const string Stage_StageTime_Update = "Stage_StageTime_Update";
-        public const string Stage_End= "Stage_End";// 关卡结束
+        public const string Stage_Lose= "Stage_Lose";// 关卡结束
+        public const string Stage_Complete= "Stage_Complete";// 关卡结束
         public const string Game_Stage_Update = "Game_Stage_Update";// 游戏关卡更新
 
         //玩家
@@ -70,20 +70,30 @@ namespace GameData
         public const string Env_Rain_Update= "Env_Rain_Update";// 下雨
 
         //游戏
-        public const string Game_StateChanged = "Game_StateChanged";// 游戏状态改变
+        public const string Game_Start = "Game_Start";
+        public const string Game_End = "Game_End";
+        public const string Game_Playing = "Game_Playing";
+        //public const string Game_StateChanged = "Game_StateChanged";// 游戏状态改变
         public const string Game_PlayMode_Update = "Game_PlayMode_Update";//游戏模式更新
 
         //故事
         public const string Story_Lines_Send = "Story_Lines_Send"; // 游戏故事行发送
         public const string Story_Dialog_Send = "Story_Dialog_Send"; // 游戏故事对话发送
-        public const string Story_Plot_Begin = "Story_Plot_Begin"; // 游戏情节开始
+        public const string Story_Begin = "Story_Begin"; // 故事开始
         public const string Story_End = "Story_End"; // 游戏故事结束
+
+        public const string Story_Soul_Interactive = "Story_Soul_Interactive";// npc交互
         public const string Story_Soul_Inactive = "Story_Soul_Inactive";// npc未激活信息
+        public const string Story_Boss_Battle = "Story_Boss_Battle";// boss战斗
+        public const string Story_Boss_Death = " Story_Boss_Death";//boss死亡
+
+        //法术
+        public const string Spell_Charge= "Spell_Charge";//法术补充
+        public const string Spell_Cast= "Spell_Cast";//法术释放
 
         //战斗
         public const string Battle_Spell_On_Player = "Battle_Spell_On_Player"; //战斗法术对玩家伤害
-        public const string Battle_Spell_Update= "Battle_Spell_Update";//战斗法术释放
         public const string Battle_Skeleton_Death = "Battle_Skeleton_Death"; // 战斗单位死亡
-
+        public const string Battle_Bullet_Explode = "Battle_Bullet_Explode";// 子弹爆炸
     }
 }

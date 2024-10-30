@@ -4,6 +4,7 @@ using GMVC.Utls;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using Utls;
 
 namespace Components
 {
@@ -31,8 +32,11 @@ namespace Components
 
         protected override void OnFinalization()
         {
-            foreach (var reward in Rewards) 
+            foreach (var reward in Rewards)
+            {
                 reward.Display(true);
+                reward.transform.position = transform.position.ChangeZ(-1);
+            }
         }
     }
 }

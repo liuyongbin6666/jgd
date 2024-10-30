@@ -13,11 +13,7 @@ namespace Ui
         public Page_GameOver(IView v,bool display = true) : base(v, display)
         {
             text_title = v.Get<Text>("text_title");
-            Game.RegEvent(GameEvent.Game_StateChanged, b =>
-            {
-                var state = Game.World.Status;
-                Display(state == GameWorld.GameStates.End);
-            });
+            Game.RegEvent(GameEvent.Stage_Lose, b => Display(true));
         }
     }
 }

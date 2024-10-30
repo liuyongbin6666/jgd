@@ -28,6 +28,12 @@ namespace Components
                 }
             }
         }
+        public void SetFollow(Transform t)
+        {
+            followTransform = t;
+            FollowLocation();
+        }
+
         [Button("跟踪物件位置")]public void FollowLocation()
         {
             if (!followTransform) return;

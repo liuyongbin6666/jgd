@@ -15,9 +15,9 @@ namespace Components
         [SerializeField] Collider3DHandler _unitCollider3D;
 #if UNITY_EDITOR
         static string[] GetTags() => UnityEditorInternal.InternalEditorUtility.tags;
-        [SerializeField, ValueDropdown(nameof(GetTags)), LabelText("碰撞目标标签")] 
+        [ValueDropdown(nameof(GetTags)), LabelText("碰撞目标标签")]
 #endif
-        string _targetTag;
+        [SerializeField] string _targetTag;
         //[LabelText("检测root标签")] public bool checkRootTag;
         protected override void OnGameStart() { }
         bool isInit;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Config;
@@ -67,10 +68,12 @@ namespace Components
             activePlots.AddRange(nextPlots);//合并情节
             //string.Join(',',activePlots.Select(p=>p.plotName)).Log(this);
             currentMap[story] = activePlots.Select(p=>p.plotName).ToList();
-            foreach (var plot in activePlots)
+            for (var index = 0; index < activePlots.Count; index++)
             {
+                var plot = activePlots[index];
                 plot.Active(true);
                 plot.Begin();
+                if(index == 0) OnOverrideGuide.Invoke(plot.plotName);
             }
         }
 

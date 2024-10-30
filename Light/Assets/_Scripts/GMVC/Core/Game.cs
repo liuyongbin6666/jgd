@@ -8,28 +8,28 @@ using fight_aspect;
 using GameData;
 using GMVC.Utls;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace GMVC.Core
 {
-    public static class Game
+    public class Game
     {
         static MonoService _monoService;
         static bool IsRunning { get; set; }
         static ControllerServiceContainer ServiceContainer { get; set; }
-        public static GameWorld World { get; } = new ();
+        public static GameWorld World { get; private set; }
         public static PlotManager PlotManager { get; private set; }
         public static SensorManager SensorManager { get; private set; }
         public static Transform GameUnitTransform { get; private set; }
         public static T GetController<T>() where T : class, IController => ServiceContainer.Get<T>();
         public static UiBuilder UiBuilder { get; private set; }
-        public static MessagingManager MessagingManager { get; } = new();
+        public static MessagingManager MessagingManager { get; private set; } 
         public static IMainThreadDispatcher MainThread { get; private set; }
         public static Res Res { get; private set; }
         public static AudioComponent AudioComponent { get; private set; }
         public static GameConfig Config { get; private set; }
         static EnvironmentComponent Environment { get; set; }
         public static BulletManager BulletManager { get; private set; }
+        public static ObjectActiveManager ObjectActiveManager { get; private set; }
         public static MonoService MonoService
         {
             get
@@ -43,6 +43,11 @@ namespace GMVC.Core
         public static EnemySpawner EnemySpawner { get; private set; }
         public static Spell DefaultSpell { get; private set; }
         static Res _res;
+        static Game _game;
+        public static void End()
+        {
+            IsRunning = false;
+        }
 
         public static void Run(Action onGameStartAction, AudioComponent audioComponent,
             GameConfigure config,
@@ -50,10 +55,14 @@ namespace GMVC.Core
             PlotManager plotManager,
             BulletManager bulletManager,
             EnvironmentComponent environmentComponent,
-            float startAfter = 0.5f)
+            ObjectActiveManager objectActiveManager, float startAfter = 0.5f)
         {
             if (IsRunning) throw new NotImplementedException("Game is running!");
+            _game = new Game();
             IsRunning = true;
+            MessagingManager = new MessagingManager();
+            World = new GameWorld();
+            ObjectActiveManager = objectActiveManager;
             DefaultSpell = config.GameConfig.SpellSo.Spells.First();
             FireflySpawner = config.FireflySpawner;
             EnemySpawner = config.EnemySpawner;
@@ -100,8 +109,9 @@ namespace GMVC.Core
             args ??= Array.Empty<object>();
             MessagingManager.Send(eventName, args);
         }
-        public static void RegEvent(string eventName, Action<DataBag> callbackAction) =>
+        public static string RegEvent(string eventName, Action<DataBag> callbackAction) =>
             MessagingManager.RegEvent(eventName, callbackAction);
+        public static void RemoveEvent(string eventName, string key) => MessagingManager.RemoveEvent(eventName, key);
         public static void PlayBGM(AudioClip clip) => AudioComponent.Play(AudioManager.Types.BGM,clip);
         public static void PlaySFX(AudioClip clip) => AudioComponent.Play(AudioManager.Types.SFX, clip);
 

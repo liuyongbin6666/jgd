@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using GameData;
 using GMVC.Core;
@@ -22,11 +23,7 @@ namespace Ui
                 await Task.Delay(1000);
                 onClickAction?.Invoke();
             });
-            Game.RegEvent(GameEvent.Game_StateChanged, b =>
-            {
-                var state = Game.World.Status;
-                Display(state == GameWorld.GameStates.Start);
-            });
+            Game.RegEvent(GameEvent.Game_Start, b => Display(true));
         }
     }
 }

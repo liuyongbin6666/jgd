@@ -13,11 +13,11 @@ namespace Components
     /// </summary>
     public class SpellComponent : GameItemBase
     {
-        [SerializeField,LabelText("法术配置")] SpellSo _spellSo;
-        [SerializeField,LabelText("法术"),ValueDropdown(nameof(GetSpells))] string _spellName;
-        [SerializeField, LabelText("使用次数")] int _times;
-        public override GameItemType Type => GameItemType.Firefly;
+        [SerializeField,LabelText("法术配置")] public SpellSo _spellSo;
+        [SerializeField,LabelText("法术"),ValueDropdown(nameof(GetSpells))] public string _spellName;
+        [SerializeField, LabelText("使用次数")] public int _times;
         IEnumerable<string> GetSpells() => _spellSo.Spells.Select(s => s.SpellName);
+        public override GameItemType Type => GameItemType.Spell;
 
         public override void Invoke(PlayableUnit player)
         {

@@ -5,6 +5,7 @@ using GMVC.Conditions;
 using GMVC.Core;
 using GMVC.Utls;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Controller
 {
@@ -38,7 +39,12 @@ namespace Controller
         Player DefaultPlayer() =>
             new(new ConValue("血量", 10),
                 new ConValue("虫灯", 10, 10, 3));
-        public void Game_End() => World.End();
+        public void Game_End()
+        {
+            World.End();
+            Game.End();
+            SceneManager.LoadScene(0, LoadSceneMode.Single);
+        }
 
         public void Game_NextStage()
         {

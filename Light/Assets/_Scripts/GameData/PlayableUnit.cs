@@ -108,13 +108,17 @@ namespace GameData
         public void Enable(bool enable) => PlayerControl.Display(enable);
         Spell CastSpell()
         {
+            Spell spell;
             //如果没有选择法术，就使用默认法术
-            if (SelectedSpellIndex < 0) return Game.DefaultSpell;
-            //特殊法术，需要发送事件
-            var spellIndex = SelectedSpellIndex;
-            Log($"法术索引 = {spellIndex}");
-            var spell = Player.CastSpell(spellIndex);
-            SendEvent(GameEvent.Battle_Spell_Update);
+            if (SelectedSpellIndex >= 0)
+            {
+                //特殊法术，需要发送事件
+                var spellIndex = SelectedSpellIndex;
+                Log($"法术索引 = {spellIndex}");
+                spell = Player.CastSpell(spellIndex);
+            }
+            else spell = Game.DefaultSpell;
+            SendEvent(GameEvent.Spell_Cast);
             return spell;
         }
 
@@ -130,7 +134,7 @@ namespace GameData
             AddLantern(-1);
             var m = Player.ChargeSpell(spellIndex);
             Player.SelectSpell(spellIndex);
-            SendEvent(GameEvent.Battle_Spell_Update, spellIndex, m.remain, m.max);
+            SendEvent(GameEvent.Spell_Charge, spellIndex, m.remain, m.max);
         }
     }
 

@@ -27,7 +27,7 @@ namespace GMVC.Core
         public void Play(Types type, AudioClip clip, Action onCompleteCallback = null)
         {
             var audioSource = GetAudioSource(type);
-            if (!audioSource || audioSource == null) return;
+            if (!audioSource || audioSource == null || audioSource.clip == clip) return;
             audioSource.clip = clip;
             if(PlayCo!=null)
             {

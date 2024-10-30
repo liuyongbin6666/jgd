@@ -29,6 +29,7 @@ namespace Components
 #if UNITY_EDITOR
         [LabelText("测试，已经必杀")]public bool _testKill;
 #endif
+        public SphereCollider visionLOD;
         [SerializeField] GameLaunch gameLaunch;
         //[SerializeField] BulletHandler bulletHandler;
         [SerializeField] Rigidbody rb3D;
