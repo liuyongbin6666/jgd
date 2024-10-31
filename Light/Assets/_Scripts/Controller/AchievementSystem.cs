@@ -14,7 +14,7 @@ namespace Controller
     public class AchievementSystem : GameStartInitializer
     {
         public static AchievementSystem Instance { get; private set; }
-        public int SkeletonDeathCount { get; private set; }
+        public static int SkeletonDeathCount { get; private set; }
         int _skeletonDeathCountReach = 1;
         bool _init;
         protected override void OnGameStart()

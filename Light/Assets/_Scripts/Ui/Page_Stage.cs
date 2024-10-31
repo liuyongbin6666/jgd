@@ -32,7 +32,6 @@ namespace Ui
         GameStage Stage => Game.World.Stage;
         GameWorld.GameStates State => World.Status;
         bool IsPlaying => State == GameWorld.GameStates.Playing;
-        bool IsExploring => Stage is { Mode: GameStage.PlayModes.Explore };
         public Page_Stage(IView v) :
             base(v,false)
         {
@@ -45,22 +44,23 @@ namespace Ui
                 view_storyPlayer.Hide();
             });
 
-            view_win = new View_Win(v.Get<View>("view_win"),GameController.Game_NextStage);//todo 下一关事件
+            //view_win = new View_Win(v.Get<View>("view_win"),GameController.Game_NextStage);//todo 下一关事件
             view_defeat = new View_Defeat(v.Get<View>("view_defeat"),GameController.Game_End);//todo 返回page main事件
             view_latern = new View_lantern(v.Get<View>("view_lantern"), PlayableController.ChargeSpell);
             view_effect = new View_Effect(v.Get<View>("view_effect"));
             view_gameComplete = new View_GameComplete(v.Get<View>("view_gameComplete"), GameController.Game_End);
 
             /**********事件注册**********/
+            Game.RegEvent(GameEvent.Game_Paused, _ => view_joystick.SetActive(false));
             Game.RegEvent(GameEvent.Game_Playing, _ =>
             {
-                view_joystick.SetActive(IsPlaying && IsExploring);
+                view_joystick.SetActive(IsPlaying);
                 Display(IsPlaying);
                 if (!IsPlaying) return;
                 view_latern.SetLantern(Stage.Player.Lantern, (float)Stage.Player.Firefly.ValueMaxRatio);
                 view_latern.SetHp((float)Stage.Player.Hp.ValueMaxRatio);
             });
-            Game.RegEvent(GameEvent.Game_PlayMode_Update, _ => view_joystick.SetActive(IsExploring));
+            Game.RegEvent(GameEvent.Game_Resume, _ => view_joystick.SetActive(true));
             Game.RegEvent(GameEvent.Player_Lantern_Update, _ =>
             {
                 view_latern.SetLantern(Stage.Player.Lantern, (float)Stage.Player.Firefly.ValueMaxRatio);
@@ -87,9 +87,15 @@ namespace Ui
                 view_latern.SetPanic(1f * remain / max);
                 view_effect.PlayPanic();
             });
-            Game.RegEvent(GameEvent.Player_Spell_Add, _ => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
+            Game.RegEvent(GameEvent.Spell_Cast, _ => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
+            Game.RegEvent(GameEvent.Spell_Add, _ => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
             Game.RegEvent(GameEvent.Spell_Charge, b => view_latern.SetSpell(Stage.Player.Magics, Stage.Player.SelectedSpellIndex));
-            Game.RegEvent(GameEvent.Stage_StageTime_Update, _ => view_top.UpdateStageTime(Stage.Story.Seconds));
+            Game.RegEvent(GameEvent.Stage_StageTime_Update, _ =>
+            {
+                var ts = TimeSpan.FromSeconds(Stage.Story.Seconds);
+                view_top.UpdateStageTime(ts);
+                view_defeat.SetTime((int)ts.TotalMinutes,ts.Seconds);
+            });
             Game.RegEvent(GameEvent.Story_Lines_Send, b => view_storyPlayer.ShowStory(Stage.Story.StoryLines));
             Game.RegEvent(GameEvent.Story_Soul_Inactive, b => view_npc.SetNpcTalk(new List<string> { b.Get<string>(0) }));
             Game.RegEvent(GameEvent.Story_Dialog_Send, b => view_npc.SetNpcTalk(Stage.Story.DialogLines.ToList()));
@@ -140,12 +146,10 @@ namespace Ui
                 //text_f = v.Get<Text>("text_f");
             }
 
-            public void UpdateStageTime(int totalSeconds)
+            public void UpdateStageTime(TimeSpan ts)
             {
-                var minutes = totalSeconds / 60; // 计算分钟数
-                tmp_minutes.text = minutes.ToString();
-                var seconds = totalSeconds % 60; // 计算剩余的秒数
-                tmp_seconds.text = seconds.ToString();
+                tmp_minutes.text = ts.TotalMinutes.ToString("###");
+                tmp_seconds.text = ts.Seconds.ToString();
 
                 //if (totalSeconds <= 30)
                 //{
@@ -243,11 +247,14 @@ namespace Ui
         class View_Defeat:UiBase
         {
             Button btn_return { get; }
+            View_Time view_time { get; }
             public View_Defeat(IView v,UnityAction onReturnAction) : base(v, false)
             {
                 btn_return = v.Get<Button>("btn_return");
+                view_time = new View_Time(v.Get<View>("view_time"));
                 btn_return.onClick.AddListener(onReturnAction);
             }
+            public void SetTime(int min, int secs) => view_time.Set(min, secs);
         }
         class View_Joystick : UiBase
         {
@@ -408,21 +415,23 @@ namespace Ui
                 Show();
             }
 
-            class View_Time : UiBase
-            {
-                Text text_min { get; }
-                Text text_secs { get; }
-                public View_Time(IView v, bool display = true) : base(v, display)
-                {
-                    text_min = v.Get<Text>("text_min");
-                    text_secs = v.Get<Text>("text_secs");
-                }
-                public void Set(int min, int secs)
-                {
-                    text_min.text = min.ToString();
-                    text_secs.text = secs.ToString();
-                }
-            }
+        }
+    }
+    public class View_Time : UiBase
+    {
+        Text text_min { get; }
+        Text text_secs { get; }
+
+        public View_Time(IView v, bool display = true) : base(v, display)
+        {
+            text_min = v.Get<Text>("text_min");
+            text_secs = v.Get<Text>("text_secs");
+        }
+
+        public void Set(int min, int secs)
+        {
+            text_min.text = min.ToString("0");
+            text_secs.text = secs.ToString("00");
         }
     }
 }

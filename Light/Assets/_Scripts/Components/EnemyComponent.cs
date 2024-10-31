@@ -30,7 +30,7 @@ namespace Components
         [ValueDropdown(nameof(GetSpells))]public string SpellName;
         public SpellSo SpellSo;
         IEnumerable<string> GetSpells()=>SpellSo.Spells.Select(s=>s.SpellName);
-        public Spell CastSpell() => SpellSo.GetSpell(SpellName).Value;
+        public Spell CastSpell() => SpellSo.GetSpell(SpellName);
         public IBattleUnit Target { get; private set; }
         [LabelText("强制不移动")] public bool StopMove; // 用于强制停止移动
         public readonly UnityEvent OnDeathEvent = new();

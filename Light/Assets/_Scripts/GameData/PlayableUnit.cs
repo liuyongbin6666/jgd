@@ -125,7 +125,7 @@ namespace GameData
         public void AddSpell(Spell spell, int times)
         {
             Player.AddSpell(spell, times);
-            SendEvent(GameEvent.Player_Spell_Add, spell, times);
+            SendEvent(GameEvent.Spell_Add, spell, times);
         }
         public void ChargeSpell(int spellIndex)
         {
@@ -229,7 +229,7 @@ namespace GameData
     /// <summary>
     /// 法术
     /// </summary>
-    [Serializable]public struct Spell
+    [Serializable]public class Spell
     {
         [LabelText("名字")]public string SpellName;
         [LabelText("伤害")]public int Damage;
@@ -239,5 +239,21 @@ namespace GameData
         [LabelText("击退")]public float force;
         [LabelText("子弹")]public BulletTracking Tracking;
         [LabelText("范围伤害")]public bool RangeDamage;
+
+        public Spell()
+        {
+            
+        }
+        public Spell(string spellName, int damage, float speed, int level, float delay, float force, BulletTracking tracking, bool rangeDamage)
+        {
+            SpellName = spellName;
+            Damage = damage;
+            Speed = speed;
+            Level = level;
+            Delay = delay;
+            this.force = force;
+            Tracking = tracking;
+            RangeDamage = rangeDamage;
+        }
     }
 }

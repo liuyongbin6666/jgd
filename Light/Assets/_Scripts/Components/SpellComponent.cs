@@ -21,7 +21,7 @@ namespace Components
 
         public override void Invoke(PlayableUnit player)
         {
-            player.AddSpell(_spellSo.GetSpell(_spellName).Value, _times);
+            player.AddSpell(_spellSo.GetSpell(_spellName), _times);
             Destroy(gameObject);
         }
     }

@@ -13,13 +13,8 @@ namespace GameData
     /// </summary>
     public class GameStage : ModelBase
     {
-        public enum PlayModes
-        {
-            Story,Explore
-        }
         public StageStory Story { get; private set; }
         public PlayableUnit Player { get; private set; }
-        public PlayModes Mode { get; private set; } = PlayModes.Explore;//暂时默认探索模式
         public GameStage(PlayableUnit player, StageStory stageStory)
         {
             Player = player;
@@ -52,6 +47,17 @@ namespace GameData
         //    Game.SendEvent(GameEvent.Game_PlayMode_Update, mode);
         //}
         //通过关卡
+        public void Paused()
+        {
+            Time.timeScale = 0;
+            Game.SendEvent(GameEvent.Game_Paused);
+        }
+
+        public void Resume()
+        {
+            Time.timeScale = 1;
+            Game.SendEvent(GameEvent.Game_Resume);
+        }
     }
 
     /// <summary>
@@ -70,8 +76,9 @@ namespace GameData
         public string[] StoryLines { get; private set; }
         public string[] DialogLines { get; private set; }
         
-        public StageStory(StageTimeComponent stageTimeComponent)
+        public StageStory(StageTimeComponent stageTimeComponent,int seconds)
         {
+            Seconds = seconds;
             StageTimeComponent = stageTimeComponent;
             stageTimeComponent.OnSecond.AddListener(OnPulse);
             PlotManager.OnLinesEvent.AddListener(OnLine);

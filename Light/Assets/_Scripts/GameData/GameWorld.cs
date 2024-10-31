@@ -1,4 +1,6 @@
 using GMVC.Core;
+using GMVC.Utls;
+using UnityEngine;
 
 namespace GameData
 {
@@ -19,6 +21,7 @@ namespace GameData
             State_Set(GameStates.Start);
             Game.SendEvent(GameEvent.Game_Start);
         }
+
         public void End()
         {
             State_Set(GameStates.End);
@@ -36,7 +39,7 @@ namespace GameData
         public void SetGameStage(PlayableUnit player, StageStory stageStory)
         {
             Stage = new GameStage(player, stageStory);
-            Game.SendEvent(GameEvent.Game_Stage_Update);
+            Game.SendEvent(GameEvent.Game_Stage_Start);
         }
 
         public void NextGameStage() => StageIndex++;
@@ -48,6 +51,7 @@ namespace GameData
         public const string Enemy = "Enemy";
         public const string AnimTrigger = "AnimTrigger";
         public const string AnimInt = "AnimInt";
+        public const string PlayerSaveString = "PlayerSaveString";
     }
     public class GameEvent
     {
@@ -55,7 +59,7 @@ namespace GameData
         public const string Stage_StageTime_Update = "Stage_StageTime_Update";
         public const string Stage_Lose= "Stage_Lose";// 关卡结束
         public const string Stage_Complete= "Stage_Complete";// 关卡结束
-        public const string Game_Stage_Update = "Game_Stage_Update";// 游戏关卡更新
+        public const string Game_Stage_Start = "Game_Stage_Start";// 游戏关卡开始
 
         //玩家
         public const string Player_Lantern_Update = "Player_Lantern_Update";// 玩家灯笼更新
@@ -63,7 +67,7 @@ namespace GameData
         //public const string Player_Panic_Finalize = "Player_Panic_Finalize";//恐慌心跳结束触发
         //public const string Player_IsDeath = "Player_IsDeath";//玩家死亡
         public const string Player_Hp_Update = "Player_Hp_Update";//玩家血量更新
-        public const string Player_Spell_Add = "Player_Spell_Add";//玩家法术添加
+        public const string Spell_Add = "Spell_Add";//玩家法术添加
 
         //环境
         public const string Env_Lightning = "Env_Lightning";// 闪电
@@ -73,8 +77,8 @@ namespace GameData
         public const string Game_Start = "Game_Start";
         public const string Game_End = "Game_End";
         public const string Game_Playing = "Game_Playing";
-        //public const string Game_StateChanged = "Game_StateChanged";// 游戏状态改变
-        public const string Game_PlayMode_Update = "Game_PlayMode_Update";//游戏模式更新
+        public const string Game_Paused = "Game_Paused";// 游戏暂停
+        public const string Game_Resume = "Game_Resume";
 
         //故事
         public const string Story_Lines_Send = "Story_Lines_Send"; // 游戏故事行发送

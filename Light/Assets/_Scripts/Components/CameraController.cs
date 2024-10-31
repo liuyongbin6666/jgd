@@ -14,7 +14,7 @@ namespace Components
         [SerializeField, LabelText("采用动态镜头跟踪")] public bool dynamics;
         private void Awake()
         {
-            Game.RegEvent(GameEvent.Game_Stage_Update, _ => playerControl = Game.World.Stage.Player.PlayerControl);
+            Game.RegEvent(GameEvent.Game_Stage_Start, _ => playerControl = Game.World.Stage.Player.PlayerControl);
             Offset = transform.position-player.position;
         }
         private void LateUpdate()

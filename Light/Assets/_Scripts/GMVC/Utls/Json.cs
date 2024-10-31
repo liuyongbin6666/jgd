@@ -101,6 +101,7 @@ namespace GMVC.Utls
         {
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
             DefaultValueHandling = DefaultValueHandling.Ignore,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             ContractResolver = new PrivateSetterContractResolver()
         };
 

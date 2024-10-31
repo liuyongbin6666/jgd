@@ -16,7 +16,7 @@ namespace Components
         const string PlayingNone = "未播放";
         public AudioCfgSo BgmSo;
         public AudioCfgSo SfxSo;
-        [SerializeField] AudioMixer audioMixer;
+        public AudioMixer audioMixer;
         [HideInEditorMode,ValueDropdown(nameof(GetBGMNames)),OnValueChanged(nameof(SetBGMPlaying))] public string BGM = PlayingNone;
         [HideInEditorMode,ValueDropdown(nameof(GetSFXNames)),OnValueChanged(nameof(SetSFXPlaying))] public string SFX = PlayingNone;
         [SerializeField] List<SFXBinding> sfxBindings;
