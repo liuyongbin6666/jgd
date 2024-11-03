@@ -43,16 +43,6 @@ MonoBehaviour:
       force: 2
       Tracking: 0
       RangeDamage: 1
-  - Sprite: {fileID: 21300000, guid: 42eb82e2f70d07645b46aba8354bf598, type: 3}
-    Spell:
-      SpellName: "\u9B54\u653B"
-      Damage: 1
-      Speed: 3
-      Level: 1
-      Delay: 0
-      force: 5
-      Tracking: 0
-      RangeDamage: 0
   - Sprite: {fileID: 21300000, guid: 27c7ff13c410d2b43984b02993453dc6, type: 3}
     Spell:
       SpellName: "\u96F7\u51FB"
@@ -61,5 +51,15 @@ MonoBehaviour:
       Level: 1
       Delay: 1
       force: 2
+      Tracking: 0
+      RangeDamage: 0
+  - Sprite: {fileID: 21300000, guid: 42eb82e2f70d07645b46aba8354bf598, type: 3}
+    Spell:
+      SpellName: "\u9B54\u653B"
+      Damage: 1
+      Speed: 3
+      Level: 1
+      Delay: 0
+      force: 5
       Tracking: 0
       RangeDamage: 0

@@ -28,6 +28,11 @@ namespace Components
                 OnCountdownComplete.Invoke();
             }
         }
+
+        public void SetInterval(float secs)
+        {
+            _lastingPerFirefly = secs;
+        }
         public float SetVisionLevel(int level)
         {
             LanternVisionLevel.LoadLightLevel(level,out var isMaxLevel,out var moveRatio);

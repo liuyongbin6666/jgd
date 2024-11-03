@@ -227,6 +227,27 @@ namespace GameData
     }
 
     /// <summary>
+    /// 虫灯
+    /// </summary>
+    public class Lantern
+    {
+        public enum Buffs
+        {
+            Movement,//SwiftStride, //迅捷步伐
+            Vision,//EagleEyes,//鹰眼
+            AutoRecover,//Rejuvenate,//活跃之力
+            Calm,//CalmMind,//冷静之心
+            Storm,//StormCharge,//风暴冲锋
+            Flame,//InfernalSurge,//地狱涌火
+            Aqua,//AquaInfusion,//水力之柱
+        }
+        public Dictionary<string,int> BuffMap { get; private set; }
+        public int Value { get; private set; }
+        public int Max { get; private set; }
+        public float Interval { get; private set; }
+    }
+
+    /// <summary>
     /// 法术
     /// </summary>
     [Serializable]public class Spell

@@ -101,7 +101,7 @@ namespace Components
             {
                 player.SwitchState(new PlayerMoveState(player));
             }
-            else if (player.anim.GetInteger(GameTag.AnimInt) == -1)
+            else if (player.anim.GetInteger(GameTag.AnimInt) == -1 || !player.Targets.Any())
             {
                 player.SwitchState(new PlayerIdleState(player));
             }
